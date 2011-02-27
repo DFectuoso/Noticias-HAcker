@@ -1,0 +1,22 @@
+Este es un clon de hacker news con la intencion de tener un servicio similar para latinoamerica.
+
+Para correr esto necesitas agregarlo como proyecto al Google App Engine SDK
+Para modificar el css requieres compilar los archivos scss con sass
+
+La idea es tener las funcionalidades basicas para que sea usable y despues liberarlo tan rapido como sea posible
+
+La lista inicial de tareas es:
+[D]-> Hacer la imagen y estructura basica de la applicacion
+[D]-> Hacer un sistema sencillo de registro de usuarios y login
+[D]-> Hacer una funcionalidad sencilla para entregar links/mensajes
+[D]-> Hacer una vista sencilla para ver esos mensajes
+-> Que se pueda hacer comentarios, anidados en los mensajes
+-> Que el mensaje sepa cuantos mensajes, incluyendo anidados, existen
+-> Que se pueda votar
+-> Calcular puntos, y tener una portada, ver el codigo de arc
+-> Hacer una vista donde veas los mensajes que tu has creado
+
+LAUNCH
+
+-> Hacer una vista de mensajes nuevos
+-> Checar lo del cron usando gaesessions de https://github.com/dound/gae-sessions/

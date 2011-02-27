@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Noticias</title>
+    <link rel="stylesheet" href="/static/css/noticias.css" type="text/css"/>
+    <script src="/static/javascript/livecss.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="header">
+        <div id="menu">
+          <span class="left">
+            <div id="logo">N</div>
+            <a href="/agregar">Agregar un link</a> | OTHERS
+          </span>  
+          <span class="right">
+            {% if user %}
+              <a href="/login">{{user.nickname}}</a>(VOTOS) |
+              <a href="/logout">Log out</a>
+            {% else %} 
+              <a href="/login">Login o registro</a>
+            {% endif %} 
+          </span>
+        </div>
+      </div>
+      <div id="content">
+        {% block content %}{% endblock %}
+      </div>
+      <div id="footer">
+        Noticias is made by DFectuoso
+      </div>
+    </div>
+  </body>
+</html>

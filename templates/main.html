@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for post in posts %}
+  <div id="noticia">
+    <div class="post-title">
+      <a href="#">^</a>
+      <a href="{{post.url}}">{{post.title}}</a>
+    </div>
+    <div class="post-info">
+      13 votos by <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace 14 minutos | 
+      <a href="/noticia/{{post.key}}">6 comentarios</a>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}

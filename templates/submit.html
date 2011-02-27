@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Agregar un link</h1>
+<form method="POST">
+  <fieldset>
+    <label>Titulo</label><input name="title"/>
+    <label>Url</label><input name="url"/>
+    <input type="submit"/>
+  </fieldset>
+</form>
+
+<h1>O una mensaje</h1>
+<form method="POST">
+  <fieldset>
+    <label>Titulo</label><input name="title"/>
+    <label>Mensaje</label><textarea name="message"></textarea>
+    <input type="submit"/>
+  </fieldset>
+</form>
+{% endblock %}

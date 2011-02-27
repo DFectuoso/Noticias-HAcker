@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Login</h1>
+<form method="POST" action="/login">
+  <fieldset>
+    <label>Username:</label><input name="nickname"/>
+    <label>Password:</label><input type="password" name="password"/>
+    <br/><input type="submit"/>
+  </fieldset>
+</form>
+
+<h1>O crear una cuenta</h1>
+<form method="POST" action="/register">
+  <fieldset>
+    <label>Username:</label><input name="nickname"/>
+    <label>Password:</label><input type="password" name="password"/>
+    <br/><input type="submit"/>
+  </fieldset>
+</form>
+{% endblock %}
