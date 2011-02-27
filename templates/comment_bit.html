@@ -1,0 +1,14 @@
+<div class="comment">
+  <div class="message">
+    {{comment.message}}
+  </div>
+  <div class="info">
+    {{comment.user.nickname}} || 3 votos || Hace 12 minutos || <a href="/responder/{{comment.key}}">Reply</a>
+  </div>
+  <div class="innerComments">
+    {% for comment in comment.childs %}
+      {% include "comment_bit.html" %}
+    {% endfor %}
+  </div>
+</div>
+

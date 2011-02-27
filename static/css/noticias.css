@@ -59,3 +59,6 @@ label {
 
 fieldset {
   border: 0px; }
+
+.innerComments {
+  padding-left: 20px; }

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Comment: </h1>
+<div class="message">
+  {{comment.message}}
+</div>
+
+<form method="POST">
+  <fieldset>
+    <label>Responder a este comentario::</label><textarea name="message"></textarea>
+    <br/><input type="submit"/>
+  </fieldset>
+</form>
+
+{% endblock %}

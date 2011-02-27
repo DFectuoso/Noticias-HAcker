@@ -106,6 +106,7 @@ class PostHandler(webapp.RequestHandler):
     except db.BadKeyError:
       self.redirect('/')
 
+  # This adds root level comments
   def post(self, post_id):
     session = get_current_session()
     if session.has_key('user'):
@@ -121,6 +122,36 @@ class PostHandler(webapp.RequestHandler):
           self.redirect('/')
       else:
         self.redirect('/noticia/' + post_id)
+    else:
+      self.redirect('/login')
+
+class CommentReplyHandler(webapp.RequestHandler):
+  def get(self,comment_id):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+    try:
+      comment = db.get(comment_id) 
+      self.response.out.write(template.render('templates/comment.html', locals()))
+    except db.BadKeyError:
+      self.redirect('/')
+
+
+  def post(self,comment_id):
+    session = get_current_session()
+    if session.has_key('user'):
+      message = self.request.get('message')
+      user = session['user']
+      if len(message) > 0:
+        try:
+          parentComment = db.get(comment_id)
+          comment = Comment(message=message,user=user,post=parentComment.post, father=parentComment)
+          comment.put()
+          self.redirect('/noticia/' + str(parentComment.post.key()))
+        except db.BadKeyError:
+          self.redirect('/')
+      else:
+        self.redirect('/responder/' + comment_id)
     else:
       self.redirect('/login')
 
@@ -177,6 +208,7 @@ def main():
       ('/agregar', SubmitNewStoryHandler),
       ('/perfil/(.+)', ProfileHandler),
       ('/noticia/(.+)', PostHandler),
+      ('/responder/(.+)', CommentReplyHandler),
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
