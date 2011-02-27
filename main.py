@@ -7,6 +7,8 @@ from gaesessions import get_current_session
 from urlparse import urlparse
 import hashlib
 
+template.register_template_library('CustomFilters') 
+
 # Helpers
 def slow_hash(password, iterations=1000):
         h = hashlib.sha1()
@@ -20,18 +22,21 @@ def slow_hash(password, iterations=1000):
 class User(db.Model):
   nickname  = db.StringProperty(required=True)
   password  = db.StringProperty(required=True) 
+  created = db.DateTimeProperty(auto_now_add=True)
 
 class Post(db.Model):
   title   = db.StringProperty(required=True)
   url     = db.LinkProperty(required=False)
   message = db.TextProperty()  
   user    = db.ReferenceProperty(User, collection_name='posts')
+  created = db.DateTimeProperty(auto_now_add=True)
 
 class Comment(db.Model):
   message = db.TextProperty()  
   user    = db.ReferenceProperty(User, collection_name='comments')
   post    = db.ReferenceProperty(Post, collection_name='comments')
   father  = db.SelfReferenceProperty(collection_name='childs')
+  created = db.DateTimeProperty(auto_now_add=True)
 
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
