@@ -3,7 +3,7 @@
     {{comment.message}}
   </div>
   <div class="info">
-    {{comment.user.nickname}} || 3 votos || Hace {{comment.created|timesince|hacetiempo}}|| <a href="/responder/{{comment.key}}">Reply</a>
+    {{comment.user.nickname}} | {{comment.votes.count}} votos | Hace {{comment.created|timesince|hacetiempo}} | <a href="/responder/{{comment.key}}">Reply</a>
   </div>
   <div class="innerComments">
     {% for comment in comment.childs %}

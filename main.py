@@ -38,6 +38,12 @@ class Comment(db.Model):
   father  = db.SelfReferenceProperty(collection_name='childs')
   created = db.DateTimeProperty(auto_now_add=True)
 
+class Vote(db.Model):
+  user    = db.ReferenceProperty(User, collection_name='votes')
+  post    = db.ReferenceProperty(Post, collection_name='votes')
+  comment = db.ReferenceProperty(Comment, collection_name='votes')
+  created = db.DateTimeProperty(auto_now_add=True)
+
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
   def get(self):
@@ -196,6 +202,13 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     else:
       self.refirect('/')    
 
+class UpVoteHandler(webapp.RequestHandler):
+  def get(self,post_id):
+    self.response.out.write('Ok')
+
+class DownVoteHandler(webapp.RequestHandler):
+  def get(self,post_id):
+    self.response.out.write('Ok')
 
 # Front page
 class MainHandler(webapp.RequestHandler):
@@ -211,6 +224,8 @@ def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
       ('/agregar', SubmitNewStoryHandler),
+      ('/downvote/(.+)', DownVoteHandler),
+      ('/upvote/(.+)', UpVoteHandler),
       ('/perfil/(.+)', ProfileHandler),
       ('/noticia/(.+)', PostHandler),
       ('/responder/(.+)', CommentReplyHandler),
