@@ -7,6 +7,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
 from gaesessions import get_current_session
 from urlparse import urlparse
+from datetime import datetime
 
 template.register_template_library('CustomFilters') 
 
@@ -97,6 +98,13 @@ class Post(db.Model):
       user = session['user']
       user.remove_from_memcache()
       memcache.delete("vp_" + str(self.key()) + "_" + str(user.key()))
+    self.calculate_karma()
+
+  def calculate_karma(self):
+    hours = (datetime.now() - self.created).seconds / 60 / 60 + 1
+    self.karma = float(self.sum_votes() / hours)
+    self.karma = self.karma * self.karma
+    self.put()
 
 class Comment(db.Model):
   message = db.TextProperty()  
@@ -307,7 +315,7 @@ class MainHandler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'): 
       user = session['user']
-    posts = Post.all().order('karma').fetch(20)
+    posts = Post.all().order('-karma').fetch(20)
     self.response.out.write(template.render('templates/main.html', locals()))
 
 class NewHandler(webapp.RequestHandler):
