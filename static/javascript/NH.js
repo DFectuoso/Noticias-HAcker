@@ -1,12 +1,20 @@
-function upVote(post_key){
+function upVote(self, post_key){
   $.get('/upvote/' + post_key, function(data) {
-    console.log(data);
+    if (data == 'Ok'){
+      self.className += " voted";
+    } else if (data == 'Bad'){
+      window.location = "/login"
+    }
   });
 }
 
-function downVote(post_key){
+function downVote(self, post_key){
   $.get('/downvote/' + post_key, function(data) {
-    console.log(data);
+    if (data == 'Ok'){
+      self.className += " voted";
+    } else if (data == 'Bad'){
+      window.location = "/login"
+    }
   });
 }
 

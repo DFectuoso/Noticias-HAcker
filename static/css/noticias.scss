@@ -50,6 +50,10 @@ a{
 #content{
   background-color:$light-color;  
   color: $soft-grey;
+  .voted{
+    font-weight:900;
+    font-size:1.1em;
+  }
   .post-title{
     font-size:1.2em;
     padding: 5px 10px 0px 10px;

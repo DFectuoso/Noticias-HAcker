@@ -34,6 +34,9 @@ a {
 #content {
   background-color: #f2e9e1;
   color: #777777; }
+  #content .voted {
+    font-weight: 900;
+    font-size: 1.1em; }
   #content .post-title {
     font-size: 1.2em;
     padding: 5px 10px 0px 10px; }

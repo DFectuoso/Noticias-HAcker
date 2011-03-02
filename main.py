@@ -1,11 +1,12 @@
+import logging
+import hashlib
+
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
-
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.api import memcache
 from gaesessions import get_current_session
-
 from urlparse import urlparse
-import hashlib
 
 template.register_template_library('CustomFilters') 
 
@@ -24,12 +25,78 @@ class User(db.Model):
   password  = db.StringProperty(required=True) 
   created = db.DateTimeProperty(auto_now_add=True)
 
+  def sum_votes(self):
+    val = memcache.get("u_" + str(self.key())) 
+    if val is not None:
+      return val
+    else:
+      val = sum([i.value for i in self.received_votes])
+      memcache.add("u_" + str(self.key()), val, 360) 
+      return val 
+
+  def remove_from_memcache(self):
+    memcache.delete("u_" + str(self.key()))
+
 class Post(db.Model):
   title   = db.StringProperty(required=True)
   url     = db.LinkProperty(required=False)
   message = db.TextProperty()  
   user    = db.ReferenceProperty(User, collection_name='posts')
   created = db.DateTimeProperty(auto_now_add=True)
+  karma   = db.FloatProperty()
+
+  def cached_comment_count(self):
+    val = memcache.get("pc_" + str(self.key())) 
+    if val is not None:
+      return str(val)
+    else:
+      val = self.comments.count() 
+      memcache.add("pc_" + str(self.key()), val, 360) 
+      return str(val) 
+
+  def sum_votes(self):
+    val = memcache.get("p_" + str(self.key())) 
+    if val is not None:
+      return val
+    else:
+      val = sum([i.value for i in self.votes])
+      memcache.add("p_" + str(self.key()), val, 360) 
+      return val 
+
+  def already_voted(self, value):
+    session = get_current_session()
+    if session.has_key('user'): 
+      user = session['user']
+      # hit memcache for this
+      memValue = data = memcache.get("vp_" + str(self.key()) + "_" + str(user.key()))
+      if memValue is not None:
+        return memValue == value
+      else:
+        # Decidir si es 0, 1 o -1 y ponerlo en memcache
+        vote = [v for v in self.votes if v.user.key() == user.key()]
+        if len(vote) == 0:
+          memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), 0, 360)
+          return False
+        else:
+          memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), vote[0].value, 360)
+          return vote[0].value == value 
+    else:
+      return False
+
+  def already_voted_up(self):
+    return self.already_voted(1)
+
+  def already_voted_down(self):
+    return self.already_voted(-1)
+
+  def remove_from_memcache(self):
+    memcache.delete("pc_" + str(self.key()))
+    memcache.delete("p_" + str(self.key()))
+    session = get_current_session()
+    if session.has_key('user'): 
+      user = session['user']
+      user.remove_from_memcache()
+      memcache.delete("vp_" + str(self.key()) + "_" + str(user.key()))
 
 class Comment(db.Model):
   message = db.TextProperty()  
@@ -39,10 +106,12 @@ class Comment(db.Model):
   created = db.DateTimeProperty(auto_now_add=True)
 
 class Vote(db.Model):
-  user    = db.ReferenceProperty(User, collection_name='votes')
-  post    = db.ReferenceProperty(Post, collection_name='votes')
-  comment = db.ReferenceProperty(Comment, collection_name='votes')
-  created = db.DateTimeProperty(auto_now_add=True)
+  user        = db.ReferenceProperty(User, collection_name='votes')
+  target_user = db.ReferenceProperty(User, collection_name='received_votes')
+  post        = db.ReferenceProperty(Post, collection_name='votes')
+  comment     = db.ReferenceProperty(Comment, collection_name='votes')
+  created     = db.DateTimeProperty(auto_now_add=True)
+  value       = db.IntegerProperty(required=True)
 
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
@@ -126,6 +195,7 @@ class PostHandler(webapp.RequestHandler):
       if len(message) > 0:
         try:
           post = db.get(post_id)
+          post.remove_from_memcache()
           comment = Comment(message=message,user=user,post=post)
           comment.put()
           self.redirect('/noticia/' + post_id)
@@ -158,6 +228,7 @@ class CommentReplyHandler(webapp.RequestHandler):
           parentComment = db.get(comment_id)
           comment = Comment(message=message,user=user,post=parentComment.post, father=parentComment)
           comment.put()
+          comment.post.remove_from_memcache()
           self.redirect('/noticia/' + str(parentComment.post.key()))
         except db.BadKeyError:
           self.redirect('/')
@@ -202,13 +273,33 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     else:
       self.refirect('/')    
 
+# vote handlers
+def handleVote(self,post_id,value):
+  session = get_current_session()
+  if session.has_key('user'): 
+    user = session['user']
+    try:
+      post = db.get(post_id)
+      if not post.already_voted_up() and not post.already_voted_down():
+        vote = Vote(user=user, post=post, value=value, target_user=post.user)
+        vote.put()
+        post.remove_from_memcache()
+        self.response.out.write('Ok')
+      else:
+        self.response.out.write('No')
+    except db.BadValueError:
+      self.response.out.write('Bad')
+  else:
+    self.response.out.write('Bad')
+
+
 class UpVoteHandler(webapp.RequestHandler):
   def get(self,post_id):
-    self.response.out.write('Ok')
+    handleVote(self, post_id,1)
 
 class DownVoteHandler(webapp.RequestHandler):
   def get(self,post_id):
-    self.response.out.write('Ok')
+    handleVote(self,post_id,-1)
 
 # Front page
 class MainHandler(webapp.RequestHandler):
@@ -216,13 +307,22 @@ class MainHandler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'): 
       user = session['user']
-    posts = Post.all().fetch(20)
+    posts = Post.all().order('karma').fetch(20)
+    self.response.out.write(template.render('templates/main.html', locals()))
+
+class NewHandler(webapp.RequestHandler):
+  def get(self):
+    session = get_current_session()
+    if session.has_key('user'): 
+      user = session['user']
+    posts = Post.all().order('-created').fetch(20)
     self.response.out.write(template.render('templates/main.html', locals()))
 
 # App stuff
 def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
+      ('/nuevo', NewHandler),
       ('/agregar', SubmitNewStoryHandler),
       ('/downvote/(.+)', DownVoteHandler),
       ('/upvote/(.+)', UpVoteHandler),

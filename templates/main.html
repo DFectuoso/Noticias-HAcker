@@ -4,15 +4,15 @@
 {% for post in posts %}
   <div id="noticia">
     <div class="post-votes">
-      <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote('{{post.key}}'); return false;">^</a><br/>
-      <a class="post-downvote" href="/downvote/{{post.key}}" onclick="downVote('{{post.key}}'); return false;">v</a>
+      <a class="post-upvote{% if post.already_voted_up %} voted {% endif %}" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;">^</a><br/>
+      <a class="post-downvote{% if post.already_voted_down %} voted {% endif %}" href="/downvote/{{post.key}}" onclick="downVote(this, '{{post.key}}'); return false;">v</a>
     </div>
     <div class="post-title">
       <a href="{{post.url}}">{{post.title}}</a>
     </div>
     <div class="post-info">
-      {{post.votes.count}} votos by <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}} | 
-      <a href="/noticia/{{post.key}}">{{post.comments.count}} comentarios</a>
+      {{post.sum_votes}} puntos, entregado por <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}} | 
+      <a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
     </div>
   </div>
 {% endfor %}

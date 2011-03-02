@@ -12,11 +12,12 @@
         <div id="menu">
           <span class="left">
             <div id="logo"><a href="/">N</a></div>
-            <a href="/agregar">Agregar un link</a> | OTHERS
-          </span>  
+            <a href="/agregar">Agregar un link</a> | 
+            <a href="/nuevo">Nuevo</a>
+          </span> 
           <span class="right">
             {% if user %}
-              <a href="/login">{{user.nickname}}</a>(VOTOS) |
+              <a href="/login">{{user.nickname}}</a>({{user.sum_votes}}) |
               <a href="/logout">Log out</a>
             {% else %} 
               <a href="/login">Login o registro</a>
