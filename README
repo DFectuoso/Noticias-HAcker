@@ -14,9 +14,18 @@ La lista inicial de tareas es:
 [D]-> Que el mensaje sepa cuantos mensajes, incluyendo anidados, existen
 [D]-> Que se pueda votar
 [D]-> Calcular puntos, y tener una portada, ver el codigo de arc
+[D]-> Checar lo del cron usando gaesessions de https://github.com/dound/gae-sessions/
+[D]-> Agregar un campo en el perfil donde puedes escribir lo que quieras
 
 LAUNCH
+-> [pensar] Cuando posteas, votas en tu post vs (votos + 1)
+-> [pensar] Cuando comentas, votas en tu comment vs (votos + 1)
+-> Cambiar el ^ por una imagen:w
+-> Agregar una manera de flag cosas
+-> urlparse lib xss todo input:wq
+-> Agregar el codigo a github y ligarlo en el footer|| QUITAR EL SESSION, SALT Y EL NUMBERO DE ITERACIONES Y PONERLO EN OTRO FILE
 
--> Checar lo del cron usando gaesessions de https://github.com/dound/gae-sessions/
+-> Revisar ortografia y estilo de FAQ y guidelines
+
 
 

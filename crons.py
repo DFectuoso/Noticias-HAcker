@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import cgi
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template

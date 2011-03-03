@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import cgi
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
@@ -12,6 +13,9 @@ from datetime import datetime
 from models import User, Post, Comment, Vote
 
 template.register_template_library('CustomFilters') 
+
+def sanitizeHtml(value):                                                                 
+  return cgi.escape(value)
 
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
@@ -28,8 +32,8 @@ class LoginHandler(webapp.RequestHandler):
 
   def post(self):
     # TODO: Future; allow the session to store if we got here redirected and redirect back there
-    nickname = self.request.get('nickname')
-    password = self.request.get('password')
+    nickname = sanitizeHtml(self.request.get('nickname'))
+    password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
     user = User.all().filter('nickname =',nickname).filter('password =',password).fetch(1)
@@ -49,8 +53,8 @@ class RegisterHandler(webapp.RequestHandler):
     # TODO: Check for empty name and empty password
     # TODO: Future; allow the session to store if we got here redirected and redirect back there
     session = get_current_session()
-    nickname = self.request.get('nickname')
-    password = self.request.get('password')
+    nickname = sanitizeHtml(self.request.get('nickname'))
+    password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
     
     already = User.all().filter("nickname =",nickname).fetch(1)
@@ -89,7 +93,7 @@ class ProfileHandler(webapp.RequestHandler):
       if len(profiledUser) == 1:
         profiledUser = profiledUser[0]
       if user.key() == profiledUser.key():
-        about = self.request.get('about')
+        about = sanitizeHtml(self.request.get('about'))
         user.about = about
         user.put() 
         my_profile = True
@@ -118,7 +122,7 @@ class PostHandler(webapp.RequestHandler):
   def post(self, post_id):
     session = get_current_session()
     if session.has_key('user'):
-      message = self.request.get('message')
+      message = sanitizeHtml(self.request.get('message'))
       user = session['user']
       if len(message) > 0:
         try:
@@ -149,7 +153,7 @@ class CommentReplyHandler(webapp.RequestHandler):
   def post(self,comment_id):
     session = get_current_session()
     if session.has_key('user'):
-      message = self.request.get('message')
+      message = sanitizeHtml(self.request.get('message'))
       user = session['user']
       if len(message) > 0:
         try:
@@ -176,8 +180,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
 
   def post(self):
     url = self.request.get('url')
-    title = self.request.get('title')
-    message = self.request.get('message')
+    title = sanitizeHtml(self.request.get('title'))
+    message = sanitizeHtml(self.request.get('message'))
  
     session = get_current_session()
     if session.has_key('user') and len(title) > 0:
@@ -241,7 +245,7 @@ class UpVoteCommentHandler(webapp.RequestHandler):
 # Front page
 class MainHandler(webapp.RequestHandler):
   def get(self):
-    page = self.request.get('pagina')
+    page = sanitizeHtml(self.request.get('pagina'))
     if not page:
       page = 1
     else: 
@@ -261,7 +265,7 @@ class MainHandler(webapp.RequestHandler):
 
 class NewHandler(webapp.RequestHandler):
   def get(self):
-    page = self.request.get('pagina')
+    page = sanitizeHtml(self.request.get('pagina'))
     if not page:
       page = 1
     else: 
