@@ -8,6 +8,7 @@ from google.appengine.api import memcache
 from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
+from gaesessions import delete_expired_sessions
 
 from models import User, Post, Comment, Vote
 
@@ -18,11 +19,17 @@ class TopHandler(webapp.RequestHandler):
       post.calculate_karma()
     self.response.out.write("ok")
 
+class SessionsHandler(webapp.RequestHandler):
+  def get(self):
+    while not delete_expired_sessions():
+      pass
+    self.response.out.write("ok")
 
 # App stuff
 def main():
   application = webapp.WSGIApplication([
       ('/tasks/update_top_karma', TopHandler),
+      ('/tasks/cleanup_sessions', SessionsHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 

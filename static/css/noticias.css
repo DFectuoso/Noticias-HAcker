@@ -83,6 +83,14 @@ a {
   float: left;
   padding: 8px 10px 5px 11px; }
 
+.profile {
+  padding: 15px; }
+  .profile form {
+    padding: 10px; }
+    .profile form textarea {
+      width: 500px;
+      height: 120px; }
+
 #footer {
   height: 35px;
   padding: 6px 0 0 0;

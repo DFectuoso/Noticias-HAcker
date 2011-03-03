@@ -10,18 +10,13 @@ La lista inicial de tareas es:
 [D]-> Hacer un sistema sencillo de registro de usuarios y login
 [D]-> Hacer una funcionalidad sencilla para entregar links/mensajes
 [D]-> Hacer una vista sencilla para ver esos mensajes
--> Que se pueda hacer comentarios, anidados en los mensajes
--> Que el mensaje sepa cuantos mensajes, incluyendo anidados, existen
--> Que se pueda votar
--> Calcular puntos, y tener una portada, ver el codigo de arc
--> Hacer una vista donde veas los mensajes que tu has creado
+[D]-> Que se pueda hacer comentarios, anidados en los mensajes
+[D]-> Que el mensaje sepa cuantos mensajes, incluyendo anidados, existen
+[D]-> Que se pueda votar
+[D]-> Calcular puntos, y tener una portada, ver el codigo de arc
 
 LAUNCH
 
--> Hacer una vista de mensajes nuevos
 -> Checar lo del cron usando gaesessions de https://github.com/dound/gae-sessions/
 
 
-
-TODO
--> Agregar el dominio junto con los links

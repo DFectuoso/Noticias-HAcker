@@ -2,3 +2,6 @@ cron:
 - description: Keep top news with updated karma
   url: /tasks/update_top_karma
   schedule: every 20 minutes
+- description: daily session cleanup
+  url: /tasks/cleanup_sessions
+  schedule: every 24 hours

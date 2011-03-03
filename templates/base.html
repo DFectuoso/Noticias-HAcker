@@ -17,7 +17,7 @@
           </span> 
           <span class="right">
             {% if user %}
-              <a href="/login">{{user.nickname}}</a>({{user.sum_votes}}) |
+              <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a>({{user.sum_votes}}) |
               <a href="/logout">Log out</a>
             {% else %} 
               <a href="/login">Login o registro</a>

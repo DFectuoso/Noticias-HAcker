@@ -74,9 +74,32 @@ class ProfileHandler(webapp.RequestHandler):
     profiledUser = User.all().filter('nickname =',nickname).fetch(1)
     if len(profiledUser) == 1:
       profiledUser = profiledUser[0]
+      #TODO fix this horrible way of testing for the user
+      if session.has_key('user') and user.key() == profiledUser.key():
+        my_profile = True
       self.response.out.write(template.render('templates/profile.html', locals()))
     else:
       self.redirect('/')
+
+  def post(self,nickname):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      profiledUser = User.all().filter('nickname =',nickname).fetch(1)
+      if len(profiledUser) == 1:
+        profiledUser = profiledUser[0]
+      if user.key() == profiledUser.key():
+        about = self.request.get('about')
+        user.about = about
+        user.put() 
+        my_profile = True
+        self.redirect('/perfil/' + user.nickname)
+      else:
+        self.redirect('/')
+    else:
+      self.redirect('/login')
+
+ 
  
 # News Handlers
 class PostHandler(webapp.RequestHandler):

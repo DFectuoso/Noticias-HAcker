@@ -125,6 +125,17 @@ a{
   
 }
 
+.profile{
+  padding: 15px;
+  form{
+    padding: 10px;
+    textarea{
+      width:500px;
+      height:120px;
+    }
+  }
+}
+
 #footer{
   height:35px;
   padding: 6px 0 0 0;

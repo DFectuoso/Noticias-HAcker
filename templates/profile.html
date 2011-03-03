@@ -1,4 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Profile {{profiledUser.nickname}}</h1>
+<div class="profile">
+  <h1>{{profiledUser.nickname}}</h1>
+  <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
+  <div>Karma: {{profiledUser.sum_votes}}
+  {% if my_profile %}
+    <form method="POST">
+      <fieldset>
+        <textarea name="about">{{profiledUser.about }}</textarea>
+        <br/><input type="submit" value="Cambiar tu mensaje de perfil"/>
+      </fieldset>
+    </form>
+  {% else %}
+    {% if profiledUser.about %}
+      <div class="about">
+        {{profiledUser.about}}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
 {% endblock %}
