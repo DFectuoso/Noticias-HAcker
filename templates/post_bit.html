@@ -1,0 +1,22 @@
+  <div class="noticia">
+    <div class="post-votes">
+      {% if post.number %}
+        <span class="order-number">{{post.number}}.-</span>
+      {% endif %}
+      {% if post.already_voted %}
+        <a class="post-upvote voted">^</a><br/>
+      {% else %}
+        <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;">^</a><br/>
+      {% endif %}
+    </div>
+    <div class="post-title">
+      <a href="{{post.url}}">{{post.title}}</a>
+      {% if not post.message %}
+        <span class="post-netloc">({{post.url_netloc}})</span>
+      {% endif %}
+    </div>
+    <div class="post-info">
+      {{post.sum_votes}} puntos, entregado por <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}} | 
+      <a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
+    </div>
+  </div>

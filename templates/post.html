@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>POST: {{post.title}}</h1>
-{% if post.message %}
-  <div class="message">
-    {{post.message}}
-  </div>
-{% endif %}
 
-<form method="POST">
-  <fieldset>
-    <label>Agregar comentario::</label><textarea name="message"></textarea>
-    <br/><input type="submit"/>
-  </fieldset>
-</form>
-
-<h1>comments</h1>
-
-{% for comment in post.comments %}
-  {% if not comment.father %}
-  {% include "comment_bit.html" %}
+<div id="post">
+  {% include "post_bit.html" %}
+  {% if post.message %}
+    <div class="message">
+      {{post.message}}
+    </div>
   {% endif %}
-{% endfor %}
+
+  <form method="POST">
+    <fieldset>
+      <textarea name="message"></textarea>
+      <br/><input type="submit" value="Agrear comentario"/>
+    </fieldset>
+  </form>
+
+  {% for comment in comments %}
+    {% if not comment.father %}
+    {% include "comment_bit.html" %}
+    {% endif %}
+  {% endfor %}
+</div>
 
 {% endblock %}

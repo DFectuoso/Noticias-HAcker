@@ -1,9 +1,19 @@
 <div class="comment">
-  <div class="message">
-    {{comment.message}}
+  <div class="votes"> 
+    {% if comment.already_voted %}
+      <a class="upvote voted">^</a><br/>
+    {% else %}
+      <a class="upvote" href="/upvote_comment/{{comment.key}}" onclick="upVoteComment(this, '{{comment.key}}'); return false;">^</a><br/>
+    {% endif %}
   </div>
   <div class="info">
-    {{comment.user.nickname}} | {{comment.votes.count}} votos | Hace {{comment.created|timesince|hacetiempo}} | <a href="/responder/{{comment.key}}">Reply</a>
+    {{comment.sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
+  </div>
+  <div class="message">
+    {{comment.message|urlize}}
+  </div>
+  <div class="reply">
+    <a href="/responder/{{comment.key}}">Responder</a>
   </div>
   <div class="innerComments">
     {% for comment in comment.childs %}

@@ -7,9 +7,8 @@ function upVote(self, post_key){
     }
   });
 }
-
-function downVote(self, post_key){
-  $.get('/downvote/' + post_key, function(data) {
+function upVoteComment(self, post_key){
+  $.get('/upvote_comment/' + post_key, function(data) {
     if (data == 'Ok'){
       self.className += " voted";
     } else if (data == 'Bad'){
@@ -17,4 +16,3 @@ function downVote(self, post_key){
     }
   });
 }
-

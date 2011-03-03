@@ -34,31 +34,70 @@ a {
 #content {
   background-color: #f2e9e1;
   color: #777777; }
-  #content .voted {
+
+.comment .votes {
+  float: left;
+  padding: 5px 10px 0 11px;
+  padding-left: 11px;
+  padding-top: 5px;
+  height: 40px; }
+  .comment .votes .voted {
     font-weight: 900;
     font-size: 1.1em; }
-  #content .post-title {
-    font-size: 1.2em;
-    padding: 5px 10px 0px 10px; }
-  #content .post-info {
-    font-size: 0.8em;
-    padding: 0px 10px 5px 10px; }
-  #content .post-votes {
-    float: left;
-    padding: 5px 10px 0 11px;
-    padding-left: 11px;
-    padding-top: 5px;
-    height: 40px; }
-    #content .post-votes .post-downvote {
-      position: relative;
-      left: 0px; }
+.comment .info {
+  font-size: 0.8em;
+  padding: 0px 10px 5px 10px; }
+.comment .message {
+  color: black; }
+.comment .reply {
+  text-decoration: underline;
+  padding: 5px 0px;
+  font-size: 0.8em; }
+.comment .innerComments {
+  padding-left: 20px; }
+
+#post {
+  padding: 5px 5px; }
+  #post .message {
+    padding: 5px 20px 20px 20px; }
+  #post textarea {
+    width: 600px;
+    height: 100px; }
+
+.noticia .order-number {
+  float: left;
+  padding: 0px 3px;
+  font-size: 0.9em; }
+.noticia .voted {
+  font-weight: 900;
+  font-size: 1.1em; }
+.noticia .post-title {
+  font-size: 1.2em;
+  padding: 5px 10px 0px 10px; }
+  .noticia .post-title .post-netloc {
+    font-size: 0.7em; }
+.noticia .post-info {
+  font-size: 0.8em;
+  padding: 0px 10px 5px 10px; }
+.noticia .post-votes {
+  float: left;
+  padding: 8px 10px 5px 11px; }
 
 #footer {
-  height: 25px;
+  height: 35px;
   padding: 6px 0 0 0;
-  font-weight: bold;
   text-align: center;
   background-color: #8fbe00; }
+  #footer .disclamer {
+    font-size: 0.3em; }
+
+#guidelines {
+  padding: 0 20px; }
+  #guidelines h3 {
+    padding: 5px 0px;
+    font-size: 1.2em; }
+  #guidelines p {
+    padding: 10px 0px; }
 
 h1 {
   padding: 20px; }
@@ -71,6 +110,3 @@ label {
 
 fieldset {
   border: 0px; }
-
-.innerComments {
-  padding-left: 20px; }

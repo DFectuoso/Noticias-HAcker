@@ -50,6 +50,59 @@ a{
 #content{
   background-color:$light-color;  
   color: $soft-grey;
+}
+
+.comment{
+  .votes{
+    float:left;
+    padding: 5px 10px 0 11px;
+    padding-left:11px;
+    padding-top:5px;
+    height:40px;
+ 
+    .upvote{
+
+    }
+    .voted{
+      font-weight:900;
+      font-size:1.1em;
+    }    
+  }
+  .info{
+    font-size:0.8em;
+    padding: 0px 10px 5px 10px;
+    
+  }
+  .message{
+    color:$dark-grey;
+  }
+  .reply{
+    text-decoration:underline;
+    padding: 5px 0px;
+    font-size:0.8em;
+  }
+  .innerComments{
+    padding-left:20px;
+  }
+}
+
+#post{
+  padding: 5px 5px; 
+  .message{
+    padding: 5px 20px 20px 20px; 
+  }
+  textarea{
+    width:600px;
+    height:100px;
+  }
+}
+
+.noticia{
+  .order-number{
+    float:left;    
+    padding: 0px 3px;
+    font-size:0.9em;
+  }
   .voted{
     font-weight:900;
     font-size:1.1em;
@@ -57,6 +110,9 @@ a{
   .post-title{
     font-size:1.2em;
     padding: 5px 10px 0px 10px;
+    .post-netloc{
+      font-size:0.7em;
+    }
   }
   .post-info{
     font-size:0.8em;
@@ -64,28 +120,31 @@ a{
   }
   .post-votes{
     float:left;
-    padding: 5px 10px 0 11px;
-    padding-left:11px;
-    padding-top:5px;
-    height:40px;
-    .post-upvote{
-      
-    }
-    .post-downvote{
-      position:relative;
-      left:0px;
-    }
+    padding: 8px 10px 5px 11px;
   }
+  
 }
 
 #footer{
-  height:25px;
+  height:35px;
   padding: 6px 0 0 0;
-  font-weight: bold;
   text-align:center;
   background-color:$bright-color;
+  .disclamer{
+    font-size:0.3em;
+  }
 }
 
+#guidelines{
+  padding: 0 20px;
+  h3 {
+    padding: 5px 0px;
+    font-size:1.2em;
+  }
+  p {
+    padding: 10px 0px;
+  }
+}
 h1{
   padding:20px;
 }
@@ -99,6 +158,3 @@ fieldset{
   border:0px;
 }
 
-.innerComments{
-  padding-left:20px;
-}
