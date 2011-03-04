@@ -56,8 +56,6 @@ a{
   .votes{
     float:left;
     padding: 5px 10px 0 11px;
-    padding-left:11px;
-    padding-top:5px;
     height:40px;
  
     .upvote{
@@ -73,12 +71,12 @@ a{
     padding: 0px 10px 5px 10px;
     
   }
-  .message{
+  .comment-message{
     color:$dark-grey;
   }
   .reply{
     text-decoration:underline;
-    padding: 5px 0px;
+    padding: 1px 0 10px 32px;
     font-size:0.8em;
   }
   .innerComments{
@@ -90,9 +88,11 @@ a{
   padding: 5px 5px; 
   .message{
     padding: 5px 20px 20px 20px; 
+    color: $dark-grey;
   }
   textarea{
-    width:600px;
+    width:100%;
+    max-width:800px;
     height:100px;
   }
 }
@@ -130,7 +130,7 @@ a{
   form{
     padding: 10px;
     textarea{
-      width:500px;
+      width:100%;
       height:120px;
     }
   }

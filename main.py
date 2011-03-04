@@ -130,6 +130,8 @@ class PostHandler(webapp.RequestHandler):
           post.remove_from_memcache()
           comment = Comment(message=message,user=user,post=post)
           comment.put()
+          vote = Vote(user=user, comment=comment, target_user=user)
+          vote.put()
           self.redirect('/noticia/' + post_id)
         except db.BadKeyError:
           self.redirect('/')
@@ -161,6 +163,8 @@ class CommentReplyHandler(webapp.RequestHandler):
           comment = Comment(message=message,user=user,post=parentComment.post, father=parentComment)
           comment.put()
           comment.post.remove_from_memcache()
+          vote = Vote(user=user, comment=comment, target_user=user)
+          vote.put()
           self.redirect('/noticia/' + str(parentComment.post.key()))
         except db.BadKeyError:
           self.redirect('/')
@@ -191,6 +195,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         try:
           post = Post(url=url,title=title,message=message, user=user)
           post.put()
+          vote = Vote(user=user, post=post, target_user=post.user)
+          vote.put()
           self.redirect('/noticia/' + str(post.key()));
         except db.BadValueError:
           self.redirect('/agregar')
@@ -199,6 +205,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         post.put()
         post.url = "http://" + urlparse(self.request.url).netloc + "/noticia/" + str(post.key())
         post.put()
+        vote = Vote(user=user, post=post, target_user=post.user)
+        vote.put()
         self.redirect('/noticia/' + str(post.key()));
     else:
       self.redirect('/')    
@@ -215,6 +223,7 @@ class UpVoteHandler(webapp.RequestHandler):
           vote = Vote(user=user, post=post, target_user=post.user)
           vote.put()
           post.remove_from_memcache()
+          post.user.remove_from_memcache()
           self.response.out.write('Ok')
         else:
           self.response.out.write('No')
@@ -234,6 +243,7 @@ class UpVoteCommentHandler(webapp.RequestHandler):
           vote = Vote(user=user, comment=comment, target_user=comment.user)
           vote.put()
           comment.remove_from_memcache()
+          comment.user.remove_from_memcache()
           self.response.out.write('Ok')
         else:
           self.response.out.write('No')

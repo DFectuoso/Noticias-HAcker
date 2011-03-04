@@ -1,15 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Comment: </h1>
-<div class="message">
-  {{comment.message}}
-</div>
 
-<form method="POST">
-  <fieldset>
-    <label>Responder a este comentario::</label><textarea name="message"></textarea>
-    <br/><input type="submit"/>
-  </fieldset>
-</form>
+<div id="post">
+  <div class="comment">
+    <div class="votes"> 
+      {% if comment.already_voted %}
+        <a class="upvote voted">^</a><br/>
+      {% else %}
+        <a class="upvote" href="/upvote_comment/{{comment.key}}" onclick="upVoteComment(this, '{{comment.key}}'); return false;">^</a><br/>
+      {% endif %}
+    </div>
+    <div class="info">
+      {{comment.sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
+    </div>
+    <div class="comment-message">
+      {{comment.message|urlize}}
+    </div>
+  </div>
+
+  <form method="POST">
+    <fieldset>
+      <textarea name="message"></textarea>
+      <br/><input type="Submit" value="Responder"/>
+    </fieldset>
+  </form>
+</div>
 
 {% endblock %}

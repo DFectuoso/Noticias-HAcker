@@ -38,8 +38,6 @@ a {
 .comment .votes {
   float: left;
   padding: 5px 10px 0 11px;
-  padding-left: 11px;
-  padding-top: 5px;
   height: 40px; }
   .comment .votes .voted {
     font-weight: 900;
@@ -47,11 +45,11 @@ a {
 .comment .info {
   font-size: 0.8em;
   padding: 0px 10px 5px 10px; }
-.comment .message {
+.comment .comment-message {
   color: black; }
 .comment .reply {
   text-decoration: underline;
-  padding: 5px 0px;
+  padding: 1px 0 10px 32px;
   font-size: 0.8em; }
 .comment .innerComments {
   padding-left: 20px; }
@@ -59,9 +57,11 @@ a {
 #post {
   padding: 5px 5px; }
   #post .message {
-    padding: 5px 20px 20px 20px; }
+    padding: 5px 20px 20px 20px;
+    color: black; }
   #post textarea {
-    width: 600px;
+    width: 100%;
+    max-width: 800px;
     height: 100px; }
 
 .noticia .order-number {
@@ -88,7 +88,7 @@ a {
   .profile form {
     padding: 10px; }
     .profile form textarea {
-      width: 500px;
+      width: 100%;
       height: 120px; }
 
 #footer {

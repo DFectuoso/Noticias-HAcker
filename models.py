@@ -30,7 +30,7 @@ class User(db.Model):
     if val is not None:
       return val
     else:
-      val = self.votes.count()
+      val = Vote.all().filter("user !=",self).filter("target_user =",self).count()
       memcache.add("u_" + str(self.key()), val, 360) 
       return val 
 

@@ -15,3 +15,13 @@ indexes:
   - name: post
   - name: karma
     direction: desc
+
+- kind: Vote
+  properties:
+  - name: target_user
+  - name: user
+
+- kind: Vote
+  properties:
+  - name: user
+  - name: target_user
