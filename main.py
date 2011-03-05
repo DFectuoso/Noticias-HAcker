@@ -28,7 +28,12 @@ class LogoutHandler(webapp.RequestHandler):
 
 class LoginHandler(webapp.RequestHandler):
   def get(self):
-    self.response.out.write(template.render('templates/login.html', locals()))
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      self.redirect('/logout')
+    else:
+      self.response.out.write(template.render('templates/login.html', locals()))
 
   def post(self):
     # TODO: Future; allow the session to store if we got here redirected and redirect back there
@@ -36,7 +41,7 @@ class LoginHandler(webapp.RequestHandler):
     password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
-    user = User.all().filter('nickname =',nickname).filter('password =',password).fetch(1)
+    user = User.all().filter('lowercase_nickname =',nickname.lower()).filter('password =',password).fetch(1)
     if len(user) == 1:
       session = get_current_session()
       if session.is_active():
@@ -59,7 +64,7 @@ class RegisterHandler(webapp.RequestHandler):
     
     already = User.all().filter("nickname =",nickname).fetch(1)
     if len(already) == 0:
-      user = User(nickname=nickname,password=password)
+      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password)
       user.put()
       if session.is_active():
         session.terminate()

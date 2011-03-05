@@ -83,6 +83,12 @@ a {
   float: left;
   padding: 8px 10px 5px 11px; }
 
+.submit .textfields {
+  width: 80%; }
+.submit textarea {
+  width: 80%;
+  height: 125px; }
+
 .profile {
   padding: 15px; }
   .profile form {

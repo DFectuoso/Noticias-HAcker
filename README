@@ -19,18 +19,11 @@ La lista inicial de tareas es:
 [D]-> lib xss todo input:wq
 
 LAUNCH
--> Hacer que solo alla 1 dfect, DFecT, DFECT y DFect deben ser la misma persona
--> Hacer la pantalla de login y la de agregar mas diferentes y hacer estilo
--> Si estas logeado, no mostrar /login.
--> Cambiar el ^ por una imagen:w
--> Agregar una manera de flag cosas
 -> Agregar el codigo a github y ligarlo en el footer|| QUITAR EL SESSION, SALT Y EL NUMBERO DE ITERACIONES Y PONERLO EN OTRO FILE
--> Revisar ortografia y estilo de FAQ y guidelines
--> Agregar indexes de karma, created en comments y post
--> Agregar un Logo!
--> STRESS TEST
--> Add a message about the current state of NH
 -> Quitar live css
 -> RELEASE
--> Mensajes de error
 
+-> Mensajes de error
+-> Agregar un Logo!
+-> Cambiar el ^ por una imagen:w
+-> Agregar una manera de flag cosas

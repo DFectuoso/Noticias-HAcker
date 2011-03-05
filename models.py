@@ -11,10 +11,11 @@ from datetime import datetime
 
 # Models
 class User(db.Model):
-  nickname  = db.StringProperty(required=True)
-  password  = db.StringProperty(required=True) 
-  created   = db.DateTimeProperty(auto_now_add=True)
-  about     = db.TextProperty()  
+  lowercase_nickname  = db.StringProperty(required=True)
+  nickname            = db.StringProperty(required=True)
+  password            = db.StringProperty(required=True) 
+  created             = db.DateTimeProperty(auto_now_add=True)
+  about               = db.TextProperty()  
 
   @staticmethod 
   def slow_hash(password, iterations=1000):

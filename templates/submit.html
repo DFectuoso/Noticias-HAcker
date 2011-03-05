@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Agregar un link</h1>
-<form method="POST">
-  <fieldset>
-    <label>Titulo</label><input name="title"/>
-    <label>Url</label><input name="url"/>
-    <input type="submit"/>
-  </fieldset>
-</form>
-
-<h1>O un mensaje</h1>
-<form method="POST">
-  <fieldset>
-    <label>Titulo</label><input name="title"/>
-    <label>Mensaje</label><textarea name="message"></textarea>
-    <input type="submit"/>
-  </fieldset>
-</form>
+<div class="submit">
+  <h1>Agregar un link</h1>
+  <form method="POST">
+    <fieldset>
+      <label>Titulo</label><input class="textfields" name="title"/>
+      <label>Url</label><input class="textfields" name="url"/><br/>
+      <input type="submit" value="Agregar"/>
+    </fieldset>
+  </form>
+  
+  <hr/>
+  <h1>Agregar un mensaje</h1>
+  <form method="POST">
+    <fieldset>
+      <label>Titulo</label><input class="textfields" name="title"/>
+      <label>Mensaje</label><textarea name="message"></textarea><br/>
+      <input type="submit" value="Agregar"/>
+    </fieldset>
+  </form>
+</div>
 {% endblock %}
