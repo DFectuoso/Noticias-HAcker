@@ -55,7 +55,6 @@ class LoginHandler(webapp.RequestHandler):
 
 class RegisterHandler(webapp.RequestHandler):
   def post(self):
-    # TODO: Check if the nickname is used and display an error
     # TODO: Check for empty name and empty password
     # TODO: Future; allow the session to store if we got here redirected and redirect back there
     session = get_current_session()
