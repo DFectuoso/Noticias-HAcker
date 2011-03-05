@@ -2,28 +2,14 @@ Este es un clon de hacker news con la intencion de tener un servicio similar par
 
 Para correr esto necesitas agregarlo como proyecto al Google App Engine SDK
 Para modificar el css requieres compilar los archivos scss con sass
+Tambien tienes que crear un archivo llamado keys.py que debe de contener las sigueitens dos lineas:
+cookie_key = 'UNASTRINGALEATORIAMUYLARGA'
+salt_key = 'UNASTRINGALEATORIAMUYLARGA'
 
-La idea es tener las funcionalidades basicas para que sea usable y despues liberarlo tan rapido como sea posible
+La idea es tener las funcionalidades basicas para que sea usable y despues mejorar paso a paso 
 
-La lista inicial de tareas es:
-[D]-> Hacer la imagen y estructura basica de la applicacion
-[D]-> Hacer un sistema sencillo de registro de usuarios y login
-[D]-> Hacer una funcionalidad sencilla para entregar links/mensajes
-[D]-> Hacer una vista sencilla para ver esos mensajes
-[D]-> Que se pueda hacer comentarios, anidados en los mensajes
-[D]-> Que el mensaje sepa cuantos mensajes, incluyendo anidados, existen
-[D]-> Que se pueda votar
-[D]-> Calcular puntos, y tener una portada, ver el codigo de arc
-[D]-> Checar lo del cron usando gaesessions de https://github.com/dound/gae-sessions/
-[D]-> Agregar un campo en el perfil donde puedes escribir lo que quieras
-[D]-> lib xss todo input:wq
-
-LAUNCH
--> Agregar el codigo a github y ligarlo en el footer|| QUITAR EL SESSION, SALT Y EL NUMBERO DE ITERACIONES Y PONERLO EN OTRO FILE
--> Quitar live css
--> RELEASE
-
+TODOS:
 -> Mensajes de error
 -> Agregar un Logo!
--> Cambiar el ^ por una imagen:w
+-> Cambiar el ^ por una imagen
 -> Agregar una manera de flag cosas

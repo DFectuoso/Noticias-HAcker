@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import keys
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
@@ -21,7 +22,7 @@ class User(db.Model):
   def slow_hash(password, iterations=1000):
     h = hashlib.sha1()
     h.update(password)
-    h.update('trezAwuZuQadruDef5Uh4cErABE4hAcheKusestEbrE6UjEqachuSteweJaspefU')
+    h.update(keys.salt_key)
     for x in range(iterations):
       h.update(h.digest())
     return h.hexdigest() 
