@@ -73,11 +73,13 @@ a{
   }
   .comment-message{
     color:$dark-grey;
+    float:left;
   }
   .reply{
     text-decoration:underline;
     padding: 1px 0 10px 32px;
     font-size:0.8em;
+    clear:both;
   }
   .innerComments{
     padding-left:20px;
@@ -89,6 +91,9 @@ a{
   .message{
     padding: 5px 20px 20px 20px; 
     color: $dark-grey;
+  }
+  form{
+    clear:both;
   }
   textarea{
     width:100%;
@@ -170,7 +175,7 @@ h1{
   padding:20px;
 }
 form{
-  padding:0 20px 20px 20px;
+  padding:10px 20px 20px 20px;
 }
 label{
   display:block;
@@ -179,3 +184,6 @@ fieldset{
   border:0px;
 }
 
+textarea {
+  font: 100%/120% Verdana, Arial, Helvetica, sans-serif;
+}
