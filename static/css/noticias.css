@@ -48,6 +48,8 @@ a {
 .comment .comment-message {
   color: black;
   padding-left: 32px; }
+  .comment .comment-message p {
+    padding-bottom: 5px; }
 .comment .reply {
   text-decoration: underline;
   padding: 1px 0 10px 32px;

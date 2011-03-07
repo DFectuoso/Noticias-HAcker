@@ -74,6 +74,9 @@ a{
   .comment-message{
     color:$dark-grey;
     padding-left:32px;
+    p {
+      padding-bottom:5px;
+    }
   }
   .reply{
     text-decoration:underline;
