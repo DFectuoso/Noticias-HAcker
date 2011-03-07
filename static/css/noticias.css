@@ -47,7 +47,7 @@ a {
   padding: 0px 10px 5px 10px; }
 .comment .comment-message {
   color: black;
-  float: left; }
+  padding-left: 32px; }
 .comment .reply {
   text-decoration: underline;
   padding: 1px 0 10px 32px;
