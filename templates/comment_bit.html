@@ -10,7 +10,7 @@
     {{comment.sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
   </div>
   <div class="comment-message">
-    {{comment.message|urlize}}
+    {{comment.message|urlize|linebreaksbr}}
   </div>
   <div class="reply">
     <a href="/responder/{{comment.key}}">Responder</a>
