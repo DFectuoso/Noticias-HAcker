@@ -3,6 +3,9 @@ version: 1
 runtime: python
 api_version: 1
 
+builtins:
+- appstats: on
+
 handlers:
 - url: /favicon.ico
   static_files: static/favicon.ico

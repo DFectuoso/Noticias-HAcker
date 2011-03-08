@@ -27,6 +27,15 @@ from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
 
+def prefetch_refprops(entities, *props):
+   fields = [(entity, prop) for entity in entities for prop in props]
+   ref_keys = [prop.get_value_for_datastore(x) for x, prop in fields]
+   ref_entities = dict((x.key(), x) for x in db.get(set(ref_keys)))
+   for (entity, prop), ref_key in zip(fields, ref_keys):
+       if ref_entities[ref_key]:
+         prop.__set__(entity, ref_entities[ref_key])
+   return entities
+
 # Models
 class User(db.Model):
   lowercase_nickname  = db.StringProperty(required=True)
@@ -50,7 +59,7 @@ class User(db.Model):
       return val
     else:
       val = Vote.all().filter("user !=",self).filter("target_user =",self).count()
-      memcache.add("u_" + str(self.key()), val, 360) 
+      memcache.add("u_" + str(self.key()), val, 3600) 
       return val 
 
   def remove_from_memcache(self):
@@ -73,7 +82,7 @@ class Post(db.Model):
       return str(val)
     else:
       val = self.comments.count() 
-      memcache.add("pc_" + str(self.key()), val, 360) 
+      memcache.add("pc_" + str(self.key()), val, 3600) 
       return str(val) 
 
   def sum_votes(self):
@@ -82,7 +91,7 @@ class Post(db.Model):
       return val
     else:
       val = self.votes.count() 
-      memcache.add("p_" + str(self.key()), val, 360) 
+      memcache.add("p_" + str(self.key()), val, 3600) 
       return val 
 
   def already_voted(self):
@@ -98,7 +107,7 @@ class Post(db.Model):
         if len(vote) == 0:
           return False
         else:
-          memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), 1, 360)
+          memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), 1, 3600)
           return True 
     else:
       return False
@@ -135,7 +144,7 @@ class Comment(db.Model):
       return val
     else:
       val = self.votes.count() 
-      memcache.add("c_" + str(self.key()), val, 360) 
+      memcache.add("c_" + str(self.key()), val, 3600) 
       return val 
 
   def already_voted(self):
@@ -151,7 +160,7 @@ class Comment(db.Model):
         if len(vote) == 0:
           return False
         else:
-          memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), 1, 360)
+          memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), 1, 3600)
           return True 
     else:
       return False
