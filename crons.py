@@ -29,12 +29,13 @@ from datetime import datetime
 from gaesessions import delete_expired_sessions
 
 from models import User, Post, Comment, Vote
+from random import choice
 
 class TopHandler(webapp.RequestHandler):
   def get(self):
-    posts = Post.all().order('-karma').fetch(100)
-    for post in posts:
-      post.calculate_karma()
+    posts = Post.all().order('-karma').fetch(50)
+    post = choice(posts)
+    post.calculate_karma()
     self.response.out.write("ok")
 
 class SessionsHandler(webapp.RequestHandler):

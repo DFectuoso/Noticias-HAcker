@@ -28,7 +28,7 @@ from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
 
-from models import User, Post, Comment, Vote, prefetch_refprops
+from models import User, Post, Comment, Vote, prefetch_posts_list
 
 template.register_template_library('CustomFilters') 
 
@@ -289,7 +289,7 @@ class MainHandler(webapp.RequestHandler):
     if session.has_key('user'): 
       user = session['user']
     posts = Post.all().order('-karma').fetch(perPage, realPage * perPage)
-    prefetch_refprops(posts, Post.user)
+    prefetch_posts_list(posts)
     i = perPage * realPage + 1
     for post in posts:
       post.number = i
@@ -310,7 +310,7 @@ class NewHandler(webapp.RequestHandler):
     if session.has_key('user'): 
       user = session['user']
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)
-    prefetch_refprops(posts, Post.user)
+    prefetch_posts_list(posts)
     i = perPage * realPage + 1
     for post in posts:
       post.number = i

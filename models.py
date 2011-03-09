@@ -28,13 +28,42 @@ from urlparse import urlparse
 from datetime import datetime
 
 def prefetch_refprops(entities, *props):
-   fields = [(entity, prop) for entity in entities for prop in props]
-   ref_keys = [prop.get_value_for_datastore(x) for x, prop in fields]
-   ref_entities = dict((x.key(), x) for x in db.get(set(ref_keys)))
-   for (entity, prop), ref_key in zip(fields, ref_keys):
-       if ref_entities[ref_key]:
-         prop.__set__(entity, ref_entities[ref_key])
-   return entities
+  fields = [(entity, prop) for entity in entities for prop in props]
+  ref_keys = [prop.get_value_for_datastore(x) for x, prop in fields]
+  ref_entities = dict((x.key(), x) for x in db.get(set(ref_keys)))
+  for (entity, prop), ref_key in zip(fields, ref_keys):
+    if ref_entities[ref_key]:
+      prop.__set__(entity, ref_entities[ref_key])
+  return entities
+
+def prefetch_posts_list(posts):
+  prefetch_refprops(posts, Post.user)
+  posts_keys = [str(post.key()) for post in posts]
+
+  # get user, if no user, all already_voted = no
+  session = get_current_session()
+  if session.has_key('user'): 
+    user = session['user']
+    memcache_voted = memcache.get_multi(["vp_" + post_key + "_" + str(user.key()) for post_key in posts_keys])
+    memcache_to_add = {}
+    for post in posts:
+      logging.info("Got a post")
+      vote_value = memcache_voted.get(str(post.key()))
+      if vote_value is not None:
+        post.prefetched_already_voted = vote_value == 1
+      else:
+        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1) 
+        memcache_to_add["vp_" + str(post.key()) + "_" + str(user.key())] = len(vote)
+        post.prefetched_already_voted = len(vote) == 1
+    if memcache_to_add.keys():
+      memcache.add_multi(memcache_to_add, 3600)
+  else:
+    for post in posts:
+      post.prefetched_already_voted = False
+  # for voted in memcache_voted:
+    
+  # TODO get comment count
+  # TODO get already voted
 
 # Models
 class User(db.Model):
@@ -101,14 +130,11 @@ class Post(db.Model):
       # hit memcache for this
       memValue = data = memcache.get("vp_" + str(self.key()) + "_" + str(user.key()))
       if memValue is not None:
-        return True
+        return memValue == 1
       else:
-        vote = [v for v in self.votes if v.user.key() == user.key()]
-        if len(vote) == 0:
-          return False
-        else:
-          memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), 1, 3600)
-          return True 
+        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1) 
+        memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
+        return len(vote) == 1
     else:
       return False
 

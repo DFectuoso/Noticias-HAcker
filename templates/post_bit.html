@@ -3,7 +3,7 @@
       {% if post.number %}
         <span class="order-number">{{post.number}}.-</span>
       {% endif %}
-      {% if post.already_voted %}
+      {% if post.prefetched_already_voted %}
         <a class="post-upvote voted">^</a><br/>
       {% else %}
         <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;">^</a><br/>
