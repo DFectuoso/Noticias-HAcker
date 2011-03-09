@@ -44,11 +44,12 @@ def prefetch_posts_list(posts):
   session = get_current_session()
   if session.has_key('user'): 
     user = session['user']
-    memcache_voted = memcache.get_multi(["vp_" + post_key + "_" + str(user.key()) for post_key in posts_keys])
+    memcache_voted_keys = ["vp_" + post_key + "_" + str(user.key()) for post_key in posts_keys]
+    memcache_voted = memcache.get_multi(memcache_voted_keys)
     memcache_to_add = {}
     for post in posts:
       logging.info("Got a post")
-      vote_value = memcache_voted.get(str(post.key()))
+      vote_value = memcache_voted.get("vp_" + str(post.key()) + "_" +str(user.key()))
       if vote_value is not None:
         post.prefetched_already_voted = vote_value == 1
       else:
