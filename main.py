@@ -30,6 +30,8 @@ from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
 
+from libs import PyRSS2Gen
+
 template.register_template_library('CustomFilters')
 
 def sanitizeHtml(value):
@@ -337,6 +339,31 @@ class FAQHandler(webapp.RequestHandler):
   def get(self):
     self.response.out.write(template.render('templates/faq.html', locals()))
 
+class RssHandler(webapp.RequestHandler):
+  def get(self):
+    posts = Post.all().order('-created').fetch(10)
+    prefetch_posts_list(posts)
+
+    items = []
+    for post in posts:
+      items.append(PyRSS2Gen.RSSItem(
+          title = post.title,
+          link = "http://noticiashacker.com/noticia/" + str(post.key()),
+          description = "",
+          guid = PyRSS2Gen.Guid("guid1"),
+          pubDate = post.created
+      ))
+
+    rss = PyRSS2Gen.RSS2(
+            title = "Noticias Hacker",
+            link = "http://noticiashacker.com/",
+            description = "",
+            lastBuildDate = datetime.now(),
+            items = items
+          )
+    print 'Content-Type: text/xml'
+    self.response.out.write(rss.to_xml('utf-8'))
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
@@ -353,6 +380,7 @@ def main():
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
+      ('/rss', RssHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 
