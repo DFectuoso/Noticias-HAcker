@@ -8,11 +8,12 @@ $soft-white: #EEEEEE;
 *{
   padding:0;
   margin:0;
-  font-family: helvetica;
+  font-family: Helvetica, Arial, sans-serif;
 }
 body{
   background-color:$soft-white;
   align-text:center;
+  font-size: 15px;
 }
 
 #wrapper{
@@ -23,6 +24,9 @@ body{
 a{
   color:$dark-grey;
   text-decoration:none;
+}
+a:hover{
+  text-decoration: underline;
 }
 
 #header{
@@ -75,7 +79,7 @@ a{
     color:$dark-grey;
     padding-left:32px;
     p {
-      padding-bottom:5px;
+      margin-bottom: 1em;
     }
   }
   .reply{
