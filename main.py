@@ -138,6 +138,7 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
+      display_post_title = True
       prefetch_posts_list([post])
       self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
