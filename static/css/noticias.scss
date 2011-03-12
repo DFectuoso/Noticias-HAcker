@@ -1,6 +1,6 @@
 $bright-color: #8FB933;
 $light-color: #F2E9E1;
-$dark-grey: #333;
+$dark-grey: #222;
 $soft-grey: #777777;
 $soft-white: #EEEEEE;
 
@@ -42,44 +42,44 @@ a:hover{
   #logo{
     font-weight: bold;
 
-	span.logotype{
-		display:inline-block;
-		margin:2px;
-		border:1px solid #fff;
-		font-size:13px;
-		line-height:21px;
-		height:19px;
-		width:21px;
-		color:#fff;
-		text-align:center;
-	}
+    span.logotype{
+      display:inline-block;
+      margin:2px;
+      border:1px solid #fff;
+      font-size:13px;
+      line-height:21px;
+      height:19px;
+      width:21px;
+      color:#fff;
+      text-align:center;
+    }
   }
 
   #menu{
 
-	a{
-		font-size:13px;
-		text-transform:lowercase;
-		line-height:25px;		
-	}
-	
+    a{
+        font-size:13px;
+        text-transform:lowercase;
+        line-height:25px;       
+    }
+    
     #main_nav{
-		position:absolute;
-		left:150px;
-		top:0;
-		height:25px;
+        position:absolute;
+        left:150px;
+        top:0;
+        height:25px;
     }
     #user_toolbar{
-		position:absolute;
-		right:0;
-		top:0;
-		padding:0 10px;
-		
-		.karma{
-			font-size:12px;
-			padding:0 5px;
-			color:lighten($dark-grey,5%);
-		}
+        position:absolute;
+        right:0;
+        top:0;
+        padding:0 10px;
+        
+        .karma{
+            font-size:12px;
+            padding:0 5px;
+            color:lighten($dark-grey,5%);
+        }
     }
   }
 }
@@ -145,37 +145,34 @@ a:hover{
 }
 
 .noticia{
-	
-	padding:10px 0;
-	border-bottom:1px solid darken($light-color,3%);
-	
-	&:nth-child(even){
-		background:darken(desaturate($light-color,6%),2%);		
-	};
-	
-	a:visited{
-	  color:lighten($dark-grey,20%);
-	  text-decoration:none;
-	}
-	
+  border-bottom:1px solid darken($light-color,3%);
+   
+  &:nth-child(even){
+    background:darken(desaturate($light-color,6%),2%);      
+  };
+   
+  a:visited{
+    color:lighten($dark-grey,45%);
+    text-decoration:none;
+  }
 
   .order-number{
     float:left;    
     font-size:13px;
-	width:20px;
-	padding:0 5px;
-	line-height:28px;
-	text-align:right;
-	font-weight:bold;
+    width:20px;
+    padding:0 5px;
+    line-height:28px;
+    text-align:right;
+    font-weight:bold;
   }
 
   a.post-upvote{
-	display:block;
-	float:left;
-		height:16px;
-		padding-top:7px;
-		text-align:center;
-		width:21px;
+    display:block;
+    float:left;
+    height:16px;
+    padding-top:7px;
+    text-align:center;
+    width:21px;
   }
 
   .voted{
@@ -185,7 +182,7 @@ a:hover{
   }
 
   .post-title{
-	line-height:28px;
+    line-height:28px;
 
     .post-netloc{
       font-size:0.7em;
@@ -194,8 +191,8 @@ a:hover{
 
   .post-info{
     font-size:11px;
-	line-height:13px;
-	margin-left:51px;
+    line-height:13px;
+    margin-left:51px;
   }
 
   .post-votes{
@@ -227,24 +224,21 @@ a:hover{
 }
 
 #pages{
-	padding:10px 51px ;
-	font-size:13px;
-	font-weight:bold;
+  padding:10px 51px ;
+  font-size:13px;
+  font-weight:bold;
 }
 
 #footer{
-
   height:45px;
   line-height:25px;
   text-align:center;
   background-color:$bright-color;
 
-
   .disclamer{
-	line-height:15px;
+    line-height:15px;
     font-size:0.8em;
   }
-
 }
 
 #guidelines{
