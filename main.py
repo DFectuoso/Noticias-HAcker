@@ -30,9 +30,11 @@ from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
 
-template.register_template_library('CustomFilters') 
+from libs import PyRSS2Gen
 
-def sanitizeHtml(value):                                                                 
+template.register_template_library('CustomFilters')
+
+def sanitizeHtml(value):
   return cgi.escape(value)
 
 # User Mgt Handlers
@@ -42,7 +44,7 @@ class LogoutHandler(webapp.RequestHandler):
     if session.is_active():
       session.terminate()
     session.regenerate_id()
-    self.redirect('/') 
+    self.redirect('/')
 
 class LoginHandler(webapp.RequestHandler):
   def get(self):
@@ -78,7 +80,7 @@ class RegisterHandler(webapp.RequestHandler):
     nickname = sanitizeHtml(self.request.get('nickname'))
     password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
-    
+
     already = User.all().filter("nickname =",nickname).fetch(1)
     if len(already) == 0:
       user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password)
@@ -117,7 +119,7 @@ class ProfileHandler(webapp.RequestHandler):
       if user.key() == profiledUser.key():
         about = sanitizeHtml(self.request.get('about'))
         user.about = about
-        user.put() 
+        user.put()
         my_profile = True
         self.redirect('/perfil/' + user.nickname)
       else:
@@ -125,8 +127,8 @@ class ProfileHandler(webapp.RequestHandler):
     else:
       self.redirect('/login')
 
- 
- 
+
+
 # News Handlers
 class PostHandler(webapp.RequestHandler):
   def get(self,post_id):
@@ -134,7 +136,7 @@ class PostHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     try:
-      post = db.get(post_id) 
+      post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
       self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
@@ -168,7 +170,7 @@ class CommentReplyHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     try:
-      comment = db.get(comment_id) 
+      comment = db.get(comment_id)
       self.response.out.write(template.render('templates/comment.html', locals()))
     except db.BadKeyError:
       self.redirect('/')
@@ -208,7 +210,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     url = self.request.get('url')
     title = sanitizeHtml(self.request.get('title'))
     message = sanitizeHtml(self.request.get('message'))
- 
+
     session = get_current_session()
     if session.has_key('user') and len(title) > 0:
       user = session['user']
@@ -231,13 +233,13 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         vote.put()
         self.redirect('/noticia/' + str(post.key()));
     else:
-      self.redirect('/')    
+      self.redirect('/')
 
 # vote handlers
 class UpVoteHandler(webapp.RequestHandler):
   def get(self,post_id):
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       try:
         post = db.get(post_id)
@@ -257,7 +259,7 @@ class UpVoteHandler(webapp.RequestHandler):
 class UpVoteCommentHandler(webapp.RequestHandler):
   def get(self,comment_id):
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       try:
         comment = db.get(comment_id)
@@ -278,19 +280,31 @@ class UpVoteCommentHandler(webapp.RequestHandler):
 class MainHandler(webapp.RequestHandler):
   def get(self):
     page = sanitizeHtml(self.request.get('pagina'))
+    perPage = sanitizeHtml(self.request.get('pp'))
     if not page:
       page = 1
-    else: 
+    else:
       page = int(page)
-    nextPage = page + 1
+
     realPage = page - 1
+
+    if realPage < 0:
+      prevPage = 1
+    else:
+      prevPage = realPage
+
     perPage = 20
+
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
+
+    if (page * perPage) < Post.all().count() :
+      nextPage = page + 1
+
     posts = Post.all().order('-karma').fetch(perPage, realPage * perPage)
     prefetch_posts_list(posts)
-    i = perPage * realPage + 1
+    i = perPage * (realPage + 1)
     for post in posts:
       post.number = i
       i = i + 1
@@ -301,13 +315,13 @@ class NewHandler(webapp.RequestHandler):
     page = sanitizeHtml(self.request.get('pagina'))
     if not page:
       page = 1
-    else: 
+    else:
       page = int(page)
     nextPage = page + 1
     realPage = page - 1
     perPage = 20
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)
     prefetch_posts_list(posts)
@@ -325,6 +339,31 @@ class FAQHandler(webapp.RequestHandler):
   def get(self):
     self.response.out.write(template.render('templates/faq.html', locals()))
 
+class RssHandler(webapp.RequestHandler):
+  def get(self):
+    posts = Post.all().order('-created').fetch(10)
+    prefetch_posts_list(posts)
+
+    items = []
+    for post in posts:
+      items.append(PyRSS2Gen.RSSItem(
+          title = post.title,
+          link = "http://noticiashacker.com/noticia/" + str(post.key()),
+          description = "",
+          guid = PyRSS2Gen.Guid("guid1"),
+          pubDate = post.created
+      ))
+
+    rss = PyRSS2Gen.RSS2(
+            title = "Noticias Hacker",
+            link = "http://noticiashacker.com/",
+            description = "",
+            lastBuildDate = datetime.now(),
+            items = items
+          )
+    print 'Content-Type: text/xml'
+    self.response.out.write(rss.to_xml('utf-8'))
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
@@ -341,6 +380,7 @@ def main():
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
+      ('/rss', RssHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 

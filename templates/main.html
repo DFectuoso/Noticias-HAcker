@@ -4,8 +4,17 @@
 {% for post in posts %}
   {% include "post_bit.html" %}
 {% endfor %}
-<div class="nextLink">
-  <a href="?pagina={{nextPage}}">siguiente ></a>
+
+<div class="pages">
+  {% if prevPage %}
+  <a class="prevPage" href="?pagina={{prevPage}}">&#171; anterior</a>
+  {% endif %}
+  {% if prevPage and nextPage %}
+   &nbsp; | &nbsp;
+  {% endif %}
+  {% if nextPage %}
+  <a class="nextPage" href="?pagina={{nextPage}}">siguiente &#187;</a>
+  {% endif %}
 </div>
 
 {% endblock %}
