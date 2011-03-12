@@ -221,6 +221,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
           post.put()
           vote = Vote(user=user, post=post, target_user=post.user)
           vote.put()
+          Post.remove_cached_count_from_memcache()
           self.redirect('/noticia/' + str(post.key()));
         except db.BadValueError:
           self.redirect('/agregar')
@@ -229,6 +230,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         post.put()
         post.url = "http://" + urlparse(self.request.url).netloc + "/noticia/" + str(post.key())
         post.put()
+        Post.remove_cached_count_from_memcache()
         vote = Vote(user=user, post=post, target_user=post.user)
         vote.put()
         self.redirect('/noticia/' + str(post.key()));
@@ -280,31 +282,20 @@ class UpVoteCommentHandler(webapp.RequestHandler):
 class MainHandler(webapp.RequestHandler):
   def get(self):
     page = sanitizeHtml(self.request.get('pagina'))
-    perPage = sanitizeHtml(self.request.get('pp'))
-    if not page:
-      page = 1
-    else:
-      page = int(page)
-
-    realPage = page - 1
-
-    if realPage < 0:
-      prevPage = 1
-    else:
-      prevPage = realPage
-
     perPage = 20
+    page = int(page) if page else 1
+    realPage = page - 1
+    if realPage > 0:
+      prevPage = realPage
+    if (page * perPage) < Post.get_cached_count():
+      nextPage = page + 1
 
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-
-    if (page * perPage) < Post.all().count() :
-      nextPage = page + 1
-
     posts = Post.all().order('-karma').fetch(perPage, realPage * perPage)
     prefetch_posts_list(posts)
-    i = perPage * (realPage + 1)
+    i = perPage * realPage + 1
     for post in posts:
       post.number = i
       i = i + 1
@@ -313,13 +304,14 @@ class MainHandler(webapp.RequestHandler):
 class NewHandler(webapp.RequestHandler):
   def get(self):
     page = sanitizeHtml(self.request.get('pagina'))
-    if not page:
-      page = 1
-    else:
-      page = int(page)
-    nextPage = page + 1
-    realPage = page - 1
     perPage = 20
+    page = int(page) if page else 1
+    realPage = page - 1
+    if realPage > 0:
+      prevPage = realPage
+    if (page * perPage) < Post.get_cached_count():
+      nextPage = page + 1
+
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
@@ -341,7 +333,7 @@ class FAQHandler(webapp.RequestHandler):
 
 class RssHandler(webapp.RequestHandler):
   def get(self):
-    posts = Post.all().order('-created').fetch(10)
+    posts = Post.all().order('-created').fetch(20)
     prefetch_posts_list(posts)
 
     items = []

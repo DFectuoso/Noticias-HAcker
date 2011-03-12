@@ -157,6 +157,20 @@ class Post(db.Model):
     self.karma = self.karma * self.karma
     self.put()
 
+  @staticmethod 
+  def remove_cached_count_from_memcache():
+    memcache.delete("Post_count")
+
+  @staticmethod 
+  def get_cached_count():
+    memValue = memcache.get("Post_count")
+    if memValue is not None:
+      return memValue
+    else:
+      count = Post.all().count()
+      memcache.add("Post_count",count,3600)
+      return count
+
 class Comment(db.Model):
   message = db.TextProperty()  
   user    = db.ReferenceProperty(User, collection_name='comments')
