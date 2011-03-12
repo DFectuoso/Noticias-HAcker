@@ -1,4 +1,3 @@
-
 $bright-color: #8FBE00;
 $light-color: #F2E9E1;
 $dark-grey: #000000;
@@ -13,6 +12,10 @@ $soft-white: #EEEEEE;
 body{
   background-color:$soft-white;
   align-text:center;
+}
+
+img{
+  border:0;
 }
 
 #wrapper{
