@@ -1,6 +1,6 @@
-$bright-color: #8FBE00;
+$bright-color: #8FB933;
 $light-color: #F2E9E1;
-$dark-grey: #000000;
+$dark-grey: #333;
 $soft-grey: #777777;
 $soft-white: #EEEEEE;
 
@@ -12,7 +12,8 @@ $soft-white: #EEEEEE;
 body{
   background-color:$soft-white;
   align-text:center;
-  font-size: 15px;
+  font-size: 14px;
+  line-height:1.5em;
 }
 
 img{
@@ -35,21 +36,50 @@ a:hover{
 #header{
   background-color:$bright-color;
   height: 25px;
-  padding: 6px 0 0 0;
+  line-height:25px;
+  position:relative;
+
   #logo{
-    display:inline;
-    margin: 10px;
     font-weight: bold;
+
+	span.logotype{
+		display:inline-block;
+		margin:2px;
+		border:1px solid #fff;
+		font-size:13px;
+		line-height:21px;
+		height:19px;
+		width:21px;
+		color:#fff;
+		text-align:center;
+	}
   }
+
   #menu{
-    display:inline;
-    
-    .right{
-      float:right;
-      padding-right:20px;
+
+	a{
+		font-size:13px;
+		text-transform:lowercase;
+		line-height:25px;		
+	}
+	
+    #main_nav{
+		position:absolute;
+		left:150px;
+		top:0;
+		height:25px;
     }
-    .left{
-      float:left;
+    #user_toolbar{
+		position:absolute;
+		right:0;
+		top:0;
+		padding:0 10px;
+		
+		.karma{
+			font-size:12px;
+			padding:0 5px;
+			color:lighten($dark-grey,5%);
+		}
     }
   }
 }
@@ -115,31 +145,62 @@ a:hover{
 }
 
 .noticia{
+	
+	padding:10px 0;
+	border-bottom:1px solid darken($light-color,3%);
+	
+	&:nth-child(even){
+		background:darken(desaturate($light-color,6%),2%);		
+	};
+	
+	a:visited{
+	  color:lighten($dark-grey,20%);
+	  text-decoration:none;
+	}
+	
+
   .order-number{
     float:left;    
-    padding: 0px 3px;
-    font-size:0.9em;
+    font-size:13px;
+	width:20px;
+	padding:0 5px;
+	line-height:28px;
+	text-align:right;
+	font-weight:bold;
   }
+
+  a.post-upvote{
+	display:block;
+	float:left;
+		height:16px;
+		padding-top:7px;
+		text-align:center;
+		width:21px;
+  }
+
   .voted{
     img{display:none}
     font-weight:900;
     font-size:1.1em;
   }
+
   .post-title{
-    font-size:1.0em;
-    padding: 5px 10px 0px 10px;
+	line-height:28px;
+
     .post-netloc{
       font-size:0.7em;
     }
   }
+
   .post-info{
-    font-size:0.8em;
-    padding: 0px 10px 5px 55px;
+    font-size:11px;
+	line-height:13px;
+	margin-left:51px;
   }
+
   .post-votes{
     min-width:36px;
     float:left;
-    padding: 8px 0px 5px 11px;
   }
   
 }
@@ -165,14 +226,25 @@ a:hover{
   }
 }
 
+#pages{
+	padding:10px 51px ;
+	font-size:13px;
+	font-weight:bold;
+}
+
 #footer{
-  height:35px;
-  padding: 6px 0 0 0;
+
+  height:45px;
+  line-height:25px;
   text-align:center;
   background-color:$bright-color;
+
+
   .disclamer{
+	line-height:15px;
     font-size:0.8em;
   }
+
 }
 
 #guidelines{

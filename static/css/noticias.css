@@ -6,7 +6,8 @@
 body {
   background-color: #eeeeee;
   align-text: center;
-  font-size: 15px; }
+  font-size: 14px;
+  line-height: 1.5em; }
 
 img {
   border: 0; }
@@ -16,27 +17,47 @@ img {
   margin: 10px auto; }
 
 a {
-  color: black;
+  color: #333333;
   text-decoration: none; }
 
 a:hover {
   text-decoration: underline; }
 
 #header {
-  background-color: #8fbe00;
+  background-color: #8fb933;
   height: 25px;
-  padding: 6px 0 0 0; }
+  line-height: 25px;
+  position: relative; }
   #header #logo {
-    display: inline;
-    margin: 10px;
     font-weight: bold; }
-  #header #menu {
-    display: inline; }
-    #header #menu .right {
-      float: right;
-      padding-right: 20px; }
-    #header #menu .left {
-      float: left; }
+    #header #logo span.logotype {
+      display: inline-block;
+      margin: 2px;
+      border: 1px solid #fff;
+      font-size: 13px;
+      line-height: 21px;
+      height: 19px;
+      width: 21px;
+      color: #fff;
+      text-align: center; }
+  #header #menu a {
+    font-size: 13px;
+    text-transform: lowercase;
+    line-height: 25px; }
+  #header #menu #main_nav {
+    position: absolute;
+    left: 150px;
+    top: 0;
+    height: 25px; }
+  #header #menu #user_toolbar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0 10px; }
+    #header #menu #user_toolbar .karma {
+      font-size: 12px;
+      padding: 0 5px;
+      color: #404040; }
 
 #content {
   background-color: #f2e9e1;
@@ -56,7 +77,7 @@ a:hover {
   font-size: 0.8em;
   padding: 0px 10px 5px 10px; }
 .comment .comment-message {
-  color: black;
+  color: #333333;
   padding-left: 32px; }
   .comment .comment-message p {
     margin-bottom: 1em; }
@@ -72,7 +93,7 @@ a:hover {
   padding: 5px 5px; }
   #post .message {
     padding: 5px 20px 20px 20px;
-    color: black; }
+    color: #333333; }
   #post form {
     clear: both; }
   #post textarea {
@@ -80,27 +101,45 @@ a:hover {
     max-width: 800px;
     height: 100px; }
 
-.noticia .order-number {
-  float: left;
-  padding: 0px 3px;
-  font-size: 0.9em; }
-.noticia .voted {
-  font-weight: 900;
-  font-size: 1.1em; }
-  .noticia .voted img {
-    display: none; }
-.noticia .post-title {
-  font-size: 1.0em;
-  padding: 5px 10px 0px 10px; }
-  .noticia .post-title .post-netloc {
-    font-size: 0.7em; }
-.noticia .post-info {
-  font-size: 0.8em;
-  padding: 0px 10px 5px 55px; }
-.noticia .post-votes {
-  min-width: 36px;
-  float: left;
-  padding: 8px 0px 5px 11px; }
+.noticia {
+  padding: 10px 0;
+  border-bottom: 1px solid #ede1d6; }
+  .noticia:nth-child(even) {
+    background: #ede4db; }
+  .noticia a:visited {
+    color: #666666;
+    text-decoration: none; }
+  .noticia .order-number {
+    float: left;
+    font-size: 13px;
+    width: 20px;
+    padding: 0 5px;
+    line-height: 28px;
+    text-align: right;
+    font-weight: bold; }
+  .noticia a.post-upvote {
+    display: block;
+    float: left;
+    height: 16px;
+    padding-top: 7px;
+    text-align: center;
+    width: 21px; }
+  .noticia .voted {
+    font-weight: 900;
+    font-size: 1.1em; }
+    .noticia .voted img {
+      display: none; }
+  .noticia .post-title {
+    line-height: 28px; }
+    .noticia .post-title .post-netloc {
+      font-size: 0.7em; }
+  .noticia .post-info {
+    font-size: 11px;
+    line-height: 13px;
+    margin-left: 51px; }
+  .noticia .post-votes {
+    min-width: 36px;
+    float: left; }
 
 .submit .textfields {
   width: 80%; }
@@ -116,12 +155,18 @@ a:hover {
       width: 100%;
       height: 120px; }
 
+#pages {
+  padding: 10px 51px;
+  font-size: 13px;
+  font-weight: bold; }
+
 #footer {
-  height: 35px;
-  padding: 6px 0 0 0;
+  height: 45px;
+  line-height: 25px;
   text-align: center;
-  background-color: #8fbe00; }
+  background-color: #8fb933; }
   #footer .disclamer {
+    line-height: 15px;
     font-size: 0.8em; }
 
 #guidelines {

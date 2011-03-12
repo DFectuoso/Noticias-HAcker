@@ -19,30 +19,36 @@
   <body>
     <div id="wrapper">
       <div id="header">
-        <div id="menu">
-          <span class="left">
-            <div id="logo"><a href="/">N Noticias Hacker</a></div>
+          <div id="logo">
+              <a href="/" title="Hacker News">
+                  <span class="logotype">N</span> Noticias Hacker
+              </a>
+          </div>          
+        <div id="menu">                
+          <div id="main_nav">
             <a href="/nuevo">Nuevo</a> |
             <a href="/agregar">Agregar un link/mensaje</a>
-          </span> 
-          <span class="right">
+          </div> 
+          <div id="user_toolbar">
             {% if user %}
-              <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a>({{user.sum_votes}}) |
+              <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
               <a href="/logout">Log out</a>
             {% else %} 
               <a href="/login">Login o registro</a>
             {% endif %} 
-          </span>
+          </div>
         </div>
       </div>
       <div id="content">
         {% block content %}{% endblock %}
       </div>
       <div id="footer">
-        <a href="/rss">RSS</a> | 
-        <a href="/directrices">Directrices</a> | 
-        <a href="/preguntas-frecuentes">Preguntas frecuentes</a> | 
-        <a href="https://github.com/DFectuoso/Noticias-HAcker">Código</a>
+          <p>
+              <a href="/rss">RSS</a> | 
+              <a href="/directrices">Directrices</a> | 
+              <a href="/preguntas-frecuentes">Preguntas frecuentes</a> | 
+              <a href="https://github.com/DFectuoso/Noticias-HAcker">Código</a>            
+          </p>
         <p class="disclamer">
           NoticiasHacker es hecho en <a href="https://github.com/DFectuoso/Noticias-HAcker/blob/master/COMMITTERS">comunidad</a> y no esta asociado de ninguna manera a <a href="http://news.ycombinator.com">Hacker News</a>
         </p>
