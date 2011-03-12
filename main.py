@@ -329,7 +329,7 @@ class FAQHandler(webapp.RequestHandler):
 def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
-      ('/lineamientos', GuidelinesHandler),
+      ('/directrices', GuidelinesHandler),
       ('/preguntas-frecuentes', FAQHandler),
       ('/nuevo', NewHandler),
       ('/agregar', SubmitNewStoryHandler),

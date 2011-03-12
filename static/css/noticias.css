@@ -82,12 +82,12 @@ a:hover {
   font-weight: 900;
   font-size: 1.1em; }
 .noticia .post-title {
-  font-size: 1.0em;
+  font-size: 0.9em;
   padding: 5px 10px 0px 10px; }
   .noticia .post-title .post-netloc {
     font-size: 0.7em; }
 .noticia .post-info {
-  font-size: 0.8em;
+  font-size: 0.7em;
   padding: 0px 10px 5px 55px; }
 .noticia .post-votes {
   float: left;
