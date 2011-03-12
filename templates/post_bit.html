@@ -6,7 +6,7 @@
       {% if post.prefetched_already_voted %}
         <a class="post-upvote voted"><img src="/static/images/grayarrow.gif"/></a><br/>
       {% else %}
-        <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;"><img src="/static/images/grayarrow.gif"/></a><br/>
+        <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
       {% endif %}
     </div>
     <div class="post-title">

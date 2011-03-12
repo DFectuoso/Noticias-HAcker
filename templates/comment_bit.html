@@ -1,9 +1,9 @@
 <div class="comment">
   <div class="votes"> 
     {% if comment.already_voted %}
-      <a class="upvote voted">^</a><br/>
+      <a class="upvote voted"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
     {% else %}
-      <a class="upvote" href="/upvote_comment/{{comment.key}}" onclick="upVoteComment(this, '{{comment.key}}'); return false;">^</a><br/>
+      <a class="upvote" href="/upvote_comment/{{comment.key}}" onclick="upVoteComment(this, '{{comment.key}}'); return false;"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
     {% endif %}
   </div>
   <div class="info">
