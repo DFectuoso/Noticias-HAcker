@@ -4,9 +4,9 @@
         <span class="order-number">{{post.number}}.-</span>
       {% endif %}
       {% if post.prefetched_already_voted %}
-        <a class="post-upvote voted">^</a><br/>
+        <a class="post-upvote voted"><img src="/static/images/grayarrow.gif"/></a><br/>
       {% else %}
-        <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;">^</a><br/>
+        <a class="post-upvote" href="/upvote/{{post.key}}" onclick="upVote(this, '{{post.key}}'); return false;"><img src="/static/images/grayarrow.gif"/></a><br/>
       {% endif %}
     </div>
     <div class="post-title">
