@@ -62,8 +62,10 @@ a:hover{
 .comment{
   .votes{
     float:left;
-    padding: 5px 10px 0 11px;
+    padding: 5px 0 0 11px;
     height:45px;
+    min-width:20px;
+
     .upvote{
 
     }

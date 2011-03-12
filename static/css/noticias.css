@@ -44,8 +44,9 @@ a:hover {
 
 .comment .votes {
   float: left;
-  padding: 5px 10px 0 11px;
-  height: 45px; }
+  padding: 5px 0 0 11px;
+  height: 45px;
+  min-width: 20px; }
   .comment .votes .voted {
     font-weight: 900;
     font-size: 1.1em; }
