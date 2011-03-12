@@ -64,11 +64,11 @@ a:hover{
     float:left;
     padding: 5px 10px 0 11px;
     height:45px;
- 
     .upvote{
 
     }
     .voted{
+      img{display:none}
       font-weight:900;
       font-size:1.1em;
     }    
@@ -119,6 +119,7 @@ a:hover{
     font-size:0.9em;
   }
   .voted{
+    img{display:none}
     font-weight:900;
     font-size:1.1em;
   }
@@ -134,8 +135,9 @@ a:hover{
     padding: 0px 10px 5px 55px;
   }
   .post-votes{
+    min-width:36px;
     float:left;
-    padding: 8px 10px 5px 11px;
+    padding: 8px 0px 5px 11px;
   }
   
 }

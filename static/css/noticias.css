@@ -8,6 +8,9 @@ body {
   align-text: center;
   font-size: 15px; }
 
+img {
+  border: 0; }
+
 #wrapper {
   width: 80%;
   margin: 10px auto; }
@@ -46,6 +49,8 @@ a:hover {
   .comment .votes .voted {
     font-weight: 900;
     font-size: 1.1em; }
+    .comment .votes .voted img {
+      display: none; }
 .comment .info {
   font-size: 0.8em;
   padding: 0px 10px 5px 10px; }
@@ -81,6 +86,8 @@ a:hover {
 .noticia .voted {
   font-weight: 900;
   font-size: 1.1em; }
+  .noticia .voted img {
+    display: none; }
 .noticia .post-title {
   font-size: 1.0em;
   padding: 5px 10px 0px 10px; }
@@ -90,8 +97,9 @@ a:hover {
   font-size: 0.8em;
   padding: 0px 10px 5px 55px; }
 .noticia .post-votes {
+  min-width: 36px;
   float: left;
-  padding: 8px 10px 5px 11px; }
+  padding: 8px 0px 5px 11px; }
 
 .submit .textfields {
   width: 80%; }
