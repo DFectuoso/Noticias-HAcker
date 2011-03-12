@@ -9,6 +9,7 @@ Instalacion
 * Instalar el Google App Engine SDK
 * Agregar este repositorio como un proyecto existente
 * Crear un archivo llamado "keys.py". Este archivo contiene un hash para saltear los password y otros para la session. Este archivo debe de tener las siguientes dos lineas:
+
     cookie_key = 'UNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGA'
 
     salt_key = 'UNASTRINGALEATORIAMUYLARGA'
