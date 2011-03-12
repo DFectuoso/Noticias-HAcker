@@ -11,6 +11,7 @@ Instalacion
 * Crear un archivo llamado "keys.py". Este archivo contiene un hash para saltear los password y otros para la session. Este archivo debe de tener las siguientes dos lineas:
 
 cookie_key = 'UNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGA'
+
 salt_key = 'UNASTRINGALEATORIAMUYLARGA'
 
 Para modificar el css requieres compilar los archivos scss con [sass](http://sass-lang.com/)
