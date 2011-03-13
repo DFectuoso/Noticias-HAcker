@@ -8,13 +8,16 @@
       {{post.message|linebreaksbr}}
     </div>
   {% endif %}
-
+            {% if user %}
   <form method="POST">
     <fieldset>
       <textarea name="message"></textarea>
-      <br/><input type="submit" value="Agrear comentario"/>
+      <br/><input type="submit" value="Agregar comentario"/>
     </fieldset>
   </form>
+            {% else %} 
+Necesitas <a href="/login">Login o registro</a> para agregar comentario.
+                         {% endif %} 
 
   {% for comment in comments %}
     {% if not comment.father %}
