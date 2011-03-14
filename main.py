@@ -303,6 +303,53 @@ class MainHandler(webapp.RequestHandler):
       i = i + 1
     self.response.out.write(template.render('templates/main.html', locals()))
 
+
+
+class SubmissionsHandler(webapp.RequestHandler):
+  def get(self,nickname):
+    #self.response.out.write('hello there')
+    perPage = 20
+    page = 1
+    realPage = 0
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
+    posts = Post.all().filter('user =',thread_user[0]).order('-created').fetch(perPage, realPage * perPage)
+    self.response.out.write(template.render('templates/main.html', locals()))
+
+
+class ThreadsHandler(webapp.RequestHandler):
+  def get(self,nickname):
+    #self.response.out.write('hello there')
+    perPage = 20
+    page = 1
+    realPage = 0
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
+    comments0 = Comment.all().filter('user =',thread_user[0]).order('-created').fetch(perPage, realPage * perPage)
+    comments = []
+    for comment in comments0:
+      if comment.father == None:
+        comments.append(comment)
+      else:
+        commentchk = comment
+        display = True
+        while (commentchk.father!=None):
+          parent = commentchk.father
+          userparent = parent.user.nickname
+          if userparent == thread_user[0].nickname:
+            display = False
+            break
+          commentchk = commentchk.father
+        if display:
+          comments.append(comment)
+
+    self.response.out.write(template.render('templates/threads.html', locals()))
+
+
 class NewHandler(webapp.RequestHandler):
   def get(self):
     page = sanitizeHtml(self.request.get('pagina'))
@@ -362,6 +409,7 @@ class RssHandler(webapp.RequestHandler):
 def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
+      ('/threads/(.+)', ThreadsHandler),
       ('/directrices', GuidelinesHandler),
       ('/preguntas-frecuentes', FAQHandler),
       ('/nuevo', NewHandler),

@@ -7,7 +7,9 @@
     {% endif %}
   </div>
   <div class="info">
-    {{comment.sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
+    {{comment.sum_votes}} puntos, entregado por <a
+  href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a>
+  hace {{comment.created|timesince|hacetiempo}} | <a href="/noticia/{{comment.post.key}}">post</a>
   </div>
   <div class="comment-message">
     {{comment.message|urlize|linebreaks}}

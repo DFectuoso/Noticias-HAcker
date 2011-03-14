@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="post">
+
+  {% if post.message %}
+    <div class="message">
+      {{post.message|linebreaksbr}}
+    </div>
+  {% endif %}
+
+
+    {% for comment in comments %}
+
+    
+    {% include "comment_bit.html" %}
+    
+    {% endfor %}
+</div>
+
+{% endblock %}
