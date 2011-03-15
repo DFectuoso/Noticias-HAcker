@@ -305,48 +305,32 @@ class MainHandler(webapp.RequestHandler):
 
 
 
-class SubmissionsHandler(webapp.RequestHandler):
-  def get(self,nickname):
-    #self.response.out.write('hello there')
-    perPage = 20
-    page = 1
-    realPage = 0
-    session = get_current_session()
-    if session.has_key('user'):
-      user = session['user']
-    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
-    posts = Post.all().filter('user =',thread_user[0]).order('-created').fetch(perPage, realPage * perPage)
-    self.response.out.write(template.render('templates/main.html', locals()))
-
+def filter_user_comments(all_comments, user):
+  """ This function removes comments that belong to a thread 
+  which had a comment by the same user as a parent """
+  res_comments = []
+  for user_comment in all_comments:
+    linked_comment = user_comment
+    while(True):
+      if linked_comment.father==None:
+        res_comments.append(user_comment)
+        break
+      if linked_comment.father.user.nickname == user.nickname:
+        break
+      linked_comment = linked_comment.father
+  return res_comments
 
 class ThreadsHandler(webapp.RequestHandler):
   def get(self,nickname):
-    #self.response.out.write('hello there')
     perPage = 20
     page = 1
     realPage = 0
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
-    comments0 = Comment.all().filter('user =',thread_user[0]).order('-created').fetch(perPage, realPage * perPage)
-    comments = []
-    for comment in comments0:
-      if comment.father == None:
-        comments.append(comment)
-      else:
-        commentchk = comment
-        display = True
-        while (commentchk.father!=None):
-          parent = commentchk.father
-          userparent = parent.user.nickname
-          if userparent == thread_user[0].nickname:
-            display = False
-            break
-          commentchk = commentchk.father
-        if display:
-          comments.append(comment)
-
+    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)[0]
+    user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
+    comments = filter_user_comments(user_comments, thread_user)
     self.response.out.write(template.render('templates/threads.html', locals()))
 
 
