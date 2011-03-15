@@ -81,7 +81,7 @@ class RegisterHandler(webapp.RequestHandler):
     password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
-    already = User.all().filter("nickname =",nickname).fetch(1)
+    already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
     if len(already) == 0:
       user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password)
       user.put()
