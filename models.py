@@ -72,7 +72,7 @@ def prefetch_and_order_childs_for_comment_list(comments):
     if memcache_to_add.keys():
       memcache.add_multi(memcache_to_add, 3600)
   else:
-    for comment in comment:
+    for comment in comments:
       comment.prefetched_already_voted = False
   # now the sum_votes
   memcache_sum_votes_keys = ["c_" + comment_key for comment_key in comment_keys]
