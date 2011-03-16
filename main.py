@@ -382,7 +382,7 @@ class RssHandler(webapp.RequestHandler):
 
     items = []
     for post in posts:
-       if len(post.message) == 0:
+      if len(post.message) == 0:
           rss_poster = post.url
       else:
           rss_poster = post.message

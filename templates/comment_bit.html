@@ -13,13 +13,12 @@
     {{comment.message|urlize|linebreaks}}
   </div>
   <div class="reply">
-            {% if user %}
-                <a href="/responder/{{comment.key}}">Responder</a>
-            {% else %} 
-               Necesitas <a href="/login">login o registro</a> para responder.
-            {% endif %} 
+    {% if user %}
+      <a href="/responder/{{comment.key}}">Responder</a>
+    {% else %} 
+      Necesitas <a href="/login">login o registro</a> para responder.
+    {% endif %} 
   </div>
-
   <div class="innerComments">
     {% for comment in comment.processed_child %}
       {% include "comment_bit.html" %}
