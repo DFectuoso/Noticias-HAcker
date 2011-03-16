@@ -21,17 +21,16 @@
       <div id="header">
           <div id="logo">
               <a href="/" title="Hacker News">
-                  <span class="logotype">N</span> Noticias Hacker
+                <span class="logotype">N</span> Noticias Hacker
               </a>
           </div>          
         <div id="menu">                
           <div id="main_nav">
-            <a href="/nuevo">Nuevo</a> |
-            <a href="/agregar">Agregar un link/mensaje</a>
-	    {% if user %}
-	    | <a href="/threads/{{user.nickname}}">threads</a>
-	    {% endif %} 
-	    
+            <a href="/nuevo">nuevo</a>
+	          {% if user %}
+	            | <a href="/conversaciones/{{user.nickname}}">conversaciones</a>
+	          {% endif %} 
+            | <a href="/agregar">Agregar un link/mensaje</a>
           </div> 
           <div id="user_toolbar">
             {% if user %}

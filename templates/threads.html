@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <div id="post">
-
-  {% if post.message %}
-    <div class="message">
-      {{post.message|linebreaksbr}}
-    </div>
-  {% endif %}
-
-
-    {% for comment in comments %}
-
-    
+  {% for comment in comments %}
     {% include "comment_bit.html" %}
-    
-    {% endfor %}
+  {% endfor %}
 </div>
 
+<div id="pages">
+  {% if prevPage %}
+    <a class="prevPage" href="?pagina={{prevPage}}">&#171; anterior</a>
+  {% endif %}
+  {% if prevPage and nextPage %}
+     &nbsp; | &nbsp;
+  {% endif %}
+  {% if nextPage %}
+    <a class="nextPage" href="?pagina={{nextPage}}">siguiente &#187;</a>
+  {% endif %}
+</div>
 {% endblock %}

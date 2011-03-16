@@ -29,7 +29,7 @@ from urlparse import urlparse
 from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
-from models import prefetch_and_order_childs_for_comment_list
+from models import prefetch_and_order_childs_for_comment_list, prefetch_refprops
 from libs import PyRSS2Gen
 
 template.register_template_library('CustomFilters')
@@ -313,27 +313,37 @@ def filter_user_comments(all_comments, user):
   for user_comment in all_comments:
     linked_comment = user_comment
     while(True):
-      if linked_comment.father==None:
+      if Comment.father.get_value_for_datastore(linked_comment) is None:
         res_comments.append(user_comment)
         break
-      if linked_comment.father.user.nickname == user.nickname:
+      if linked_comment.father.user == user:
         break
       linked_comment = linked_comment.father
   return res_comments
 
 class ThreadsHandler(webapp.RequestHandler):
   def get(self,nickname):
-    perPage = 20
-    page = 1
-    realPage = 0
+    page = sanitizeHtml(self.request.get('pagina'))
+    perPage = 5
+    page = int(page) if page else 1
+    realPage = page - 1
+    if realPage > 0:
+      prevPage = realPage
+
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)[0]
-    user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
-    comments = filter_user_comments(user_comments, thread_user)
-    self.response.out.write(template.render('templates/threads.html', locals()))
-
+    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
+    if len(thread_user) > 0:
+      thread_user = thread_user[0]
+      user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
+      comments = filter_user_comments(user_comments, thread_user)
+      prefetch_and_order_childs_for_comment_list(comments)
+      if (page * perPage) < Comment.all().filter('user =', thread_user).count():
+        nextPage = page + 1
+      self.response.out.write(template.render('templates/threads.html', locals()))
+    else:
+      self.redirect('/')
 
 class NewHandler(webapp.RequestHandler):
   def get(self):
@@ -394,7 +404,7 @@ class RssHandler(webapp.RequestHandler):
 def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
-      ('/threads/(.+)', ThreadsHandler),
+      ('/conversaciones/(.+)', ThreadsHandler),
       ('/directrices', GuidelinesHandler),
       ('/preguntas-frecuentes', FAQHandler),
       ('/nuevo', NewHandler),
