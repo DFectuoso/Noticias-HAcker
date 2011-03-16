@@ -36,6 +36,59 @@ def prefetch_refprops(entities, *props):
       prop.__set__(entity, ref_entities[ref_key])
   return entities
 
+def get_comment_from_list(comment_key,comments):
+  return [comment for comment in comments if comment.key() ==  comment_key]
+
+def prefetch_and_order_childs_for_comment_list(comments):
+  prefetch_refprops(comments, Comment.user, Comment.post)
+
+  # order childs for display
+  for comment in comments:
+    comment.processed_child = []
+  for comment in comments:
+    father_key = Comment.father.get_value_for_datastore(comment)
+    if father_key is not None:
+      father_comment = get_comment_from_list(father_key,comments)
+      if len(father_comment) == 1:
+        father_comment[0].processed_child.append(comment)
+
+  # call all the memcache information
+  # starting by the already_voted area
+  comment_keys = [str(comment.key()) for comment in comments]
+  session = get_current_session()
+  if session.has_key('user'): 
+    user = session['user']
+    memcache_voted_keys = ["cp_" + comment_key + "_" + str(user.key()) for comment_key in comment_keys]
+    memcache_voted = memcache.get_multi(memcache_voted_keys)
+    memcache_to_add = {}
+    for comment in comments:
+      vote_value = memcache_voted.get("cp_" + str(comment.key()) + "_" +str(user.key()))
+      if vote_value is not None:
+        comment.prefetched_already_voted = vote_value == 1
+      else:
+        vote = Vote.all().filter("user =", user).filter("comment =", comment).fetch(1) 
+        memcache_to_add["cp_" + str(comment.key()) + "_" + str(user.key())] = len(vote)
+        comment.prefetched_already_voted = len(vote) == 1
+    if memcache_to_add.keys():
+      memcache.add_multi(memcache_to_add, 3600)
+  else:
+    for comment in comments:
+      comment.prefetched_already_voted = False
+  # now the sum_votes
+  memcache_sum_votes_keys = ["c_" + comment_key for comment_key in comment_keys]
+  memcache_sum_votes = memcache.get_multi(memcache_sum_votes_keys)
+  memcache_to_add = {}
+  for comment in comments:
+    sum_votes_value = memcache_sum_votes.get("c_" + str(comment.key()))
+    if sum_votes_value is not None:
+      comment.prefetched_sum_votes = sum_votes_value
+    else:
+      sum_votes = Vote.all().filter("comment =", comment).count() 
+      memcache_to_add["c_" + str(comment.key())] = sum_votes 
+      comment.prefetched_sum_votes =sum_votes 
+  if memcache_to_add.keys():
+    memcache.add_multi(memcache_to_add, 3600)
+
 def prefetch_posts_list(posts):
   prefetch_refprops(posts, Post.user)
   posts_keys = [str(post.key()) for post in posts]
@@ -48,7 +101,6 @@ def prefetch_posts_list(posts):
     memcache_voted = memcache.get_multi(memcache_voted_keys)
     memcache_to_add = {}
     for post in posts:
-      logging.info("Got a post")
       vote_value = memcache_voted.get("vp_" + str(post.key()) + "_" +str(user.key()))
       if vote_value is not None:
         post.prefetched_already_voted = vote_value == 1
@@ -129,7 +181,7 @@ class Post(db.Model):
     if session.has_key('user'): 
       user = session['user']
       # hit memcache for this
-      memValue = data = memcache.get("vp_" + str(self.key()) + "_" + str(user.key()))
+      memValue = memcache.get("vp_" + str(self.key()) + "_" + str(user.key()))
       if memValue is not None:
         return memValue == 1
       else:
@@ -179,6 +231,9 @@ class Comment(db.Model):
   created = db.DateTimeProperty(auto_now_add=True)
   karma   = db.FloatProperty()
 
+  def father_ref(self):
+    return Comment.father.get_value_for_datastore(self)
+
   def sum_votes(self):
     val = memcache.get("c_" + str(self.key())) 
     if val is not None:
@@ -193,16 +248,13 @@ class Comment(db.Model):
     if session.has_key('user'): 
       user = session['user']
       # hit memcache for this
-      memValue = data = memcache.get("cp_" + str(self.key()) + "_" + str(user.key()))
+      memValue = memcache.get("cp_" + str(self.key()) + "_" + str(user.key()))
       if memValue is not None:
-        return True
+        return memValue == 1
       else:
-        vote = [v for v in self.votes if v.user.key() == user.key()]
-        if len(vote) == 0:
-          return False
-        else:
-          memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), 1, 3600)
-          return True 
+        vote = Vote.all().filter("user =", user).filter("comment =", post).fetch(1) 
+        memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
+        return len(vote) == 1 
     else:
       return False
 

@@ -29,7 +29,7 @@ from urlparse import urlparse
 from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
-
+from models import prefetch_and_order_childs_for_comment_list, prefetch_refprops
 from libs import PyRSS2Gen
 
 template.register_template_library('CustomFilters')
@@ -81,7 +81,7 @@ class RegisterHandler(webapp.RequestHandler):
     password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
-    already = User.all().filter("nickname =",nickname).fetch(1)
+    already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
     if len(already) == 0:
       user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password)
       user.put()
@@ -138,6 +138,7 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
+      prefetch_and_order_childs_for_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
       self.response.out.write(template.render('templates/post.html', locals()))
@@ -303,6 +304,47 @@ class MainHandler(webapp.RequestHandler):
       i = i + 1
     self.response.out.write(template.render('templates/main.html', locals()))
 
+
+
+def filter_user_comments(all_comments, user):
+  """ This function removes comments that belong to a thread 
+  which had a comment by the same user as a parent """
+  res_comments = []
+  for user_comment in all_comments:
+    linked_comment = user_comment
+    while(True):
+      if Comment.father.get_value_for_datastore(linked_comment) is None:
+        res_comments.append(user_comment)
+        break
+      if linked_comment.father.user == user:
+        break
+      linked_comment = linked_comment.father
+  return res_comments
+
+class ThreadsHandler(webapp.RequestHandler):
+  def get(self,nickname):
+    page = sanitizeHtml(self.request.get('pagina'))
+    perPage = 5
+    page = int(page) if page else 1
+    realPage = page - 1
+    if realPage > 0:
+      prevPage = realPage
+
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+    thread_user = User.all().filter('lowercase_nickname =',nickname.lower()).fetch(1)
+    if len(thread_user) > 0:
+      thread_user = thread_user[0]
+      user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
+      comments = filter_user_comments(user_comments, thread_user)
+      prefetch_and_order_childs_for_comment_list(comments)
+      if (page * perPage) < Comment.all().filter('user =', thread_user).count():
+        nextPage = page + 1
+      self.response.out.write(template.render('templates/threads.html', locals()))
+    else:
+      self.redirect('/')
+
 class NewHandler(webapp.RequestHandler):
   def get(self):
     page = sanitizeHtml(self.request.get('pagina'))
@@ -340,10 +382,14 @@ class RssHandler(webapp.RequestHandler):
 
     items = []
     for post in posts:
+      if len(post.message) == 0:
+          rss_poster = post.url
+      else:
+          rss_poster = post.message
       items.append(PyRSS2Gen.RSSItem(
           title = post.title,
           link = "http://noticiashacker.com/noticia/" + str(post.key()),
-          description = "",
+          description = rss_poster,
           guid = PyRSS2Gen.Guid("guid1"),
           pubDate = post.created
       ))
@@ -351,7 +397,7 @@ class RssHandler(webapp.RequestHandler):
     rss = PyRSS2Gen.RSS2(
             title = "Noticias Hacker",
             link = "http://noticiashacker.com/",
-            description = "",
+            description = "Noticias Hacker",
             lastBuildDate = datetime.now(),
             items = items
           )
@@ -362,6 +408,7 @@ class RssHandler(webapp.RequestHandler):
 def main():
   application = webapp.WSGIApplication([
       ('/', MainHandler),
+      ('/conversaciones/(.+)', ThreadsHandler),
       ('/directrices', GuidelinesHandler),
       ('/preguntas-frecuentes', FAQHandler),
       ('/nuevo', NewHandler),

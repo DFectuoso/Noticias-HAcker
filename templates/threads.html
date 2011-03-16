@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="post">
+  {% for comment in comments %}
+    {% include "comment_bit.html" %}
+  {% endfor %}
+</div>
+
+<div id="pages">
+  {% if prevPage %}
+    <a class="prevPage" href="?pagina={{prevPage}}">&#171; anterior</a>
+  {% endif %}
+  {% if prevPage and nextPage %}
+     &nbsp; | &nbsp;
+  {% endif %}
+  {% if nextPage %}
+    <a class="nextPage" href="?pagina={{nextPage}}">siguiente &#187;</a>
+  {% endif %}
+</div>
+{% endblock %}
