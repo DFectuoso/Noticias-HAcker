@@ -28,6 +28,10 @@
           <div id="main_nav">
             <a href="/nuevo">Nuevo</a> |
             <a href="/agregar">Agregar un link/mensaje</a>
+	    {% if user %}
+	    | <a href="/threads/{{user.nickname}}">threads</a>
+	    {% endif %} 
+	    
           </div> 
           <div id="user_toolbar">
             {% if user %}
