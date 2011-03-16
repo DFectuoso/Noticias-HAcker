@@ -382,10 +382,14 @@ class RssHandler(webapp.RequestHandler):
 
     items = []
     for post in posts:
+       if len(post.message) == 0:
+          rss_poster = post.url
+      else:
+          rss_poster = post.message
       items.append(PyRSS2Gen.RSSItem(
           title = post.title,
           link = "http://noticiashacker.com/noticia/" + str(post.key()),
-          description = "",
+          description = rss_poster,
           guid = PyRSS2Gen.Guid("guid1"),
           pubDate = post.created
       ))
@@ -393,7 +397,7 @@ class RssHandler(webapp.RequestHandler):
     rss = PyRSS2Gen.RSS2(
             title = "Noticias Hacker",
             link = "http://noticiashacker.com/",
-            description = "",
+            description = "Noticias Hacker",
             lastBuildDate = datetime.now(),
             items = items
           )
