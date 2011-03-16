@@ -1,13 +1,13 @@
 <div class="comment">
   <div class="votes"> 
-    {% if comment.already_voted %}
+    {% if comment.prefetched_already_voted %}
       <a class="upvote voted"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
     {% else %}
       <a class="upvote" href="/upvote_comment/{{comment.key}}" onclick="upVoteComment(this, '{{comment.key}}'); return false;"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
     {% endif %}
   </div>
   <div class="info">
-    {{comment.sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
+    {{comment.prefetched_sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
   </div>
   <div class="comment-message">
     {{comment.message|urlize|linebreaks}}
@@ -16,7 +16,7 @@
     <a href="/responder/{{comment.key}}">Responder</a>
   </div>
   <div class="innerComments">
-    {% for comment in comment.childs %}
+    {% for comment in comment.processed_child %}
       {% include "comment_bit.html" %}
     {% endfor %}
   </div>

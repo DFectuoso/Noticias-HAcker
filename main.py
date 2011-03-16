@@ -29,7 +29,7 @@ from urlparse import urlparse
 from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
-
+from models import prefetch_and_order_childs_for_comment_list
 from libs import PyRSS2Gen
 
 template.register_template_library('CustomFilters')
@@ -138,6 +138,7 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
+      prefetch_and_order_childs_for_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
       self.response.out.write(template.render('templates/post.html', locals()))
