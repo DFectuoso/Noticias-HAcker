@@ -29,7 +29,8 @@ from urlparse import urlparse
 from datetime import datetime
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
-from models import prefetch_and_order_childs_for_comment_list, prefetch_refprops
+from models import prefetch_comment_list, prefetch_refprops
+from models import order_comment_list_in_memory
 from libs import PyRSS2Gen
 
 template.register_template_library('CustomFilters')
@@ -138,7 +139,8 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
-      prefetch_and_order_childs_for_comment_list(comments)
+      comments = order_comment_list_in_memory(comments) 
+      prefetch_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
       self.response.out.write(template.render('templates/post.html', locals()))
@@ -304,31 +306,55 @@ class MainHandler(webapp.RequestHandler):
       i = i + 1
     self.response.out.write(template.render('templates/main.html', locals()))
 
-
+###
+### TODO Refactor this 2 function to a helper, also add more comments
+###
+def add_childs_to_comment(comment): 
+  """We need to add the childs of each post because we want to render them in the
+     same way we render the Post view. So we need to find all the "preprocessed_childs"
+     Now, we also want to hold a reference to them to be able to pre_fetch them
+  """
+  comment.processed_child = []
+  total_childs = []
+  for child in comment.childs:
+    comment.processed_child.append(child)
+    total_childs.append(child)
+    total_childs.extend(add_childs_to_comment(child))
+  return total_childs 
 
 def filter_user_comments(all_comments, user):
   """ This function removes comments that belong to a thread 
   which had a comment by the same user as a parent """
   res_comments = []
-  for user_comment in all_comments:
+  for user_comment in all_comments: ### Cycle all the comments and find the ones we care
     linked_comment = user_comment
     while(True):
-      if Comment.father.get_value_for_datastore(linked_comment) is None:
-        res_comments.append(user_comment)
+      if Comment.father.get_value_for_datastore(linked_comment) is None: 
+        if not [c for c in res_comments if c.key() == user_comment.key()]:
+          res_comments.append(user_comment) # we care about the ones that are topmost
         break
-      if linked_comment.father.user == user:
+      if linked_comment.father.user.key() == user.key():
+        if not [c for c in res_comments if c.key() == linked_comment.father.key()]:
+          res_comments.append(linked_comment.father) # But we also want to append the "father" ones to avoid having pages with 0 comments
         break
       linked_comment = linked_comment.father
+  # Add Childs here
+  child_list = []
+  for comment in res_comments:
+    child_list.extend(add_childs_to_comment(comment))
+  prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
   return res_comments
 
 class ThreadsHandler(webapp.RequestHandler):
   def get(self,nickname):
     page = sanitizeHtml(self.request.get('pagina'))
-    perPage = 5
+    perPage = 6
     page = int(page) if page else 1
     realPage = page - 1
     if realPage > 0:
       prevPage = realPage
+    # this is used to tell the template to include the topic
+    threads = True
 
     session = get_current_session()
     if session.has_key('user'):
@@ -338,7 +364,6 @@ class ThreadsHandler(webapp.RequestHandler):
       thread_user = thread_user[0]
       user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
       comments = filter_user_comments(user_comments, thread_user)
-      prefetch_and_order_childs_for_comment_list(comments)
       if (page * perPage) < Comment.all().filter('user =', thread_user).count():
         nextPage = page + 1
       self.response.out.write(template.render('templates/threads.html', locals()))

@@ -1,4 +1,9 @@
 <div class="comment">
+  {% if threads and not comment.father_ref %}
+    <div class="comment-post">
+      En la noticia: <a href="/noticia/{{comment.post.key}}">{{comment.post.title}}</a>
+    </div>
+  {% endif %}
   <div class="votes"> 
     {% if comment.prefetched_already_voted %}
       <a class="upvote voted"><img src="/static/images/grayarrow.gif" alt="^"/></a><br/>
