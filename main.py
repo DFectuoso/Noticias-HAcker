@@ -341,6 +341,7 @@ def filter_user_comments(all_comments, user):
   # Add Childs here
   child_list = []
   for comment in res_comments:
+    comment.is_top_most = True
     child_list.extend(add_childs_to_comment(comment))
   prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
   return res_comments

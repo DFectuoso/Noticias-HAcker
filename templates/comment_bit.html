@@ -1,5 +1,5 @@
 <div class="comment">
-  {% if threads and not comment.father_ref %}
+  {% if threads and comment.is_top_most %}
     <div class="comment-post">
       En la noticia: <a href="/noticia/{{comment.post.key}}">{{comment.post.title}}</a>
     </div>
