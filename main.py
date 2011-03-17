@@ -26,7 +26,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
 from gaesessions import get_current_session
 from urlparse import urlparse
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
 from models import prefetch_and_order_childs_for_comment_list, prefetch_refprops
@@ -214,18 +214,31 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     title = sanitizeHtml(self.request.get('title'))
     message = sanitizeHtml(self.request.get('message'))
 
+
     session = get_current_session()
     if session.has_key('user') and len(title) > 0:
       user = session['user']
       # decide if its a message or a link, if its a link we need a try/catch around the save, the link might be invalid
       if len(message) == 0:
+
+        #Check that we don't have the same URL within the last 'check_days'
+        check_days = 7
+        since_date = date.today() - timedelta(days=check_days)
+        q = Post.all()
+        q.filter("created >", since_date)
+        q.filter("url =", url)
+        url_exists = q.count() > 0 
+
         try:
-          post = Post(url=url,title=title,message=message, user=user)
-          post.put()
-          vote = Vote(user=user, post=post, target_user=post.user)
-          vote.put()
-          Post.remove_cached_count_from_memcache()
-          self.redirect('/noticia/' + str(post.key()));
+          if not url_exists:
+            post = Post(url=url,title=title,message=message, user=user)
+            post.put()
+            vote = Vote(user=user, post=post, target_user=post.user)
+            vote.put()
+            Post.remove_cached_count_from_memcache()
+            self.redirect('/noticia/' + str(post.key()));
+          else: 
+            self.redirect('/agregar')
         except db.BadValueError:
           self.redirect('/agregar')
       else:
