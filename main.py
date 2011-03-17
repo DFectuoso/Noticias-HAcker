@@ -204,6 +204,9 @@ class CommentReplyHandler(webapp.RequestHandler):
 
 class SubmitNewStoryHandler(webapp.RequestHandler):
   def get(self):
+    error = sanitizeHtml(self.request.get('error'))
+    if error == "1":
+      error = "Este link ha sido entregado en los ultimos 7 dias por alguien mas"
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
@@ -216,21 +219,16 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     title = sanitizeHtml(self.request.get('title'))
     message = sanitizeHtml(self.request.get('message'))
 
-
     session = get_current_session()
     if session.has_key('user') and len(title) > 0:
       user = session['user']
       # decide if its a message or a link, if its a link we need a try/catch around the save, the link might be invalid
       if len(message) == 0:
-
         #Check that we don't have the same URL within the last 'check_days'
-        check_days = 7
-        since_date = date.today() - timedelta(days=check_days)
-        q = Post.all()
-        q.filter("created >", since_date)
-        q.filter("url =", url)
-        url_exists = q.count() > 0 
-
+        since_date = date.today() - timedelta(days=7)
+        q = Post.all().filter("created >", since_date).filter("url =", url).count()
+        url_exists = q > 0 
+        #TODO: add eror messages!
         try:
           if not url_exists:
             post = Post(url=url,title=title,message=message, user=user)
@@ -240,7 +238,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
             Post.remove_cached_count_from_memcache()
             self.redirect('/noticia/' + str(post.key()));
           else: 
-            self.redirect('/agregar')
+            self.redirect('/agregar?error=1')
         except db.BadValueError:
           self.redirect('/agregar')
       else:

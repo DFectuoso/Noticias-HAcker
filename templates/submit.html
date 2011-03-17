@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="submit">
+  {% if error %}
+    <h3 style="color:red">{{error}}</h3>
+  {% endif %}
   <h1>Agregar un link</h1>
   <form method="POST">
     <fieldset>
