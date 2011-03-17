@@ -31,5 +31,5 @@ Las cosas que tenemos que trabajar en los proximos dias y semanas son:
 * Agregar una manera de moderar/editar/borrar mensajes y comentarios
 * Agregar un api publico 
 * Seguir mejorando el estilo
-
+* Agregar que cada nota nueva se publique en algune cuenta de twitter
 
