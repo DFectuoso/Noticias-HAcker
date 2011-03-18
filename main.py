@@ -84,7 +84,7 @@ class RegisterHandler(webapp.RequestHandler):
 
     already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
     if len(already) == 0:
-      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password)
+      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
       user.put()
       if session.is_active():
         session.terminate()
