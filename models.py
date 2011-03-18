@@ -187,7 +187,7 @@ class Post(db.Model):
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("post =", self).fetch(1) 
         memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
         return len(vote) == 1
     else:
@@ -254,7 +254,7 @@ class Comment(db.Model):
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("comment =", post).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("comment =", self).fetch(1) 
         memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
         return len(vote) == 1 
     else:
