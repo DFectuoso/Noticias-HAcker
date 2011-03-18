@@ -192,3 +192,7 @@ fieldset {
 
 textarea {
   font: 100%/120% Verdana, Arial, Helvetica, sans-serif; }
+
+input.fielderror, textarea.fielderror {
+  background-color: #ffb5c7;
+  border: 1px solid #ff0a47; }

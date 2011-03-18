@@ -9,15 +9,15 @@
     </div>
   {% endif %}
   {% if user %}
-    <form method="POST">
+    <form method="POST" class="validable">
       <fieldset>
-        <textarea name="message"></textarea>
+        <textarea name="message" class="requerido"></textarea>
         <br/><input type="submit" value="Agregar comentario"/>
       </fieldset>
     </form>
-  {% else %} 
+  {% else %}
     Necesitas <a href="/login">Login o registro</a> para agregar comentario.<hr/>
-  {% endif %} 
+  {% endif %}
   {% for comment in comments %}
     {% if not comment.father_ref %}
       {% include "comment_bit.html" %}
