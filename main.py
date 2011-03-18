@@ -27,6 +27,7 @@ from google.appengine.api import memcache
 from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime, date, timedelta
+from django.utils import simplejson
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
 from models import prefetch_comment_list, prefetch_refprops
@@ -37,6 +38,36 @@ template.register_template_library('CustomFilters')
 
 def sanitizeHtml(value):
   return cgi.escape(value)
+
+def isJson(value):
+  if value.find('.json') >= 0:
+    return True
+  else:
+    return False
+  
+def parsePostId(value):
+  if isJson(value):
+    return value.split('.')[0]
+  else:
+    return value
+	
+def parsePostToJson(post):
+  return {'title':post.title,'user':post.user.nickname,'votes':post.sum_votes()}
+	
+def parseCommentToJson(comment):
+  return {'user':comment.user.nickname,'message':comment.message,'votes':comment.prefetched_sum_votes,'comments':parseCommentsToJson(comment.processed_child,1)}
+
+def parseCommentsToJson(comments,level):
+  json = []
+  for comment in comments:
+    if level == 0 and not comment.father_ref():
+      logging.info('Parsing comment:'+ comment.message +' in first iteration')
+      json.append(parseCommentToJson(comment))
+    elif(level == 1):
+      logging.info('Parsing comment:'+ comment.message +' in second iteration')
+      json.append(parseCommentToJson(comment))
+      logging.info(json);
+  return json
 
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
@@ -137,13 +168,18 @@ class PostHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     try:
-      post = db.get(post_id)
+      post = db.get(parsePostId(post_id))
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
       comments = order_comment_list_in_memory(comments) 
       prefetch_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
-      self.response.out.write(template.render('templates/post.html', locals()))
+      if isJson(post_id):
+        logging.info('json render')
+        self.response.out.write(simplejson.dumps({'post':parsePostToJson(locals()['post']),'comments':parseCommentsToJson(locals()['comments'],0)}))
+      else:
+        logging.info('regular render')
+        self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
       self.redirect('/')
 
