@@ -3,7 +3,7 @@
 
 <div id="post">
   <div class="comment">
-    <div class="votes"> 
+    <div class="votes">
       {% if comment.already_voted %}
         <a class="upvote voted">^</a><br/>
       {% else %}
@@ -18,9 +18,9 @@
     </div>
   </div>
 
-  <form method="POST">
+  <form method="POST" class="validable">
     <fieldset>
-      <textarea name="message"></textarea>
+      <textarea name="message" class="requerido"></textarea>
       <br/><input type="Submit" value="Responder"/>
     </fieldset>
   </form>

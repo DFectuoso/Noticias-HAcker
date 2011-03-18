@@ -63,6 +63,8 @@ a:hover {
   background-color: #f2e9e1;
   color: #777777; }
 
+.comment .comment-post {
+  padding: 0 0 0 11px; }
 .comment .votes {
   float: left;
   padding: 5px 0 0 11px;
@@ -190,3 +192,7 @@ fieldset {
 
 textarea {
   font: 100%/120% Verdana, Arial, Helvetica, sans-serif; }
+
+input.fielderror, textarea.fielderror {
+  background-color: #ffb5c7;
+  border: 1px solid #ff0a47; }

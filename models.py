@@ -39,9 +39,7 @@ def prefetch_refprops(entities, *props):
 def get_comment_from_list(comment_key,comments):
   return [comment for comment in comments if comment.key() ==  comment_key]
 
-def prefetch_and_order_childs_for_comment_list(comments):
-  prefetch_refprops(comments, Comment.user, Comment.post)
-
+def order_comment_list_in_memory(comments):
   # order childs for display
   for comment in comments:
     comment.processed_child = []
@@ -51,6 +49,10 @@ def prefetch_and_order_childs_for_comment_list(comments):
       father_comment = get_comment_from_list(father_key,comments)
       if len(father_comment) == 1:
         father_comment[0].processed_child.append(comment)
+  return comments
+
+def prefetch_comment_list(comments):
+  prefetch_refprops(comments, Comment.user, Comment.post)
 
   # call all the memcache information
   # starting by the already_voted area
@@ -185,7 +187,7 @@ class Post(db.Model):
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("post =", self).fetch(1) 
         memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
         return len(vote) == 1
     else:
@@ -252,7 +254,7 @@ class Comment(db.Model):
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("comment =", post).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("comment =", self).fetch(1) 
         memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
         return len(vote) == 1 
     else:

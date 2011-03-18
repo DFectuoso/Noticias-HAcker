@@ -5,7 +5,7 @@
   <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
   <div>Karma: {{profiledUser.sum_votes}}
   {% if my_profile %}
-    <form method="POST">
+    <form method="POST" class="validable">
       <fieldset>
         <textarea name="about">{{profiledUser.about }}</textarea>
         <br/><input type="submit" value="Cambiar tu mensaje de perfil"/>

@@ -26,10 +26,11 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
 from gaesessions import get_current_session
 from urlparse import urlparse
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from models import User, Post, Comment, Vote, prefetch_posts_list
-from models import prefetch_and_order_childs_for_comment_list, prefetch_refprops
+from models import prefetch_comment_list, prefetch_refprops
+from models import order_comment_list_in_memory
 from libs import PyRSS2Gen
 
 template.register_template_library('CustomFilters')
@@ -138,7 +139,8 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(post_id)
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
-      prefetch_and_order_childs_for_comment_list(comments)
+      comments = order_comment_list_in_memory(comments) 
+      prefetch_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
       self.response.out.write(template.render('templates/post.html', locals()))
@@ -202,6 +204,9 @@ class CommentReplyHandler(webapp.RequestHandler):
 
 class SubmitNewStoryHandler(webapp.RequestHandler):
   def get(self):
+    error = sanitizeHtml(self.request.get('error'))
+    if error == "1":
+      error = "Este link ha sido entregado en los ultimos 7 dias por alguien mas"
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
@@ -219,13 +224,21 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
       user = session['user']
       # decide if its a message or a link, if its a link we need a try/catch around the save, the link might be invalid
       if len(message) == 0:
+        #Check that we don't have the same URL within the last 'check_days'
+        since_date = date.today() - timedelta(days=7)
+        q = Post.all().filter("created >", since_date).filter("url =", url).count()
+        url_exists = q > 0 
+        #TODO: add eror messages!
         try:
-          post = Post(url=url,title=title,message=message, user=user)
-          post.put()
-          vote = Vote(user=user, post=post, target_user=post.user)
-          vote.put()
-          Post.remove_cached_count_from_memcache()
-          self.redirect('/noticia/' + str(post.key()));
+          if not url_exists:
+            post = Post(url=url,title=title,message=message, user=user)
+            post.put()
+            vote = Vote(user=user, post=post, target_user=post.user)
+            vote.put()
+            Post.remove_cached_count_from_memcache()
+            self.redirect('/noticia/' + str(post.key()));
+          else: 
+            self.redirect('/agregar?error=1')
         except db.BadValueError:
           self.redirect('/agregar')
       else:
@@ -304,31 +317,56 @@ class MainHandler(webapp.RequestHandler):
       i = i + 1
     self.response.out.write(template.render('templates/main.html', locals()))
 
-
+###
+### TODO Refactor this 2 function to a helper, also add more comments
+###
+def add_childs_to_comment(comment): 
+  """We need to add the childs of each post because we want to render them in the
+     same way we render the Post view. So we need to find all the "preprocessed_childs"
+     Now, we also want to hold a reference to them to be able to pre_fetch them
+  """
+  comment.processed_child = []
+  total_childs = []
+  for child in comment.childs:
+    comment.processed_child.append(child)
+    total_childs.append(child)
+    total_childs.extend(add_childs_to_comment(child))
+  return total_childs 
 
 def filter_user_comments(all_comments, user):
   """ This function removes comments that belong to a thread 
   which had a comment by the same user as a parent """
   res_comments = []
-  for user_comment in all_comments:
+  for user_comment in all_comments: ### Cycle all the comments and find the ones we care
     linked_comment = user_comment
     while(True):
-      if Comment.father.get_value_for_datastore(linked_comment) is None:
-        res_comments.append(user_comment)
+      if Comment.father.get_value_for_datastore(linked_comment) is None: 
+        if not [c for c in res_comments if c.key() == user_comment.key()]:
+          res_comments.append(user_comment) # we care about the ones that are topmost
         break
-      if linked_comment.father.user == user:
+      if linked_comment.father.user.key() == user.key():
+        if not [c for c in res_comments if c.key() == linked_comment.father.key()]:
+          res_comments.append(linked_comment.father) # But we also want to append the "father" ones to avoid having pages with 0 comments
         break
       linked_comment = linked_comment.father
+  # Add Childs here
+  child_list = []
+  for comment in res_comments:
+    comment.is_top_most = True
+    child_list.extend(add_childs_to_comment(comment))
+  prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
   return res_comments
 
 class ThreadsHandler(webapp.RequestHandler):
   def get(self,nickname):
     page = sanitizeHtml(self.request.get('pagina'))
-    perPage = 5
+    perPage = 6
     page = int(page) if page else 1
     realPage = page - 1
     if realPage > 0:
       prevPage = realPage
+    # this is used to tell the template to include the topic
+    threads = True
 
     session = get_current_session()
     if session.has_key('user'):
@@ -338,7 +376,6 @@ class ThreadsHandler(webapp.RequestHandler):
       thread_user = thread_user[0]
       user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
       comments = filter_user_comments(user_comments, thread_user)
-      prefetch_and_order_childs_for_comment_list(comments)
       if (page * perPage) < Comment.all().filter('user =', thread_user).count():
         nextPage = page + 1
       self.response.out.write(template.render('templates/threads.html', locals()))

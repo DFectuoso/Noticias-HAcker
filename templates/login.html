@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Login</h1>
-<form method="POST" action="/login">
+<form method="POST" action="/login" class="validable">
   <fieldset>
-    <label>Username:</label><input name="nickname"/>
-    <label>Password:</label><input type="password" name="password"/>
+    <label>Username:</label><input name="nickname"  class="requerido" />
+    <label>Password:</label><input type="password" name="password"  class="requerido"/>
     <br/><input type="submit" value="Entrar"/>
   </fieldset>
 </form>
 
 <hr/>
 <h1>Crear una cuenta nueva</h1>
-<form method="POST" action="/register">
+<form method="POST" action="/register" class="validable">
   <fieldset>
-    <label>Username:</label><input name="nickname"/>
-    <label>Password:</label><input type="password" name="password"/>
+    <label>Username:</label><input name="nickname"  class="requerido" />
+    <label>Password:</label><input type="password" name="password"  class="requerido" />
     <br/><input type="submit" value="Crear cuenta"/>
   </fieldset>
 </form>

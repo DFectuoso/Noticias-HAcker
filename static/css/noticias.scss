@@ -3,6 +3,8 @@ $light-color: #F2E9E1;
 $dark-grey: #222;
 $soft-grey: #777777;
 $soft-white: #EEEEEE;
+$soft-red: #FFB5C7;
+$dark-red: #FF0A47;
 
 *{
   padding:0;
@@ -60,9 +62,9 @@ a:hover{
     a{
         font-size:13px;
         text-transform:lowercase;
-        line-height:25px;       
+        line-height:25px;
     }
-    
+
     #main_nav{
         position:absolute;
         left:150px;
@@ -74,7 +76,7 @@ a:hover{
         right:0;
         top:0;
         padding:0 10px;
-        
+
         .karma{
             font-size:12px;
             padding:0 5px;
@@ -85,11 +87,14 @@ a:hover{
 }
 
 #content{
-  background-color:$light-color;  
+  background-color:$light-color;
   color: $soft-grey;
 }
 
 .comment{
+  .comment-post{
+    padding:0 0 0 11px;
+  }
   .votes{
     float:left;
     padding: 5px 0 0 11px;
@@ -103,12 +108,12 @@ a:hover{
       img{display:none}
       font-weight:900;
       font-size:1.1em;
-    }    
+    }
   }
   .info{
     font-size:0.8em;
     padding: 0px 10px 5px 10px;
-    
+
   }
   .comment-message{
     color:$dark-grey;
@@ -129,9 +134,9 @@ a:hover{
 }
 
 #post{
-  padding: 5px 5px; 
+  padding: 5px 5px;
   .message{
-    padding: 5px 20px 20px 20px; 
+    padding: 5px 20px 20px 20px;
     color: $dark-grey;
   }
   form{
@@ -146,18 +151,18 @@ a:hover{
 
 .noticia{
   border-bottom:1px solid darken($light-color,3%);
-   
+
   &:nth-child(even){
-    background:darken(desaturate($light-color,6%),2%);      
+    background:darken(desaturate($light-color,6%),2%);
   };
-   
+
   a:visited{
     color:lighten($dark-grey,45%);
     text-decoration:none;
   }
 
   .order-number{
-    float:left;    
+    float:left;
     font-size:13px;
     width:20px;
     padding:0 5px;
@@ -199,7 +204,7 @@ a:hover{
     min-width:36px;
     float:left;
   }
-  
+
 }
 
 .submit{
@@ -266,4 +271,9 @@ fieldset{
 
 textarea {
   font: 100%/120% Verdana, Arial, Helvetica, sans-serif;
+}
+
+input.fielderror, textarea.fielderror {
+    background-color: $soft-red;
+    border: 1px solid $dark-red;
 }

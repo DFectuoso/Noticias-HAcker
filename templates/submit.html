@@ -1,21 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="submit">
+  {% if error %}
+    <h3 style="color:red">{{error}}</h3>
+  {% endif %}
   <h1>Agregar un link</h1>
-  <form method="POST">
+  <form method="POST" class="validable">
     <fieldset>
-      <label>Titulo</label><input class="textfields" name="title"/>
-      <label>Url</label><input class="textfields" name="url"/><br/>
+      <label>Titulo</label><input class="textfields requerido" name="title" />
+      <label>Url</label><input class="textfields requerido" name="url" /><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
   </form>
-  
+
   <hr/>
   <h1>Agregar un mensaje</h1>
-  <form method="POST">
+  <form method="POST" class="validable">
     <fieldset>
-      <label>Titulo</label><input class="textfields" name="title"/>
-      <label>Mensaje</label><textarea name="message"></textarea><br/>
+      <label>Titulo</label><input class="textfields requerido" name="title"/>
+      <label>Mensaje</label><textarea name="message" class="requerido"></textarea><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
   </form>
