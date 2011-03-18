@@ -3,8 +3,8 @@
     <title>Noticias Hacker{% if display_post_title %} | {{post.title}}{% endif %}</title>
     <link rel="stylesheet" href="/static/css/noticias.css" type="text/css"/>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss" />
-    <script src="/static/javascript/jquery.js"></script>
-    <script src="/static/javascript/NH.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/javascript/NH.js"></script>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-2138729-21']);
@@ -23,22 +23,22 @@
               <a href="/" title="Hacker News">
                 <span class="logotype">N</span> Noticias Hacker
               </a>
-          </div>          
-        <div id="menu">                
+          </div>
+        <div id="menu">
           <div id="main_nav">
             <a href="/nuevo">nuevo</a>
 	          {% if user %}
 	            | <a href="/conversaciones/{{user.nickname}}">conversaciones</a>
-	          {% endif %} 
+	          {% endif %}
             | <a href="/agregar">Agregar un link/mensaje</a>
-          </div> 
+          </div>
           <div id="user_toolbar">
             {% if user %}
               <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
               <a href="/logout">Log out</a>
-            {% else %} 
+            {% else %}
               <a href="/login">Login o registro</a>
-            {% endif %} 
+            {% endif %}
           </div>
         </div>
       </div>
@@ -47,10 +47,10 @@
       </div>
       <div id="footer">
           <p>
-              <a href="/rss">RSS</a> | 
-              <a href="/directrices">Directrices</a> | 
-              <a href="/preguntas-frecuentes">Preguntas frecuentes</a> | 
-              <a href="https://github.com/DFectuoso/Noticias-HAcker">Código</a>            
+              <a href="/rss">RSS</a> |
+              <a href="/directrices">Directrices</a> |
+              <a href="/preguntas-frecuentes">Preguntas frecuentes</a> |
+              <a href="https://github.com/DFectuoso/Noticias-HAcker">Código</a>
           </p>
         <p class="disclamer">
           NoticiasHacker es hecho en <a href="https://github.com/DFectuoso/Noticias-HAcker/blob/master/COMMITTERS">comunidad</a> y no esta asociado de ninguna manera a <a href="http://news.ycombinator.com">Hacker News</a>
