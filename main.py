@@ -61,12 +61,9 @@ def parseCommentsToJson(comments,level):
   json = []
   for comment in comments:
     if level == 0 and not comment.father_ref():
-      logging.info('Parsing comment:'+ comment.message +' in first iteration')
       json.append(parseCommentToJson(comment))
     elif(level == 1):
-      logging.info('Parsing comment:'+ comment.message +' in second iteration')
       json.append(parseCommentToJson(comment))
-      logging.info(json);
   return json
 
 # User Mgt Handlers
@@ -175,10 +172,8 @@ class PostHandler(webapp.RequestHandler):
       display_post_title = True
       prefetch_posts_list([post])
       if isJson(post_id):
-        logging.info('json render')
         self.response.out.write(simplejson.dumps({'post':parsePostToJson(locals()['post']),'comments':parseCommentsToJson(locals()['comments'],0)}))
       else:
-        logging.info('regular render')
         self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
       self.redirect('/')
