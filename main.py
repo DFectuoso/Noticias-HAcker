@@ -158,8 +158,12 @@ class PostHandler(webapp.RequestHandler):
       prefetch_posts_list([post])
       if is_json(post_id):
         comments_json = [c.to_json() for c in comments if not c.father_ref()] 
-        self.response.headers['Content-Type'] = "application/json"
-        self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
+        if(self.request.get('callback')):
+          self.response.headers['Content-Type'] = "application/javascript"
+          self.response.out.write(self.request.get('callback')+'('+str({'post':post.to_json(),'comments':comments_json}).replace(': u\'',': \'')+')')
+        else:
+          self.response.headers['Content-Type'] = "application/json"
+          self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
       else:
         self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
