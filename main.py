@@ -99,7 +99,7 @@ class RegisterHandler(webapp.RequestHandler):
 
     already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
     if len(already) == 0:
-      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="", hnuser="", twitter="", email="", url="")
+      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
       user.put()
       if session.is_active():
         session.terminate()
@@ -138,11 +138,18 @@ class ProfileHandler(webapp.RequestHandler):
         twitter = sanitizeHtml(self.request.get('twitter'))
         email = sanitizeHtml(self.request.get('email'))
         url = sanitizeHtml(self.request.get('url'))
+
         user.about = about
         user.hnuser = hnuser
         user.twitter = twitter
-        user.email = email
-        user.url = url
+        try:
+          user.email = email
+        except db.BadValueError:
+          pass
+        try:
+          user.url = url
+        except db.BadValueError:
+          pass
         user.put()
         my_profile = True
         self.redirect('/perfil/' + user.nickname)

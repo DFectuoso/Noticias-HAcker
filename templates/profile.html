@@ -14,10 +14,10 @@
         <input type="text" name="twitter" id="twitter" value="{{profiledUser.twitter}}" />
         <br />
         <label for="email">Email:</label>
-        <input type="text" name="email" id="email" class="email" size="30" value="{{profiledUser.email}}" />
+        <input type="text" name="email" id="email" size="30" value="{% if profiledUser.email %}{{profiledUser.email}}{% endif %}" />
         <br />
         <label for="url">Url:</label>
-        <input type="text" name="url" id="url" class="url" size="30" value="{{profiledUser.url}}" />
+        <input type="text" name="url" id="url" size="30" value="{% if profiledUser.url %}{{profiledUser.url}}{% endif %}" />
         <br />
         <label for="about">Bio:</label>
         <textarea id="about" name="about">{{profiledUser.about}}</textarea>
@@ -27,6 +27,22 @@
     </form>
   {% else %}
     {% if profiledUser.about %}
+      {% if profiledUser.hnuser %}
+        <div class="hnuser">
+          Hackers News User:{{profiledUser.hnuser}}
+        </div>
+      {% endif %}
+      {% if profiledUser.twitter%}
+        <div class="twitter">
+          Twitter: @{{profiledUser.twitter}}
+        </div>
+      {% endif %}
+      {% if profiledUser.url %}
+        <div class="link">
+          Link:<a href="{{profiledUser.url}}">{{profiledUser.url}}</a>
+        </div>
+      {% endif %}
+
       <div class="about">
         {{profiledUser.about}}
       </div>

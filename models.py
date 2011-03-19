@@ -127,8 +127,8 @@ class User(db.Model):
   password            = db.StringProperty(required=True)
   created             = db.DateTimeProperty(auto_now_add=True)
   about               = db.TextProperty(required=False)
-  hnuser              = db.TextProperty(required=False)
-  twitter             = db.TextProperty(required=False)
+  hnuser              = db.StringProperty(required=False, default="")
+  twitter             = db.StringProperty(required=False, default="")
   email               = db.EmailProperty(required=False)
   url                 = db.LinkProperty(required=False)
 
