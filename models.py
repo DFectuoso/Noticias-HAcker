@@ -117,7 +117,7 @@ def prefetch_posts_list(posts):
       post.prefetched_already_voted = False
   # for voted in memcache_voted:
     
-  # TODO get comment count
+  # TODO get comment count, change template and json
   # TODO get already voted
 
 # Models
@@ -156,6 +156,15 @@ class Post(db.Model):
   user    = db.ReferenceProperty(User, collection_name='posts')
   created = db.DateTimeProperty(auto_now_add=True)
   karma   = db.FloatProperty()
+
+  def to_json(self):
+    return {
+      'id':str(self.key()),
+      'title':self.title,
+      'message':self.message,
+      'created':self.created.strftime("%s"),
+      'user':self.user.nickname,
+      'votes':self.sum_votes()}
 
   def url_netloc(self):
     return urlparse(self.url).netloc
@@ -235,6 +244,15 @@ class Comment(db.Model):
 
   def father_ref(self):
     return Comment.father.get_value_for_datastore(self)
+
+  def to_json(self):
+    childs_json = map(lambda u: u.to_json(), self.processed_child)
+    return {
+      'message':self.message,
+      'created':self.created.strftime("%s"),
+      'user':self.user.nickname,
+      'votes':self.prefetched_sum_votes,
+      'comments': childs_json}
 
   def sum_votes(self):
     val = memcache.get("c_" + str(self.key())) 
