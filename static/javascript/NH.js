@@ -23,36 +23,38 @@ function upVoteComment(self, post_key){
 var filters = {
     requerido: function(el) {return ($(el).val() != '' && $(el).val() != -1);},
     email: function(el) {return /^[A-Za-z][A-Za-z0-9_]*@[A-Za-z0-9_]+\.[A-Za-z0-9_.]+[A-za-z]$/.test($(el).val());},
+    url: function(el) {return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test($(el).val());},
     telefono: function(el){return /^[0-9]*$/.test($(el).val());}};
+
 // Extensiones
 $.extend({
-	stop: function(e){
-        if (e.preventDefault) e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-    }
+  stop: function(e){
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
 });
 
 $(document).ready(function() {
-    $("form.validable").bind("submit", function(e){
-		if (typeof filters == 'undefined') return;
-	    $(this).find("input, textarea, select").each(function(x,el){
-	        if ($(el).attr("className") != 'undefined') {
-	        $.each(new String($(el).attr("className")).split(" "), function(x, klass){
-	            if ($.isFunction(filters[klass]))
-	                if (!filters[klass](el))  $(el).addClass("fielderror");
-	        });
-	        }
-	    });
-		if ($(this).find(".fielderror").size() > 0) {
-			$.stop(e || window.event);
-			return false;
-		}
-	    return true;
-	});
-
-    $('.fielderror').live('blur', function() {
-        if ($(this).val() != '') {
-            $(this).removeClass('fielderror');
-        }
+  $("form.validable").bind("submit", function(e){
+  	if (typeof filters == 'undefined') return;
+    $(this).find("input, textarea, select").each(function(x,el){
+      if ($(el).attr("className") != 'undefined') {
+        $.each(new String($(el).attr("className")).split(" "), function(x, klass){
+          if ($.isFunction(filters[klass]))
+            if (!filters[klass](el))  $(el).addClass("fielderror");
+        });
+      }
     });
+    if ($(this).find(".fielderror").size() > 0) {
+      $.stop(e || window.event);
+      return false;
+    }
+    return true;
+  });
+
+  $('.fielderror').live('blur', function() {
+    if ($(this).val() != '') {
+      $(this).removeClass('fielderror');
+    }
+  });
 });

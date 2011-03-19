@@ -58,7 +58,7 @@ def prefetch_comment_list(comments):
   # starting by the already_voted area
   comment_keys = [str(comment.key()) for comment in comments]
   session = get_current_session()
-  if session.has_key('user'): 
+  if session.has_key('user'):
     user = session['user']
     memcache_voted_keys = ["cp_" + comment_key + "_" + str(user.key()) for comment_key in comment_keys]
     memcache_voted = memcache.get_multi(memcache_voted_keys)
@@ -68,7 +68,7 @@ def prefetch_comment_list(comments):
       if vote_value is not None:
         comment.prefetched_already_voted = vote_value == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("comment =", comment).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("comment =", comment).fetch(1)
         memcache_to_add["cp_" + str(comment.key()) + "_" + str(user.key())] = len(vote)
         comment.prefetched_already_voted = len(vote) == 1
     if memcache_to_add.keys():
@@ -85,9 +85,9 @@ def prefetch_comment_list(comments):
     if sum_votes_value is not None:
       comment.prefetched_sum_votes = sum_votes_value
     else:
-      sum_votes = Vote.all().filter("comment =", comment).count() 
-      memcache_to_add["c_" + str(comment.key())] = sum_votes 
-      comment.prefetched_sum_votes =sum_votes 
+      sum_votes = Vote.all().filter("comment =", comment).count()
+      memcache_to_add["c_" + str(comment.key())] = sum_votes
+      comment.prefetched_sum_votes =sum_votes
   if memcache_to_add.keys():
     memcache.add_multi(memcache_to_add, 3600)
 
@@ -97,7 +97,7 @@ def prefetch_posts_list(posts):
 
   # get user, if no user, all already_voted = no
   session = get_current_session()
-  if session.has_key('user'): 
+  if session.has_key('user'):
     user = session['user']
     memcache_voted_keys = ["vp_" + post_key + "_" + str(user.key()) for post_key in posts_keys]
     memcache_voted = memcache.get_multi(memcache_voted_keys)
@@ -107,7 +107,7 @@ def prefetch_posts_list(posts):
       if vote_value is not None:
         post.prefetched_already_voted = vote_value == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("post =", post).fetch(1)
         memcache_to_add["vp_" + str(post.key()) + "_" + str(user.key())] = len(vote)
         post.prefetched_already_voted = len(vote) == 1
     if memcache_to_add.keys():
@@ -116,35 +116,39 @@ def prefetch_posts_list(posts):
     for post in posts:
       post.prefetched_already_voted = False
   # for voted in memcache_voted:
-    
-  # TODO get comment count
+
+  # TODO get comment count, change template and json
   # TODO get already voted
 
 # Models
 class User(db.Model):
   lowercase_nickname  = db.StringProperty(required=True)
   nickname            = db.StringProperty(required=True)
-  password            = db.StringProperty(required=True) 
+  password            = db.StringProperty(required=True)
   created             = db.DateTimeProperty(auto_now_add=True)
-  about               = db.TextProperty()  
+  about               = db.TextProperty(required=False)
+  hnuser              = db.TextProperty(required=False)
+  twitter             = db.TextProperty(required=False)
+  email               = db.EmailProperty(required=False)
+  url                 = db.LinkProperty(required=False)
 
-  @staticmethod 
+  @staticmethod
   def slow_hash(password, iterations=1000):
     h = hashlib.sha1()
     h.update(password)
     h.update(keys.salt_key)
     for x in range(iterations):
       h.update(h.digest())
-    return h.hexdigest() 
+    return h.hexdigest()
 
   def sum_votes(self):
-    val = memcache.get("u_" + str(self.key())) 
+    val = memcache.get("u_" + str(self.key()))
     if val is not None:
       return val
     else:
       val = Vote.all().filter("user !=",self).filter("target_user =",self).count()
-      memcache.add("u_" + str(self.key()), val, 3600) 
-      return val 
+      memcache.add("u_" + str(self.key()), val, 3600)
+      return val
 
   def remove_from_memcache(self):
     memcache.delete("u_" + str(self.key()))
@@ -152,42 +156,51 @@ class User(db.Model):
 class Post(db.Model):
   title   = db.StringProperty(required=True)
   url     = db.LinkProperty(required=False)
-  message = db.TextProperty()  
+  message = db.TextProperty()
   user    = db.ReferenceProperty(User, collection_name='posts')
   created = db.DateTimeProperty(auto_now_add=True)
   karma   = db.FloatProperty()
+
+  def to_json(self):
+    return {
+      'id':str(self.key()),
+      'title':self.title,
+      'message':self.message,
+      'created':self.created.strftime("%s"),
+      'user':self.user.nickname,
+      'votes':self.sum_votes()}
 
   def url_netloc(self):
     return urlparse(self.url).netloc
 
   def cached_comment_count(self):
-    val = memcache.get("pc_" + str(self.key())) 
+    val = memcache.get("pc_" + str(self.key()))
     if val is not None:
       return str(val)
     else:
-      val = self.comments.count() 
-      memcache.add("pc_" + str(self.key()), val, 3600) 
-      return str(val) 
+      val = self.comments.count()
+      memcache.add("pc_" + str(self.key()), val, 3600)
+      return str(val)
 
   def sum_votes(self):
-    val = memcache.get("p_" + str(self.key())) 
+    val = memcache.get("p_" + str(self.key()))
     if val is not None:
       return val
     else:
-      val = self.votes.count() 
-      memcache.add("p_" + str(self.key()), val, 3600) 
-      return val 
+      val = self.votes.count()
+      memcache.add("p_" + str(self.key()), val, 3600)
+      return val
 
   def already_voted(self):
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       # hit memcache for this
       memValue = memcache.get("vp_" + str(self.key()) + "_" + str(user.key()))
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("post =", self).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("post =", self).fetch(1)
         memcache.add("vp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
         return len(vote) == 1
     else:
@@ -197,7 +210,7 @@ class Post(db.Model):
     memcache.delete("pc_" + str(self.key()))
     memcache.delete("p_" + str(self.key()))
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       user.remove_from_memcache()
       memcache.delete("vp_" + str(self.key()) + "_" + str(user.key()))
@@ -205,17 +218,17 @@ class Post(db.Model):
 
   def calculate_karma(self):
     delta = (datetime.now() - self.created)
-    seconds = delta.seconds + delta.days*86400 
+    seconds = delta.seconds + delta.days*86400
     hours = seconds / 3600 + 1
     self.karma = self.sum_votes() / float(hours)
     self.karma = self.karma * self.karma
     self.put()
 
-  @staticmethod 
+  @staticmethod
   def remove_cached_count_from_memcache():
     memcache.delete("Post_count")
 
-  @staticmethod 
+  @staticmethod
   def get_cached_count():
     memValue = memcache.get("Post_count")
     if memValue is not None:
@@ -226,7 +239,7 @@ class Post(db.Model):
       return count
 
 class Comment(db.Model):
-  message = db.TextProperty()  
+  message = db.TextProperty()
   user    = db.ReferenceProperty(User, collection_name='comments')
   post    = db.ReferenceProperty(Post, collection_name='comments')
   father  = db.SelfReferenceProperty(collection_name='childs')
@@ -236,34 +249,43 @@ class Comment(db.Model):
   def father_ref(self):
     return Comment.father.get_value_for_datastore(self)
 
+  def to_json(self):
+    childs_json = map(lambda u: u.to_json(), self.processed_child)
+    return {
+      'message':self.message,
+      'created':self.created.strftime("%s"),
+      'user':self.user.nickname,
+      'votes':self.prefetched_sum_votes,
+      'comments': childs_json}
+
   def sum_votes(self):
-    val = memcache.get("c_" + str(self.key())) 
+    val = memcache.get("c_" + str(self.key()))
     if val is not None:
       return val
     else:
-      val = self.votes.count() 
-      memcache.add("c_" + str(self.key()), val, 3600) 
-      return val 
+      val = self.votes.count()
+      memcache.add("c_" + str(self.key()), val, 3600)
+      return val
 
   def already_voted(self):
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       # hit memcache for this
       memValue = memcache.get("cp_" + str(self.key()) + "_" + str(user.key()))
       if memValue is not None:
         return memValue == 1
       else:
-        vote = Vote.all().filter("user =", user).filter("comment =", self).fetch(1) 
+        vote = Vote.all().filter("user =", user).filter("comment =", self).fetch(1)
         memcache.add("cp_" + str(self.key()) + "_" + str(user.key()), len(vote), 3600)
-        return len(vote) == 1 
+        return len(vote) == 1
     else:
       return False
 
   def remove_from_memcache(self):
     memcache.delete("c_" + str(self.key()))
     session = get_current_session()
-    if session.has_key('user'): 
+    if session.has_key('user'):
       user = session['user']
       user.remove_from_memcache()
       memcache.delete("cp_" + str(self.key()) + "_" + str(user.key()))
@@ -271,7 +293,7 @@ class Comment(db.Model):
 
   def calculate_karma(self):
     delta = (datetime.now() - self.created)
-    seconds = delta.seconds + delta.days*86400 
+    seconds = delta.seconds + delta.days*86400
     hours = seconds / 3600 + 1
     self.karma = float(self.sum_votes() / hours)
     self.karma = self.karma * self.karma
