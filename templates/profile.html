@@ -5,11 +5,25 @@
   <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
   <div>Karma: {{profiledUser.sum_votes}}
   {% if my_profile %}
-    <form method="POST" class="validable">
+    <form method="POST" class="validable profile">
       <fieldset>
-        <textarea name="about">{{profiledUser.about }}</textarea>
-        <br/><input type="submit" value="Cambiar tu mensaje de perfil"/>
+        <label for="hnuser">Usuario HN:</label>
+        <input type="text" name="hnuser" id ="hnuser" value="{{profiledUser.hnuser}}" />
+        <br />
+        <label for="twitter">Twitter:</label>
+        <input type="text" name="twitter" id="twitter" value="{{profiledUser.twitter}}" />
+        <br />
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" class="email" size="30" value="{{profiledUser.email}}" />
+        <br />
+        <label for="url">Url:</label>
+        <input type="text" name="url" id="url" class="url" size="30" value="{{profiledUser.url}}" />
+        <br />
+        <label for="about">Bio:</label>
+        <textarea id="about" name="about">{{profiledUser.about}}</textarea>
       </fieldset>
+      <br />
+      <input type="submit" value="Actualizar perfil"/>
     </form>
   {% else %}
     {% if profiledUser.about %}

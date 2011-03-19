@@ -23,6 +23,7 @@ function upVoteComment(self, post_key){
 var filters = {
     requerido: function(el) {return ($(el).val() != '' && $(el).val() != -1);},
     email: function(el) {return /^[A-Za-z][A-Za-z0-9_]*@[A-Za-z0-9_]+\.[A-Za-z0-9_.]+[A-za-z]$/.test($(el).val());},
+    url: function(el) {return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test($(el).val());},
     telefono: function(el){return /^[0-9]*$/.test($(el).val());}};
 
 // Extensiones

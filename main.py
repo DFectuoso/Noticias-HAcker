@@ -46,7 +46,7 @@ def is_json(value):
     return True
   else:
     return False
-  
+
 def parse_post_id(value):
   if is_json(value):
     return value.split('.')[0]
@@ -99,7 +99,7 @@ class RegisterHandler(webapp.RequestHandler):
 
     already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
     if len(already) == 0:
-      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
+      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="", hnuser="", twitter="", email="", url="")
       user.put()
       if session.is_active():
         session.terminate()
@@ -134,7 +134,15 @@ class ProfileHandler(webapp.RequestHandler):
         profiledUser = profiledUser[0]
       if user.key() == profiledUser.key():
         about = sanitizeHtml(self.request.get('about'))
+        hnuser = sanitizeHtml(self.request.get('hnuser'))
+        twitter = sanitizeHtml(self.request.get('twitter'))
+        email = sanitizeHtml(self.request.get('email'))
+        url = sanitizeHtml(self.request.get('url'))
         user.about = about
+        user.hnuser = hnuser
+        user.twitter = twitter
+        user.email = email
+        user.url = url
         user.put()
         my_profile = True
         self.redirect('/perfil/' + user.nickname)
@@ -152,12 +160,12 @@ class PostHandler(webapp.RequestHandler):
     try:
       post = db.get(parse_post_id(post_id))
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
-      comments = order_comment_list_in_memory(comments) 
+      comments = order_comment_list_in_memory(comments)
       prefetch_comment_list(comments)
       display_post_title = True
       prefetch_posts_list([post])
       if is_json(post_id):
-        comments_json = [c.to_json() for c in comments if not c.father_ref()] 
+        comments_json = [c.to_json() for c in comments if not c.father_ref()]
         self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
       else:
@@ -245,7 +253,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         #Check that we don't have the same URL within the last 'check_days'
         since_date = date.today() - timedelta(days=7)
         q = Post.all().filter("created >", since_date).filter("url =", url).count()
-        url_exists = q > 0 
+        url_exists = q > 0
         #TODO: add eror messages!
         try:
           if not url_exists:
@@ -255,7 +263,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
             vote.put()
             Post.remove_cached_count_from_memcache()
             self.redirect('/noticia/' + str(post.key()));
-          else: 
+          else:
             self.redirect('/agregar?error=1')
         except db.BadValueError:
           self.redirect('/agregar')
@@ -334,7 +342,7 @@ class MainHandler(webapp.RequestHandler):
       post.number = i
       i = i + 1
     if is_json(self.request.url):
-      posts_json = [p.to_json() for p in posts] 
+      posts_json = [p.to_json() for p in posts]
       self.response.headers['Content-Type'] = "application/json"
       self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
@@ -343,7 +351,7 @@ class MainHandler(webapp.RequestHandler):
 ###
 ### TODO Refactor this 2 function to a helper, also add more comments
 ###
-def add_childs_to_comment(comment): 
+def add_childs_to_comment(comment):
   """We need to add the childs of each post because we want to render them in the
      same way we render the Post view. So we need to find all the "preprocessed_childs"
      Now, we also want to hold a reference to them to be able to pre_fetch them
@@ -354,16 +362,16 @@ def add_childs_to_comment(comment):
     comment.processed_child.append(child)
     total_childs.append(child)
     total_childs.extend(add_childs_to_comment(child))
-  return total_childs 
+  return total_childs
 
 def filter_user_comments(all_comments, user):
-  """ This function removes comments that belong to a thread 
+  """ This function removes comments that belong to a thread
   which had a comment by the same user as a parent """
   res_comments = []
   for user_comment in all_comments: ### Cycle all the comments and find the ones we care
     linked_comment = user_comment
     while(True):
-      if Comment.father.get_value_for_datastore(linked_comment) is None: 
+      if Comment.father.get_value_for_datastore(linked_comment) is None:
         if not [c for c in res_comments if c.key() == user_comment.key()]:
           res_comments.append(user_comment) # we care about the ones that are topmost
         break
@@ -426,7 +434,7 @@ class NewHandler(webapp.RequestHandler):
       post.number = i
       i = i + 1
     if is_json(self.request.url):
-      posts_json = [p.to_json() for p in posts] 
+      posts_json = [p.to_json() for p in posts]
       self.response.headers['Content-Type'] = "application/json"
       self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
