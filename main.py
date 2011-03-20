@@ -354,8 +354,12 @@ class MainHandler(webapp.RequestHandler):
       i = i + 1
     if is_json(self.request.url):
       posts_json = [p.to_json() for p in posts]
-      self.response.headers['Content-Type'] = "application/json"
-      self.response.out.write(simplejson.dumps({'posts':posts_json}))
+      if(self.request.get('callback')):
+        self.response.headers['Content-Type'] = "application/javascript"
+        self.response.out.write(self.request.get('callback')+'('+simplejson.dumps({'posts':posts_json})+');')
+      else:
+        self.response.headers['Content-Type'] = "application/json"
+        self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
       self.response.out.write(template.render('templates/main.html', locals()))
 
@@ -446,8 +450,12 @@ class NewHandler(webapp.RequestHandler):
       i = i + 1
     if is_json(self.request.url):
       posts_json = [p.to_json() for p in posts]
-      self.response.headers['Content-Type'] = "application/json"
-      self.response.out.write(simplejson.dumps({'posts':posts_json}))
+      if(self.request.get('callback')):
+        self.response.headers['Content-Type'] = "application/javascript"
+        self.response.out.write(self.request.get('callback')+'('+simplejson.dumps({'posts':posts_json})+');')
+      else:
+        self.response.headers['Content-Type'] = "application/json"
+        self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
       self.response.out.write(template.render('templates/main.html', locals()))
 
