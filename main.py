@@ -20,6 +20,7 @@ import hashlib
 import cgi
 import keys
 
+from libs import PyRSS2Gen
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -29,10 +30,9 @@ from urlparse import urlparse
 from datetime import datetime, date, timedelta
 from django.utils import simplejson
 
-from models import User, Post, Comment, Vote, prefetch_posts_list
-from models import prefetch_comment_list, prefetch_refprops
+from models import User, Post, Comment, Vote 
+import prefetch
 from models import order_comment_list_in_memory
-from libs import PyRSS2Gen
 
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
@@ -179,9 +179,9 @@ class PostHandler(webapp.RequestHandler):
       post = db.get(parse_post_id(post_id))
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
       comments = order_comment_list_in_memory(comments)
-      prefetch_comment_list(comments)
+      prefetch.prefetch_comment_list(comments)
       display_post_title = True
-      prefetch_posts_list([post])
+      prefetch.prefetch_posts_list([post])
       if is_json(post_id):
         comments_json = [c.to_json() for c in comments if not c.father_ref()] 
         if(self.request.get('callback')):
@@ -362,7 +362,7 @@ class MainHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-karma').fetch(perPage, realPage * perPage)
-    prefetch_posts_list(posts)
+    prefetch.prefetch_posts_list(posts)
     i = perPage * realPage + 1
     for post in posts:
       post.number = i
@@ -415,7 +415,7 @@ def filter_user_comments(all_comments, user):
   for comment in res_comments:
     comment.is_top_most = True
     child_list.extend(add_childs_to_comment(comment))
-  prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
+  prefetch.prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
   return res_comments
 
 class ThreadsHandler(webapp.RequestHandler):
@@ -458,7 +458,7 @@ class NewHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)
-    prefetch_posts_list(posts)
+    prefetch.prefetch_posts_list(posts)
     i = perPage * realPage + 1
     for post in posts:
       post.number = i
@@ -485,7 +485,7 @@ class FAQHandler(webapp.RequestHandler):
 class RssHandler(webapp.RequestHandler):
   def get(self):
     posts = Post.all().order('-created').fetch(20)
-    prefetch_posts_list(posts)
+    prefetch.prefetch_posts_list(posts)
 
     items = []
     for post in posts:
