@@ -65,6 +65,13 @@ class LogoutHandler(webapp.RequestHandler):
 class LoginHandler(webapp.RequestHandler):
   def get(self):
     session = get_current_session()
+    if session.has_key('register_error'):
+      register_error = session.pop('register_error')
+    if session.has_key('login_error'):
+      login_error = session.pop('login_error')
+    if session.has_key('login_error_nickname'):
+      login_error_nickname = session.pop('login_error_nickname')
+
     if session.has_key('user'):
       user = session['user']
       self.redirect('/logout')
@@ -72,41 +79,45 @@ class LoginHandler(webapp.RequestHandler):
       self.response.out.write(template.render('templates/login.html', locals()))
 
   def post(self):
-    # TODO: Future; allow the session to store if we got here redirected and redirect back there
+    session = get_current_session()
     nickname = sanitizeHtml(self.request.get('nickname'))
     password = sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
     user = User.all().filter('lowercase_nickname =',nickname.lower()).filter('password =',password).fetch(1)
     if len(user) == 1:
-      session = get_current_session()
       if session.is_active():
         session.terminate()
       session.regenerate_id()
       session['user'] = user[0]
       self.redirect('/')
     else:
+      session['login_error'] = "Usuario y password incorrectos"
+      session['login_error_nickname'] = nickname
       self.redirect('/login')
 
 class RegisterHandler(webapp.RequestHandler):
   def post(self):
-    # TODO: Check for empty name and empty password
-    # TODO: Future; allow the session to store if we got here redirected and redirect back there
     session = get_current_session()
     nickname = sanitizeHtml(self.request.get('nickname'))
     password = sanitizeHtml(self.request.get('password'))
-    password = User.slow_hash(password);
-
-    already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
-    if len(already) == 0:
-      user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
-      user.put()
-      if session.is_active():
-        session.terminate()
-      session.regenerate_id()
-      session['user'] = user
-      self.redirect('/')
+    
+    if len(nickname) > 1 and len(password) > 1:
+      password = User.slow_hash(password);
+      already = User.all().filter("lowercase_nickname =",nickname.lower()).fetch(1)
+      if len(already) == 0:
+        user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
+        user.put()
+        if session.is_active():
+          session.terminate()
+        session.regenerate_id()
+        session['user'] = user
+        self.redirect('/')
+      else:
+        session['register_error'] = "Ya existe alguien con ese nombre de usuario " + nickname
+        self.redirect('/login')
     else:
+      session['register_error'] = "Porfavor escribe un username y un password"
       self.redirect('/login')
 
 # User Handlers

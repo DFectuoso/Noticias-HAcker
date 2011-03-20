@@ -273,6 +273,12 @@ textarea {
   font: 100%/120% Verdana, Arial, Helvetica, sans-serif;
 }
 
+.error{
+  color:$dark-red;
+  padding-left: 20px;
+  font-weight:bold;
+}
+
 input.fielderror, textarea.fielderror {
     background-color: $soft-red;
     border: 1px solid $dark-red;
