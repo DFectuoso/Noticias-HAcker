@@ -91,6 +91,7 @@ class Post(db.Model):
       'created':self.created.strftime("%s"),
       'user':self.user.nickname,
       'comment_count':self.cached_comment_count(),
+      'url':self.url,	  
       'votes':self.sum_votes()}
 
   def url_netloc(self):
