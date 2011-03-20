@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="submit">
-  {% if error %}
-    <h3 style="color:red">{{error}}</h3>
-  {% endif %}
   <h1>Agregar un link</h1>
+  {% if post_error %}
+    <div class="error">{{post_error}}</div>
+  {% endif %}
   <form method="POST" class="validable">
     <fieldset>
       <label>Titulo</label><input class="textfields requerido" name="title" />

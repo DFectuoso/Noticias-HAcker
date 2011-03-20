@@ -252,10 +252,10 @@ class CommentReplyHandler(webapp.RequestHandler):
 
 class SubmitNewStoryHandler(webapp.RequestHandler):
   def get(self):
-    error = sanitizeHtml(self.request.get('error'))
-    if error == "1":
-      error = "Este link ha sido entregado en los ultimos 7 dias por alguien mas"
     session = get_current_session()
+    if session.has_key('post_error'):
+      post_error = session.pop('post_error')
+
     if session.has_key('user'):
       user = session['user']
       self.response.out.write(template.render('templates/submit.html', locals()))
@@ -263,43 +263,47 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
       self.redirect('/login')
 
   def post(self):
+    session = get_current_session()
     url = self.request.get('url')
     title = sanitizeHtml(self.request.get('title'))
     message = sanitizeHtml(self.request.get('message'))
 
-    session = get_current_session()
-    if session.has_key('user') and len(title) > 0:
-      user = session['user']
-      # decide if its a message or a link, if its a link we need a try/catch around the save, the link might be invalid
-      if len(message) == 0:
-        #Check that we don't have the same URL within the last 'check_days'
-        since_date = date.today() - timedelta(days=7)
-        q = Post.all().filter("created >", since_date).filter("url =", url).count()
-        url_exists = q > 0
-        #TODO: add eror messages!
-        try:
-          if not url_exists:
-            post = Post(url=url,title=title,message=message, user=user)
-            post.put()
-            vote = Vote(user=user, post=post, target_user=post.user)
-            vote.put()
-            Post.remove_cached_count_from_memcache()
-            self.redirect('/noticia/' + str(post.key()));
-          else:
-            self.redirect('/agregar?error=1')
-        except db.BadValueError:
-          self.redirect('/agregar')
+    if session.has_key('user'):
+      if len(title) > 0:
+        user = session['user']
+        if len(message) == 0: #is it a post or a message?
+          #Check that we don't have the same URL within the last 'check_days'
+          since_date = date.today() - timedelta(days=7)
+          q = Post.all().filter("created >", since_date).filter("url =", url).count()
+          url_exists = q > 0
+          try:
+            if not url_exists:
+              post = Post(url=url,title=title,message=message, user=user)
+              post.put()
+              vote = Vote(user=user, post=post, target_user=post.user)
+              vote.put()
+              Post.remove_cached_count_from_memcache()
+              self.redirect('/noticia/' + str(post.key()));
+            else:
+              session['post_error'] = "Este link ha sido entregado en los ultimo 7 dias"
+              self.redirect('/agregar')
+          except db.BadValueError:
+            session['post_error'] = "El formato del link no es valido"
+            self.redirect('/agregar')
+        else:
+          post = Post(title=title,message=message, user=user)
+          post.put()
+          post.url = "http://" + urlparse(self.request.url).netloc + "/noticia/" + str(post.key())
+          post.put()
+          Post.remove_cached_count_from_memcache()
+          vote = Vote(user=user, post=post, target_user=post.user)
+          vote.put()
+          self.redirect('/noticia/' + str(post.key()));
       else:
-        post = Post(title=title,message=message, user=user)
-        post.put()
-        post.url = "http://" + urlparse(self.request.url).netloc + "/noticia/" + str(post.key())
-        post.put()
-        Post.remove_cached_count_from_memcache()
-        vote = Vote(user=user, post=post, target_user=post.user)
-        vote.put()
-        self.redirect('/noticia/' + str(post.key()));
+        session['post_error'] = "Necesitas agregar un titulo"
+        self.redirect('/agregar')
     else:
-      self.redirect('/')
+      self.redirect('/login')
 
 # vote handlers
 class UpVoteHandler(webapp.RequestHandler):
