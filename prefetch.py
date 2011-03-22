@@ -102,10 +102,31 @@ def prefetch_posts_list(posts):
   else:
     for post in posts:
       post.prefetched_already_voted = False
-  # for voted in memcache_voted:
-
-  # TODO get comment count, change template and json
-  # TODO get already voted
-
-
-
+  # now the sum_votes
+  memcache_sum_votes_keys = ["p_" + post_key for post_key in posts_keys]
+  memcache_sum_votes = memcache.get_multi(memcache_sum_votes_keys)
+  memcache_to_add = {}
+  for post in posts:
+    sum_votes_value = memcache_sum_votes.get("p_" + str(post.key()))
+    if sum_votes_value is not None:
+      post.prefetched_sum_votes = sum_votes_value
+    else:
+      sum_votes = Vote.all().filter("post =", post).count()
+      memcache_to_add["p_" + str(post.key())] = sum_votes
+      post.prefetched_sum_votes = sum_votes
+  if memcache_to_add.keys():
+    memcache.add_multi(memcache_to_add, 3600)
+  # finally we get all the comment count from memcache
+  memcache_comment_count_keys = ["pc_" + post_key for post_key in posts_keys]
+  memcache_comment_count = memcache.get_multi(memcache_comment_count_keys)
+  memcache_to_add = {}
+  for post in posts:
+    comment_count = memcache_comment_count.get("pc_" + str(post.key()))
+    if comment_count is not None:
+      post.cached_comment_count = comment_count
+    else:
+      comment_count = post.comments.count() 
+      memcache_to_add["pc_" + str(post.key())] = comment_count
+      post.cached_comment_count = comment_count 
+  if memcache_to_add.keys():
+    memcache.add_multi(memcache_to_add, 3600)

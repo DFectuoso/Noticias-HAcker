@@ -17,41 +17,25 @@
 
 import logging
 import hashlib
-import cgi
 import keys
+import prefetch
+import helper
 
-from libs import PyRSS2Gen
+from google.appengine.api import memcache
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import memcache
-from gaesessions import get_current_session
-from urlparse import urlparse
-from datetime import datetime, date, timedelta
-from django.utils import simplejson
 
+from datetime import datetime, date, timedelta
+from gaesessions import get_current_session
+from django.utils import simplejson
+from urlparse import urlparse
+
+from libs import PyRSS2Gen
 from models import User, Post, Comment, Vote 
-import prefetch
-from models import order_comment_list_in_memory
 
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
-
-# some hlpers
-def sanitizeHtml(value):
-  return cgi.escape(value)
-
-def is_json(value):
-  if value.find('.json') >= 0:
-    return True
-  else:
-    return False
-
-def parse_post_id(value):
-  if is_json(value):
-    return value.split('.')[0]
-  else:
-    return value
 
 # User Mgt Handlers
 class LogoutHandler(webapp.RequestHandler):
@@ -80,8 +64,8 @@ class LoginHandler(webapp.RequestHandler):
 
   def post(self):
     session = get_current_session()
-    nickname = sanitizeHtml(self.request.get('nickname'))
-    password = sanitizeHtml(self.request.get('password'))
+    nickname = helper.sanitizeHtml(self.request.get('nickname'))
+    password = helper.sanitizeHtml(self.request.get('password'))
     password = User.slow_hash(password);
 
     user = User.all().filter('lowercase_nickname =',nickname.lower()).filter('password =',password).fetch(1)
@@ -99,8 +83,8 @@ class LoginHandler(webapp.RequestHandler):
 class RegisterHandler(webapp.RequestHandler):
   def post(self):
     session = get_current_session()
-    nickname = sanitizeHtml(self.request.get('nickname'))
-    password = sanitizeHtml(self.request.get('password'))
+    nickname = helper.sanitizeHtml(self.request.get('nickname'))
+    password = helper.sanitizeHtml(self.request.get('password'))
     
     if len(nickname) > 1 and len(password) > 1:
       password = User.slow_hash(password);
@@ -144,11 +128,11 @@ class ProfileHandler(webapp.RequestHandler):
       if len(profiledUser) == 1:
         profiledUser = profiledUser[0]
       if user.key() == profiledUser.key():
-        about = sanitizeHtml(self.request.get('about'))
-        hnuser = sanitizeHtml(self.request.get('hnuser'))
-        twitter = sanitizeHtml(self.request.get('twitter'))
-        email = sanitizeHtml(self.request.get('email'))
-        url = sanitizeHtml(self.request.get('url'))
+        about = helper.sanitizeHtml(self.request.get('about'))
+        hnuser = helper.sanitizeHtml(self.request.get('hnuser'))
+        twitter = helper.sanitizeHtml(self.request.get('twitter'))
+        email = helper.sanitizeHtml(self.request.get('email'))
+        url = helper.sanitizeHtml(self.request.get('url'))
 
         user.about = about
         user.hnuser = hnuser
@@ -176,13 +160,13 @@ class PostHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     try:
-      post = db.get(parse_post_id(post_id))
+      post = db.get(helper.parse_post_id(post_id))
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
-      comments = order_comment_list_in_memory(comments)
+      comments = helper.order_comment_list_in_memory(comments)
       prefetch.prefetch_comment_list(comments)
       display_post_title = True
       prefetch.prefetch_posts_list([post])
-      if is_json(post_id):
+      if helper.is_json(post_id):
         comments_json = [c.to_json() for c in comments if not c.father_ref()] 
         if(self.request.get('callback')):
           self.response.headers['Content-Type'] = "application/javascript"
@@ -199,7 +183,7 @@ class PostHandler(webapp.RequestHandler):
   def post(self, post_id):
     session = get_current_session()
     if session.has_key('user'):
-      message = sanitizeHtml(self.request.get('message'))
+      message = helper.sanitizeHtml(self.request.get('message'))
       user = session['user']
       if len(message) > 0:
         try:
@@ -232,7 +216,7 @@ class CommentReplyHandler(webapp.RequestHandler):
   def post(self,comment_id):
     session = get_current_session()
     if session.has_key('user'):
-      message = sanitizeHtml(self.request.get('message'))
+      message = helper.sanitizeHtml(self.request.get('message'))
       user = session['user']
       if len(message) > 0:
         try:
@@ -265,8 +249,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
   def post(self):
     session = get_current_session()
     url = self.request.get('url')
-    title = sanitizeHtml(self.request.get('title'))
-    message = sanitizeHtml(self.request.get('message'))
+    title = helper.sanitizeHtml(self.request.get('title'))
+    message = helper.sanitizeHtml(self.request.get('message'))
 
     if session.has_key('user'):
       if len(title) > 0:
@@ -349,7 +333,7 @@ class UpVoteCommentHandler(webapp.RequestHandler):
 # Front page
 class MainHandler(webapp.RequestHandler):
   def get(self):
-    page = sanitizeHtml(self.request.get('pagina'))
+    page = helper.sanitizeHtml(self.request.get('pagina'))
     perPage = 20
     page = int(page) if page else 1
     realPage = page - 1
@@ -367,7 +351,7 @@ class MainHandler(webapp.RequestHandler):
     for post in posts:
       post.number = i
       i = i + 1
-    if is_json(self.request.url):
+    if helper.is_json(self.request.url):
       posts_json = [p.to_json() for p in posts]
       if(self.request.get('callback')):
         self.response.headers['Content-Type'] = "application/javascript"
@@ -378,49 +362,9 @@ class MainHandler(webapp.RequestHandler):
     else:
       self.response.out.write(template.render('templates/main.html', locals()))
 
-###
-### TODO Refactor this 2 function to a helper, also add more comments
-###
-def add_childs_to_comment(comment):
-  """We need to add the childs of each post because we want to render them in the
-     same way we render the Post view. So we need to find all the "preprocessed_childs"
-     Now, we also want to hold a reference to them to be able to pre_fetch them
-  """
-  comment.processed_child = []
-  total_childs = []
-  for child in comment.childs:
-    comment.processed_child.append(child)
-    total_childs.append(child)
-    total_childs.extend(add_childs_to_comment(child))
-  return total_childs
-
-def filter_user_comments(all_comments, user):
-  """ This function removes comments that belong to a thread
-  which had a comment by the same user as a parent """
-  res_comments = []
-  for user_comment in all_comments: ### Cycle all the comments and find the ones we care
-    linked_comment = user_comment
-    while(True):
-      if Comment.father.get_value_for_datastore(linked_comment) is None:
-        if not [c for c in res_comments if c.key() == user_comment.key()]:
-          res_comments.append(user_comment) # we care about the ones that are topmost
-        break
-      if linked_comment.father.user.key() == user.key():
-        if not [c for c in res_comments if c.key() == linked_comment.father.key()]:
-          res_comments.append(linked_comment.father) # But we also want to append the "father" ones to avoid having pages with 0 comments
-        break
-      linked_comment = linked_comment.father
-  # Add Childs here
-  child_list = []
-  for comment in res_comments:
-    comment.is_top_most = True
-    child_list.extend(add_childs_to_comment(comment))
-  prefetch.prefetch_comment_list(res_comments + child_list) #Finally we prefetch everything, 1 super call to memcache
-  return res_comments
-
 class ThreadsHandler(webapp.RequestHandler):
   def get(self,nickname):
-    page = sanitizeHtml(self.request.get('pagina'))
+    page = helper.sanitizeHtml(self.request.get('pagina'))
     perPage = 6
     page = int(page) if page else 1
     realPage = page - 1
@@ -436,7 +380,7 @@ class ThreadsHandler(webapp.RequestHandler):
     if len(thread_user) > 0:
       thread_user = thread_user[0]
       user_comments = Comment.all().filter('user =',thread_user).order('-created').fetch(perPage, realPage * perPage)
-      comments = filter_user_comments(user_comments, thread_user)
+      comments = helper.filter_user_comments(user_comments, thread_user)
       if (page * perPage) < Comment.all().filter('user =', thread_user).count():
         nextPage = page + 1
       self.response.out.write(template.render('templates/threads.html', locals()))
@@ -445,7 +389,7 @@ class ThreadsHandler(webapp.RequestHandler):
 
 class NewHandler(webapp.RequestHandler):
   def get(self):
-    page = sanitizeHtml(self.request.get('pagina'))
+    page = helper.sanitizeHtml(self.request.get('pagina'))
     perPage = 20
     page = int(page) if page else 1
     realPage = page - 1
@@ -463,7 +407,7 @@ class NewHandler(webapp.RequestHandler):
     for post in posts:
       post.number = i
       i = i + 1
-    if is_json(self.request.url):
+    if helper.is_json(self.request.url):
       posts_json = [p.to_json() for p in posts]
       if(self.request.get('callback')):
         self.response.headers['Content-Type'] = "application/javascript"

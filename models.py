@@ -27,21 +27,6 @@ from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
 
-def get_comment_from_list(comment_key,comments):
-  return [comment for comment in comments if comment.key() ==  comment_key]
-
-def order_comment_list_in_memory(comments):
-  # order childs for display
-  for comment in comments:
-    comment.processed_child = []
-  for comment in comments:
-    father_key = Comment.father.get_value_for_datastore(comment)
-    if father_key is not None:
-      father_comment = get_comment_from_list(father_key,comments)
-      if len(father_comment) == 1:
-        father_comment[0].processed_child.append(comment)
-  return comments
-
 # Models
 class User(db.Model):
   lowercase_nickname  = db.StringProperty(required=True)
@@ -90,22 +75,15 @@ class Post(db.Model):
       'message':self.message,
       'created':self.created.strftime("%s"),
       'user':self.user.nickname,
-      'comment_count':self.cached_comment_count(),
+      'comment_count':self.cached_comment_count,
       'url':self.url,	  
-      'votes':self.sum_votes()}
+      'votes':self.prefetched_sum_votes}
 
   def url_netloc(self):
     return urlparse(self.url).netloc
 
-  def cached_comment_count(self):
-    val = memcache.get("pc_" + str(self.key()))
-    if val is not None:
-      return str(val)
-    else:
-      val = self.comments.count()
-      memcache.add("pc_" + str(self.key()), val, 3600)
-      return str(val)
-
+  # This is duplicated code from the pre_fetcher
+  # Do not edit if you don't update those functions too
   def sum_votes(self):
     val = memcache.get("p_" + str(self.key()))
     if val is not None:
@@ -115,6 +93,8 @@ class Post(db.Model):
       memcache.add("p_" + str(self.key()), val, 3600)
       return val
 
+  # This is duplicated code from the pre_fetcher
+  # Do not edit if you don't update those functions too
   def already_voted(self):
     session = get_current_session()
     if session.has_key('user'):
@@ -182,6 +162,8 @@ class Comment(db.Model):
       'votes':self.prefetched_sum_votes,
       'comments': childs_json}
 
+  # This is duplicated code from the pre_fetcher
+  # Do not edit if you don't update those functions too
   def sum_votes(self):
     val = memcache.get("c_" + str(self.key()))
     if val is not None:
@@ -191,6 +173,8 @@ class Comment(db.Model):
       memcache.add("c_" + str(self.key()), val, 3600)
       return val
 
+  # This is duplicated code from the pre_fetcher
+  # Do not edit if you don't update those functions too
   def already_voted(self):
     session = get_current_session()
     if session.has_key('user'):
@@ -229,5 +213,4 @@ class Vote(db.Model):
   post        = db.ReferenceProperty(Post, collection_name='votes')
   comment     = db.ReferenceProperty(Comment, collection_name='votes')
   created     = db.DateTimeProperty(auto_now_add=True)
-
 
