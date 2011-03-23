@@ -221,8 +221,10 @@ class Comment(db.Model):
     delta = (datetime.now() - self.created)
     seconds = delta.seconds + delta.days*86400
     hours = seconds / 3600 + 1
-    self.karma = float(self.sum_votes() / hours)
-    self.karma = self.karma * self.karma
+    votes = self.sum_votes() 
+    gravity = 1.8
+    karma = (votes - 1) / pow((hours + 2), gravity)
+    self.karma = karma 
     self.put()
 
 class Vote(db.Model):
