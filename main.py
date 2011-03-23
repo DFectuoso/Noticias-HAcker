@@ -29,7 +29,6 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from datetime import datetime, date, timedelta
 from gaesessions import get_current_session
 from django.utils import simplejson
-from urlparse import urlparse
 
 from libs import PyRSS2Gen
 from models import User, Post, Comment, Vote 
@@ -354,7 +353,7 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
         else:
           post = Post(title=title,message=message, user=user)
           post.put()
-          post.url = "http://" + urlparse(self.request.url).netloc + "/noticia/" + str(post.key())
+          post.url = helper.base_url(self) + "/noticia/" + str(post.key())
           post.put()
           Post.remove_cached_count_from_memcache()
           vote = Vote(user=user, post=post, target_user=post.user)
@@ -511,12 +510,13 @@ class RssHandler(webapp.RequestHandler):
     items = []
     for post in posts:
       if len(post.message) == 0:
-          rss_poster = post.url
+          rss_poster = '<a href="'+post.url+'">'+post.url+'</a>'
       else:
           rss_poster = post.message
+      rss_poster += ' por <a href="'+helper.base_url(self)+'/perfil/'+post.user.nickname+'">'+post.user.nickname+'</a>'
       items.append(PyRSS2Gen.RSSItem(
           title = post.title,
-          link = "http://noticiashacker.com/noticia/" + str(post.key()),
+          link = helper.base_url(self)+'/noticia/' + str(post.key()),
           description = rss_poster,
           guid = PyRSS2Gen.Guid("guid1"),
           pubDate = post.created
