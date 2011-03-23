@@ -17,6 +17,7 @@
 
 import cgi
 import prefetch
+from urlparse import urlparse
 from models import User, Post, Comment, Vote 
 
 def sanitizeHtml(value):
@@ -86,3 +87,6 @@ def order_comment_list_in_memory(comments):
         father_comment[0].processed_child.append(comment)
   return comments
 
+def base_url(self):
+  uri = urlparse(self.request.url)
+  return uri.scheme +'://'+ uri.netloc
