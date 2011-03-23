@@ -16,7 +16,9 @@
       {% endif %}
     </div>
     <div class="post-info">
-      {{post.prefetched_sum_votes}} puntos, entregado por <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}} | 
-      <a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
+      {{post.prefetched_sum_votes}} puntos, entregado por <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}}
+      {% if post.edited %}*{% endif %}
+      | <a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
+      {% if post.can_edit %}| <a href="/editar-noticia/{{post.key}}">editar</a> {% endif %}
     </div>
   </div>

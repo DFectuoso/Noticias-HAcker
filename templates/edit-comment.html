@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="submit">
+  <form method="POST" class="validable">
+    <fieldset>
+      <label>Mensaje</label><textarea name="message" class="requerido">{{comment.message}}</textarea><br/>
+      <input type="submit" value="Agregar"/>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

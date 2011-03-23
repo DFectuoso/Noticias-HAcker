@@ -201,6 +201,46 @@ class PostHandler(webapp.RequestHandler):
     else:
       self.redirect('/login')
 
+class EditPostHandler(webapp.RequestHandler):
+  def get(self, post_id):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      try:
+        post = db.get(helper.parse_post_id(post_id))
+        if post.can_edit():
+          self.response.out.write(template.render('templates/edit-post.html', locals()))
+        else:
+          self.redirect('/')
+      except db.BadKeyError:
+        self.redirect('/')
+    else:
+      self.redirect('/')
+
+  def post(self, post_id):
+    session = get_current_session()
+    title = helper.sanitizeHtml(self.request.get('title'))
+    message = helper.sanitizeHtml(self.request.get('message'))
+
+    if session.has_key('user'):
+      user = session['user']
+      try:
+        post = db.get(helper.parse_post_id(post_id))
+        if post.can_edit():
+          if len(title) > 0:
+            post.title = title
+          if post.message is not None and message is not None:
+            post.message = message
+          post.edited = True
+          post.put()
+          self.redirect('/noticia/' + str(post.key()))
+        else:
+          self.redirect('/')
+      except db.BadKeyError:
+        self.redirect('/')  
+    else:
+      self.redirect('/')
+
 class CommentReplyHandler(webapp.RequestHandler):
   def get(self,comment_id):
     session = get_current_session()
@@ -233,6 +273,43 @@ class CommentReplyHandler(webapp.RequestHandler):
         self.redirect('/responder/' + comment_id)
     else:
       self.redirect('/login')
+
+class EditCommentHandler(webapp.RequestHandler):
+  def get(self, comment_id):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      try:
+        comment = db.get(helper.parse_post_id(comment_id))
+        if comment.can_edit():
+          self.response.out.write(template.render('templates/edit-comment.html', locals()))
+        else:
+          self.redirect('/')
+      except db.BadKeyError:
+        self.redirect('/')
+    else:
+      self.redirect('/')
+
+  def post(self, comment_id):
+    session = get_current_session()
+    message = helper.sanitizeHtml(self.request.get('message'))
+
+    if session.has_key('user'):
+      user = session['user']
+      try:
+        comment = db.get(helper.parse_post_id(comment_id))
+        if comment.can_edit():
+          if message is not None:
+            comment.message = message
+          comment.edited = True
+          comment.put()
+          self.redirect('/noticia/' + str(comment.post.key()))
+        else:
+          self.redirect('/')
+      except db.BadKeyError:
+        self.redirect('/')  
+    else:
+      self.redirect('/')
 
 class SubmitNewStoryHandler(webapp.RequestHandler):
   def get(self):
@@ -470,7 +547,9 @@ def main():
       ('/upvote_comment/(.+)', UpVoteCommentHandler),
       ('/perfil/(.+)', ProfileHandler),
       ('/noticia/(.+)', PostHandler),
+      ('/editar-noticia/(.+)', EditPostHandler),
       ('/responder/(.+)', CommentReplyHandler),
+      ('/editar-comentario/(.+)', EditCommentHandler),
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),

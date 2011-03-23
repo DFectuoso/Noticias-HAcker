@@ -67,6 +67,7 @@ class Post(db.Model):
   user    = db.ReferenceProperty(User, collection_name='posts')
   created = db.DateTimeProperty(auto_now_add=True)
   karma   = db.FloatProperty()
+  edited  = db.BooleanProperty(default=False)
 
   def to_json(self):
     return {
@@ -81,6 +82,14 @@ class Post(db.Model):
 
   def url_netloc(self):
     return urlparse(self.url).netloc
+
+  def can_edit(self):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      if self.user.key() == user.key():
+        return True
+    return False
 
   # This is duplicated code from the pre_fetcher
   # Do not edit if you don't update those functions too
@@ -149,6 +158,7 @@ class Comment(db.Model):
   father  = db.SelfReferenceProperty(collection_name='childs')
   created = db.DateTimeProperty(auto_now_add=True)
   karma   = db.FloatProperty()
+  edited  = db.BooleanProperty(default=False)
 
   def father_ref(self):
     return Comment.father.get_value_for_datastore(self)
@@ -161,6 +171,14 @@ class Comment(db.Model):
       'user':self.user.nickname,
       'votes':self.prefetched_sum_votes,
       'comments': childs_json}
+
+  def can_edit(self):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      if self.user.key() == user.key():
+        return True
+    return False
 
   # This is duplicated code from the pre_fetcher
   # Do not edit if you don't update those functions too

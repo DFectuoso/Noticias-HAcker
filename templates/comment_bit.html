@@ -13,6 +13,8 @@
   </div>
   <div class="info">
     {{comment.prefetched_sum_votes}} puntos, entregado por <a href="/perfil/{{comment.user.nickname}}">{{comment.user.nickname}}</a> hace {{comment.created|timesince|hacetiempo}}
+    {% if comment.edited %}*{% endif %}
+    {% if comment.can_edit %}| <a href="/editar-comentario/{{comment.key}}">editar</a> {% endif %}
   </div>
   <div class="comment-message">
     {{comment.message|urlize|linebreaks}}
