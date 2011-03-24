@@ -133,8 +133,10 @@ class Post(db.Model):
     delta = (datetime.now() - self.created)
     seconds = delta.seconds + delta.days*86400
     hours = seconds / 3600 + 1
-    self.karma = self.sum_votes() / float(hours)
-    self.karma = self.karma * self.karma
+    votes = self.sum_votes() 
+    gravity = 1.8
+    karma = (votes - 1) / pow((hours + 2), gravity)
+    self.karma = karma 
     self.put()
 
   @staticmethod
