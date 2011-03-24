@@ -62,13 +62,14 @@ class User(db.Model):
     memcache.delete("u_" + str(self.key()))
 
 class Post(db.Model):
-  title   = db.StringProperty(required=True)
-  url     = db.LinkProperty(required=False)
-  message = db.TextProperty()
-  user    = db.ReferenceProperty(User, collection_name='posts')
-  created = db.DateTimeProperty(auto_now_add=True)
-  karma   = db.FloatProperty()
-  edited  = db.BooleanProperty(default=False)
+  title     = db.StringProperty(required=True)
+  url       = db.LinkProperty(required=False)
+  message   = db.TextProperty()
+  user      = db.ReferenceProperty(User, collection_name='posts')
+  created   = db.DateTimeProperty(auto_now_add=True)
+  karma     = db.FloatProperty()
+  edited    = db.BooleanProperty(default=False)
+  twittered = db.BooleanProperty(default=False)
 
   def to_json(self):
     return {

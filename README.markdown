@@ -14,6 +14,26 @@ cookie_key = 'UNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGAUNASTRINGALEAT
 
 salt_key = 'UNASTRINGALEATORIAMUYLARGA'
 
+Si quisieras usar el bot de twitter tambien necesitarias agregar las siguientes llaves de la misma manera:
+
+consumer_key = ""
+
+consumer_secret = ""
+
+access_token = ""
+
+access_token_secret = ""
+
+bitly_login = ''
+
+bitly_apikey = ''
+
+base_url = '' # Esto es para que solo funcione en el dominio adecuado y no en el sitio de pruebas
+
+
+CSS
+---
+
 Para modificar el css requieres compilar los archivos scss con [sass](http://sass-lang.com/)
 
 Estado actual:

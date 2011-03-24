@@ -13,6 +13,9 @@ handlers:
 - url: /robots.txt
   static_files: static/robots.txt
   upload: static/robots.txt
+- url: /tasks/send_top_to_twitter
+  script: crons.py
+  login: admin
 - url: /tasks/update_top_karma
   script: crons.py
   login: admin

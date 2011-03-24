@@ -18,6 +18,8 @@
 import logging
 import hashlib
 import cgi
+import keys
+import sys
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
@@ -31,12 +33,45 @@ from gaesessions import delete_expired_sessions
 from models import User, Post, Comment, Vote
 from random import choice
 
+from libs import bitly
+sys.path.insert(0, 'libs/tweepy.zip')
+import tweepy
+import helper
+
+
 class TopHandler(webapp.RequestHandler):
   def get(self):
     posts = Post.all().order('-karma').fetch(50)
     post = choice(posts)
     post.calculate_karma()
     self.response.out.write("ok")
+
+def sendMessageToTwitter(self, post):
+  bitlyApi = bitly.Api(login=keys.bitly_login, apikey=keys.bitly_apikey) 
+  auth = tweepy.OAuthHandler(keys.consumer_key, keys.consumer_secret)
+  auth.set_access_token(keys.access_token, keys.access_token_secret)
+  twitterapi = tweepy.API(auth)
+  url =  helper.base_url(self) + "/noticia/" + str(post.key())
+  shortUrl = bitlyApi.shorten(url)
+  title = post.title[:115]
+  message = title + "... " + shortUrl
+  twitterapi.update_status(message)
+  return message
+
+class TwitterHandler(webapp.RequestHandler):
+  def get(self):
+    if hasattr(keys,'consumer_key') and hasattr(keys,'consumer_secret') and hasattr(keys,'access_token') and hasattr(keys,'access_token_secret') and hasattr(keys,'bitly_login') and hasattr(keys,'bitly_apikey') and hasattr(keys,'base_url') and helper.base_url(self) == keys.base_url:
+      posts = Post.all().order('-karma').fetch(20)
+      for post in posts:
+        if not post.twittered:
+          post.twittered = True
+          post.put()
+          out = sendMessageToTwitter(self,post)
+          self.response.out.write("Printed:" + out)  
+          return
+      self.response.out.write("No more message")
+    else:
+      self.response.out.write("No keys")
 
 class SessionsHandler(webapp.RequestHandler):
   def get(self):
@@ -48,6 +83,7 @@ class SessionsHandler(webapp.RequestHandler):
 def main():
   application = webapp.WSGIApplication([
       ('/tasks/update_top_karma', TopHandler),
+      ('/tasks/send_top_to_twitter', TwitterHandler),
       ('/tasks/cleanup_sessions', SessionsHandler),
   ], debug=True)
   util.run_wsgi_app(application)
