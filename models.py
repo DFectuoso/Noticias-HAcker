@@ -38,6 +38,7 @@ class User(db.Model):
   twitter             = db.StringProperty(required=False, default="")
   email               = db.EmailProperty(required=False)
   url                 = db.LinkProperty(required=False)
+  admin               = db.BooleanProperty(default=False)
 
   @staticmethod
   def slow_hash(password, iterations=1000):
@@ -87,7 +88,7 @@ class Post(db.Model):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-      if self.user.key() == user.key():
+      if self.user.key() == user.key() or user.admin:
         return True
     return False
 
@@ -178,7 +179,7 @@ class Comment(db.Model):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-      if self.user.key() == user.key():
+      if self.user.key() == user.key() or user.admin:
         return True
     return False
 
