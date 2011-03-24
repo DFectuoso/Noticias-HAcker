@@ -318,6 +318,9 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
 
     if session.has_key('user'):
       user = session['user']
+      get_url = self.request.get('url')
+      get_title = self.request.get('title')
+      base_url = helper.base_url(self)
       self.response.out.write(template.render('templates/submit.html', locals()))
     else:
       self.redirect('/login')

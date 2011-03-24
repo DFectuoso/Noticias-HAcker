@@ -7,11 +7,12 @@
   {% endif %}
   <form method="POST" class="validable">
     <fieldset>
-      <label>Titulo</label><input class="textfields requerido" name="title" />
-      <label>Url</label><input class="textfields requerido url" name="url" /><br/>
+      <label>Titulo</label><input class="textfields requerido" name="title" value="{{ get_title }}"/>
+      <label>Url</label><input class="textfields requerido url" name="url" value="{{ get_url }}"/><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
   </form>
+  <p><a href="javascript:(function(){ var title = document.getElementsByTagName('title')[0].innerHTML;var url = location.href;window.location = '{{ base_url }}/agregar?title='+encodeURIComponent(title)+'&url='+encodeURIComponent(url); })();">Bookmark</a></p>
 
   <hr/>
   <h1>Agregar un mensaje</h1>
