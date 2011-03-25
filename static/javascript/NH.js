@@ -63,16 +63,10 @@ $(document).ready(function() {
 	comment = $(this).closest('.comment');
 	if($(this).html() == '[-]'){
 		$(this).html('[+]');
-		$('> .comment-message',comment).hide();
-		$('> .innerComments',comment).hide();
-		$('> .reply',comment).hide();
-		$('> .votes',comment).hide();
+		$('> .comment-message, > .innerComments, > .reply, > .votes',comment).hide();
 	}else{
 		$(this).html('[-]');
-		$('> .comment-message',comment).show();
-		$('> .innerComments',comment).show();
-		$('> .reply',comment).show();
-		$('> .votes',comment).show();
+		$('> .comment-message, > .innerComments, > .reply, > .votes',comment).show();
 	}
 	
   });
