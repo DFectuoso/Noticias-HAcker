@@ -15,13 +15,13 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 
-import cgi
 import prefetch
 from urlparse import urlparse
 from models import User, Post, Comment, Vote 
+from django.utils.html import escape
 
 def sanitizeHtml(value):
-  return cgi.escape(value)
+  return escape(value)
 
 def is_json(value):
   if value.find('.json') >= 0:
