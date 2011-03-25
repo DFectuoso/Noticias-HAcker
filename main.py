@@ -318,8 +318,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
 
     if session.has_key('user'):
       user = session['user']
-      get_url = helper.sanitizeHtml(self.request.get('url'))
-      get_title = helper.sanitizeHtml(self.request.get('title'))
+      get_url = helper.sanitizeHtml(self.request.get('url_bookmarklet'))
+      get_title = helper.sanitizeHtml(self.request.get('title_bookmarklet'))
       self.response.out.write(template.render('templates/submit.html', locals()))
     else:
       self.redirect('/login')
