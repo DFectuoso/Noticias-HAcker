@@ -77,7 +77,10 @@ a:hover {
       display: none; }
 .comment .info {
   font-size: 0.8em;
-  padding: 0px 10px 5px 10px; }
+  padding: 0px 10px 5px 30px; }
+  .comment .info .hide-show-comment {
+    display: none;
+    cursor: pointer; }
 .comment .comment-message {
   color: #222222;
   padding-left: 32px; }
