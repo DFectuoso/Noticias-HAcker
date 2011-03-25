@@ -318,8 +318,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
 
     if session.has_key('user'):
       user = session['user']
-      get_url = self.request.get('url')
-      get_title = self.request.get('title')
+      get_url = helper.sanitizeHtml(self.request.get('url'))
+      get_title = helper.sanitizeHtml(self.request.get('title'))
       base_url = helper.base_url(self)
       self.response.out.write(template.render('templates/submit.html', locals()))
     else:
