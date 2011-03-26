@@ -57,4 +57,17 @@ $(document).ready(function() {
       $(this).removeClass('fielderror');
     }
   });
+  
+  $('.hide-show-comment').show();
+  $('#post').delegate('.hide-show-comment','click',function(){
+	comment = $(this).closest('.comment');
+	if($(this).html() == '[-]'){
+		$(this).html('[+]');
+		$('> .comment-message, > .innerComments, > .reply, > .votes',comment).hide();
+	}else{
+		$(this).html('[-]');
+		$('> .comment-message, > .innerComments, > .reply, > .votes',comment).show();
+	}
+	
+  });
 });

@@ -112,8 +112,12 @@ a:hover{
   }
   .info{
     font-size:0.8em;
-    padding: 0px 10px 5px 10px;
-
+    padding: 0px 10px 5px 30px;
+    
+    .hide-show-comment{
+	  display:none;
+      cursor: pointer;
+	}
   }
   .comment-message{
     color:$dark-grey;
