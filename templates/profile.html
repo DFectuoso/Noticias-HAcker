@@ -4,6 +4,7 @@
   <h1>{{profiledUser.nickname}}</h1>
   <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
   <div>Karma: {{profiledUser.sum_votes}}
+  <div>Karma promedio: {{profiledUser.average_karma}}
   {% if my_profile %}
     <form method="POST" class="validable profile">
       <fieldset>

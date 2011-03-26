@@ -56,6 +56,8 @@ class User(db.Model):
     delta = (datetime.now() - self.created)
     days = delta.days
     votes = self.karma
+    if votes is None:
+      votes = 0
     if days > 0:
       return votes/float(days)
     else:
