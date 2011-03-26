@@ -8,12 +8,12 @@
     <span class="karma">Karma</span>
     <span class="average_karma">Karma promedio</span>
   </div>
-  {% for user in users %}
+  {% for u in users %}
     <div class="leader-user">
-      <span class="position">{{user.pos}}</span>
-      <span class="nickname">{{user.nickname}}</span>
-      <span class="karma">{{user.karma}}</span>
-      <span class="average_karma">{{user.average_karma}}</span>
+      <span class="position">{{u.pos}}</span>
+      <span class="nickname">{{u.nickname}}</span>
+      <span class="karma">{{u.karma}}</span>
+      <span class="average_karma">{{u.average_karma}}</span>
     </div>
   {% endfor %}
 </div>

@@ -496,6 +496,42 @@ class NewHandler(webapp.RequestHandler):
     else:
       self.response.out.write(template.render('templates/main.html', locals()))
 
+class UserPostsHandler(webapp.RequestHandler):
+  def get(self, user):
+    page = helper.sanitizeHtml(self.request.get('pagina'))
+    target_user_str= helper.sanitizeHtml(helper.parse_post_id(user))
+    perPage = 20
+    page = int(page) if page else 1
+    realPage = page - 1
+    if realPage > 0:
+      prevPage = realPage
+
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+    target_user = User.all().filter('lowercase_nickname =', target_user_str).fetch(1)
+    if len(target_user) > 0:
+      posts = Post.all().filter('user =',target_user[0]).order('-created').fetch(perPage,perPage * realPage)
+      if (page * perPage) < Post.all().filter('user =',target_user[0]).order('-created').count():
+        nextPage = page + 1
+      prefetch.prefetch_posts_list(posts)
+      i = perPage * realPage + 1
+      for post in posts:
+        post.number = i
+        i = i + 1
+      if helper.is_json(self.request.url):
+        posts_json = [p.to_json() for p in posts]
+        if(self.request.get('callback')):
+          self.response.headers['Content-Type'] = "application/javascript"
+          self.response.out.write(self.request.get('callback')+'('+simplejson.dumps({'posts':posts_json})+');')
+        else:
+          self.response.headers['Content-Type'] = "application/json"
+          self.response.out.write(simplejson.dumps({'posts':posts_json}))
+      else:
+        self.response.out.write(template.render('templates/main.html', locals()))
+    else:
+      self.redirect('/')
+
 class GuidelinesHandler(webapp.RequestHandler):
   def get(self):
     self.response.out.write(template.render('templates/guidelines.html', locals()))
@@ -506,10 +542,14 @@ class FAQHandler(webapp.RequestHandler):
 
 class LeaderHandler(webapp.RequestHandler):
   def get(self):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+
     users = User.all().order("-karma").fetch(100)
     i = 1
-    for user in users:
-      user.pos = i
+    for u in users:
+      u.pos = i
       i = i + 1
     self.response.out.write(template.render('templates/leaders.html', locals()))
 
@@ -553,6 +593,7 @@ def main():
       ('/preguntas-frecuentes', FAQHandler),
       ('/nuevo', NewHandler),
       ('/nuevo.json', NewHandler),
+      ('/noticias-usuario/(.+)', UserPostsHandler),
       ('/agregar', SubmitNewStoryHandler),
       ('/upvote/(.+)', UpVoteHandler),
       ('/upvote_comment/(.+)', UpVoteCommentHandler),
