@@ -35,6 +35,8 @@ class User(db.Model):
   created             = db.DateTimeProperty(auto_now_add=True)
   about               = db.TextProperty(required=False)
   hnuser              = db.StringProperty(required=False, default="")
+  github              = db.StringProperty(required=False, default="")
+  location            = db.StringProperty(required=False, default="")
   twitter             = db.StringProperty(required=False, default="")
   email               = db.EmailProperty(required=False)
   url                 = db.LinkProperty(required=False)

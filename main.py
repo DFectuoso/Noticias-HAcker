@@ -129,11 +129,15 @@ class ProfileHandler(webapp.RequestHandler):
       if user.key() == profiledUser.key():
         about = helper.sanitizeHtml(self.request.get('about'))
         hnuser = helper.sanitizeHtml(self.request.get('hnuser'))
+        location = helper.sanitizeHtml(self.request.get('location'))
+        github = helper.sanitizeHtml(self.request.get('github'))
         twitter = helper.sanitizeHtml(self.request.get('twitter'))
         email = helper.sanitizeHtml(self.request.get('email'))
         url = helper.sanitizeHtml(self.request.get('url'))
 
         user.about = about
+        user.location = location
+        user.github = github
         user.hnuser = hnuser
         user.twitter = twitter
         try:

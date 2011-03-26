@@ -10,6 +10,12 @@
         <label for="hnuser">Usuario HN:</label>
         <input type="text" name="hnuser" id ="hnuser" value="{{profiledUser.hnuser}}" />
         <br />
+        <label for="github">Usuario Github:</label>
+        <input type="text" name="github" id ="github" value="{{profiledUser.github}}" />
+        <br />
+        <label for="location">Localización:</label>
+        <input type="text" name="location" id ="localizacion" value="{{profiledUser.location}}" />
+        <br />
         <label for="twitter">Twitter:</label>
         <input type="text" name="twitter" id="twitter" value="{{profiledUser.twitter}}" />
         <br />
@@ -30,6 +36,16 @@
       {% if profiledUser.hnuser %}
         <div class="hnuser">
           Hackers News User:{{profiledUser.hnuser}}
+        </div>
+      {% endif %}
+      {% if profiledUser.github %}
+        <div class="github">
+          Github User:{{profiledUser.github}}
+        </div>
+      {% endif %}
+      {% if profiledUser.location %}
+        <div class="localizacion">
+          Localización:{{profiledUser.location}}
         </div>
       {% endif %}
       {% if profiledUser.twitter%}
