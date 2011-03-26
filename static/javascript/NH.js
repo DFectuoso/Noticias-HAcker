@@ -22,9 +22,22 @@ function upVoteComment(self, post_key){
  */
 var filters = {
     requerido: function(el) {return ($(el).val() != '' && $(el).val() != -1);},
-    email: function(el) {return /^[A-Za-z][A-Za-z0-9_]*@[A-Za-z0-9_]+\.[A-Za-z0-9_.]+[A-za-z]$/.test($(el).val());},
-    url: function(el) {return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test($(el).val());},
-    telefono: function(el){return /^[0-9]*$/.test($(el).val());}};
+    email: function(el) {
+        if ($(el).val() != '') {
+            /**
+             * Regexp from: http://fightingforalostcause.net/misc/2006/compare-email-regex.php
+             */
+            return /^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i.test($(el).val());
+        }
+        return true;
+    },
+    url: function(el) {
+        if ($(el).val() != '') {
+            return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test($(el).val());
+        }
+        return true;
+    }
+};
 
 // Extensiones
 $.extend({
@@ -57,7 +70,7 @@ $(document).ready(function() {
       $(this).removeClass('fielderror');
     }
   });
-  
+
   $('.hide-show-comment').show();
   $('#post').delegate('.hide-show-comment','click',function(){
 	comment = $(this).closest('.comment');
@@ -68,6 +81,6 @@ $(document).ready(function() {
 		$(this).html('[-]');
 		$('> .comment-message, > .innerComments, > .reply, > .votes',comment).show();
 	}
-	
+
   });
 });
