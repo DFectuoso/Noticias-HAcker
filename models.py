@@ -39,6 +39,7 @@ class User(db.Model):
   email               = db.EmailProperty(required=False)
   url                 = db.LinkProperty(required=False)
   admin               = db.BooleanProperty(default=False)
+  karma               = db.IntegerProperty(required=False)
 
   @staticmethod
   def slow_hash(password, iterations=1000):
@@ -55,6 +56,8 @@ class User(db.Model):
       return val
     else:
       val = Vote.all().filter("user !=",self).filter("target_user =",self).count()
+      self.karma = val
+      self.put()
       memcache.add("u_" + str(self.key()), val, 3600)
       return val
 
