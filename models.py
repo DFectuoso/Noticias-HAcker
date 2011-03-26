@@ -50,6 +50,15 @@ class User(db.Model):
       h.update(h.digest())
     return h.hexdigest()
 
+  def average_karma(self):
+    delta = (datetime.now() - self.created)
+    days = delta.days
+    votes = self.karma
+    if days > 0:
+      return votes/float(days)
+    else:
+      return votes
+
   def sum_votes(self):
     val = memcache.get("u_" + str(self.key()))
     if val is not None:

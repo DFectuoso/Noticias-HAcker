@@ -204,3 +204,18 @@ textarea {
 input.fielderror, textarea.fielderror {
   background-color: #ffb5c7;
   border: 1px solid #ff0a47; }
+
+.leaderboard {
+  padding: 25px 50px; }
+  .leaderboard .leader-user .position {
+    width: 50px;
+    float: left; }
+  .leaderboard .leader-user .nickname {
+    width: 150px;
+    float: left; }
+  .leaderboard .leader-user .karma {
+    width: 50px;
+    float: left; }
+  .leaderboard .leader-user .karma {
+    width: 50px;
+    float: left; }

@@ -504,6 +504,15 @@ class FAQHandler(webapp.RequestHandler):
   def get(self):
     self.response.out.write(template.render('templates/faq.html', locals()))
 
+class LeaderHandler(webapp.RequestHandler):
+  def get(self):
+    users = User.all().order("-karma").fetch(100)
+    i = 1
+    for user in users:
+      user.pos = i
+      i = i + 1
+    self.response.out.write(template.render('templates/leaders.html', locals()))
+
 class RssHandler(webapp.RequestHandler):
   def get(self):
     posts = Post.all().order('-created').fetch(20)
@@ -552,6 +561,7 @@ def main():
       ('/editar-noticia/(.+)', EditPostHandler),
       ('/responder/(.+)', CommentReplyHandler),
       ('/editar-comentario/(.+)', EditCommentHandler),
+      ('/lideres', LeaderHandler),
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),

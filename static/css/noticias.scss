@@ -288,3 +288,24 @@ input.fielderror, textarea.fielderror {
     border: 1px solid $dark-red;
 }
 
+.leaderboard{
+  padding: 25px 50px;
+  .leader-user{
+    .position{
+      width:50px;
+      float:left;
+    }
+    .nickname{
+      width:150px;
+      float:left;
+    }
+    .karma{
+      width:50px;
+      float:left;
+    }
+    .karma{
+      width:50px;
+      float:left;
+    }
+  }
+}
