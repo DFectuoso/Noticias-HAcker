@@ -11,7 +11,7 @@
   {% for u in users %}
     <div class="leader-user">
       <span class="position">{{u.pos}}</span>
-      <span class="nickname">{{u.nickname}}</span>
+      <span class="nickname"><a href="/perfil/{{u.nickname}}">{{u.nickname}}</a></span>
       <span class="karma">{{u.karma}}</span>
       <span class="average_karma">{{u.average_karma}}</span>
     </div>
