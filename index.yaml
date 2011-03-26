@@ -1,6 +1,12 @@
 indexes:
 - kind: Post
   properties:
+  - name: user
+  - name: created
+    direction: desc
+
+- kind: Post
+  properties:
   - name: url
   - name: created
 
