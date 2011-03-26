@@ -546,7 +546,7 @@ class LeaderHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
 
-    users = User.all().order("-karma").fetch(100)
+    users = User.all().order("-karma").fetch(50)
     i = 1
     for u in users:
       u.pos = i
