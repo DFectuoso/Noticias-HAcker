@@ -283,6 +283,11 @@ textarea {
   font-weight:bold;
 }
 
+.success{
+  color:$bright-color;
+  font-weight:bold;
+}
+
 input.fielderror, textarea.fielderror {
     background-color: $soft-red;
     border: 1px solid $dark-red;

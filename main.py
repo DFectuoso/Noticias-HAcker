@@ -109,6 +109,8 @@ class ProfileHandler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
+    if session.has_key('profile_saved'):
+      profile_saved = session.pop('profile_saved')
     profiledUser = User.all().filter('nickname =',nickname).fetch(1)
     if len(profiledUser) == 1:
       profiledUser = profiledUser[0]
@@ -150,6 +152,7 @@ class ProfileHandler(webapp.RequestHandler):
           pass
         user.put()
         my_profile = True
+        session['profile_saved'] = True 
         self.redirect('/perfil/' + user.nickname)
       else:
         self.redirect('/')

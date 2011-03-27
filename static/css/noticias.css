@@ -201,6 +201,10 @@ textarea {
   padding-left: 20px;
   font-weight: bold; }
 
+.success {
+  color: #8fb933;
+  font-weight: bold; }
+
 input.fielderror, textarea.fielderror {
   background-color: #ffb5c7;
   border: 1px solid #ff0a47; }

@@ -8,6 +8,9 @@
   {% if my_profile %}
     <br />
     <form method="POST" class="validable profile">
+      {% if profile_saved %}
+        <div class="success">El perfil ha sido guardado en la base de datos</div>
+      {% endif %}
       <fieldset>
         <label for="hnuser">Usuario HN:</label>
         <input type="text" name="hnuser" id ="hnuser" value="{{profiledUser.hnuser}}" />
