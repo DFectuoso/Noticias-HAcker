@@ -3,8 +3,8 @@
 <div class="profile">
   <h1>{{profiledUser.nickname}}</h1>
   <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
-  <div>Karma: {{profiledUser.sum_votes}}<br />
-  Karma promedio: {{profiledUser.average_karma}}</div>
+  <div>Karma: {{profiledUser.sum_votes}}</div>
+  <div>Karma promedio: {{profiledUser.average_karma}}</div>
   {% if my_profile %}
     <br />
     <form method="POST" class="validable profile">
@@ -37,7 +37,7 @@
     <br />
     {% if profiledUser.hnuser %}
       <div class="hnuser">
-        Hackers News User: <a href="http://news.ycombinator.com/user?id={{profiledUser.hnuser}}">{{profiledUser.hnuser}}</a>
+        Hackers News User: <a href="http://news.ycombinator.com/user?id={{profiledUser.hnuser}}" rel="nofollow">{{profiledUser.hnuser}}</a>
       </div>
     {% endif %}
     {% if profiledUser.github %}
@@ -52,12 +52,12 @@
     {% endif %}
     {% if profiledUser.twitter%}
       <div class="twitter">
-        Twitter: <a href="https://twitter.com/{{profiledUser.twitter}}">@{{profiledUser.twitter}}</a>
+        Twitter: <a href="https://twitter.com/{{profiledUser.twitter}}" rel="nofollow">@{{profiledUser.twitter}}</a>
       </div>
     {% endif %}
     {% if profiledUser.url %}
       <div class="link">
-        Link: <a href="{{profiledUser.url}}">{{profiledUser.url}}</a>
+        Link: <a href="{{profiledUser.url}}" rel="nofollow">{{profiledUser.url}}</a>
       </div>
     {% endif %}
     {% if profiledUser.about %}
