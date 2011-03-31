@@ -618,7 +618,7 @@ class NotificationsInboxHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
       page = helper.sanitizeHtml(self.request.get('pagina'))
-      perPage = 5
+      perPage = 10
       page = int(page) if page else 1
       realPage = page - 1
       inbox = True
@@ -640,7 +640,7 @@ class NotificationsInboxAllHandler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
       page = helper.sanitizeHtml(self.request.get('pagina'))
-      perPage = 5
+      perPage = 10
       page = int(page) if page else 1
       realPage = page - 1
       inboxAll = True
