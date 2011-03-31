@@ -17,12 +17,12 @@
   {% for notification in notifications %}
     <li class="notification">
       <p><a href="/perfil/{{notification.sender_user.nickname}}">{{notification.sender_user.nickname}}</a><span> comentó en el tema <a href="{{notification.post.url}}">{{notification.post.title}}</a > hace </span><span>{{notification.created|timesince|hacetiempo}}</span></p> 
-      <p class="post-info">{{notification.comment.message}}</p>
+      <div class="post-info">{{notification.comment.message}}</div>
       <p class="reply">
         <a href="/responder/{{notification.comment.key}}">Responder</a> 
         {% if not notification.read %}
-        <span> | </span>
-        <a href="/inbox/marcar-como-leido/{{notification.key}}" onclick="markAsRead(this,'{{notification.key}}'); return false;">Marcar como leido</a>
+          <span> | </span>
+          <a href="/inbox/marcar-como-leido/{{notification.key}}" onclick="markAsRead(this,'{{notification.key}}'); return false;">Marcar como leído</a>
         {% endif %}
       </p>
     </li>

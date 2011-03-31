@@ -1,4 +1,4 @@
-application: test-noticias-hacker
+application: noticiashacker
 version: 1
 runtime: python
 api_version: 1
