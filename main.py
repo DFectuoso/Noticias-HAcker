@@ -617,7 +617,16 @@ class NotificationsInboxHandler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-      notifications = Notification.all().filter("target_user =",user).filter("read =",False).fetch(100)
+      page = helper.sanitizeHtml(self.request.get('pagina'))
+      perPage = 2
+      page = int(page) if page else 1
+      realPage = page - 1
+      if realPage > 0:
+        prevPage = realPage
+      if (page * perPage) < Notification.all().filter("target_user =",user).filter("read =",False).count():
+        nextPage = page + 1
+ 
+      notifications = Notification.all().filter("target_user =",user).filter("read =",False).order("-created").fetch(perPage,perPage * realPage)
       prefetch.prefetch_refprops(notifications,Notification.post,Notification.comment,Notification.sender_user)
       self.response.out.write(template.render('templates/notifications.html', locals()))
     else:
