@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Inbox</h1>
+{% if inbox %}
+  <h1>Notificaciones no leídas</h1>
+{% else %}
+  <h1>Todas las notificaciones</h1>
+{% endif %}
+
+
+<div class="notifications-menu">
+  <a href="/inbox" {% if inbox %}class="page"{% endif %}>No leidos</a> |
+  <a href="/inbox/all" {% if inboxAll %}class="page"{% endif %}>Todos</a>
+</div>
+
 <ul class="notifications">
   {% for notification in notifications %}
     <li class="notification">
@@ -9,7 +20,7 @@
       <p class="reply">
         <a href="/responder/{{notification.comment.key}}">Responder</a> 
         <span> | </span>
-        <a href="/inbox/marcar-como-leido/{{notification.key}}">Marcar como leido</a>
+        <a href="/inbox/marcar-como-leido/{{notification.key}}" onclick="markAsRead(this,'{{notification.key}}'); return false;">Marcar como leido</a>
       </p>
     </li>
   {% endfor %}

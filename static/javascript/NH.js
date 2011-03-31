@@ -1,3 +1,13 @@
+function markAsRead(self, notification_key){
+  $.get('/inbox/marcar-como-leido/' + notification_key, function(data) {
+    if (data == 'Ok'){
+      $(self).parents(".notification").hide();
+    } else if (data == 'Bad'){
+      window.location = "/login"
+    }
+  });
+}
+
 function upVote(self, post_key){
   $.get('/upvote/' + post_key, function(data) {
     if (data == 'Ok'){

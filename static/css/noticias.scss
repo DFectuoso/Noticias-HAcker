@@ -314,6 +314,14 @@ input.fielderror, textarea.fielderror {
     }
   }
 }
+
+.notifications-menu{
+  padding: 0 0 0 20px;
+  .page{
+    font-weight:bold;
+  }
+}
+
 .notifications{
   .notification{
     list-style: none;
