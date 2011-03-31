@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Inbox</h1>
+{% if inbox %}
+  <h1>Notificaciones no leídas</h1>
+{% else %}
+  <h1>Todas las notificaciones</h1>
+{% endif %}
+<div class="notifications-menu">
+  <a href="/inbox" {% if inbox %}class="page"{% endif %}>No leidos</a> |
+  <a href="/inbox/all" {% if inboxAll %}class="page"{% endif %}>Todos</a>
+</div>
 <ul class="notifications">
   {% for notification in notifications %}
     <li class="notification">
@@ -10,8 +18,20 @@
         <a href="/responder/{{notification.comment.key}}">Responder</a> 
         <span> | </span>
         <a href="/inbox/marcar-como-leido/{{notification.key}}">Marcar como leído</a>
+
       </p>
     </li>
   {% endfor %}
 </ul>
+<div id="pages">
+  {% if prevPage %}
+    <a class="prevPage" href="?pagina={{prevPage}}">&#171; anterior</a>
+  {% endif %}
+  {% if prevPage and nextPage %}
+     &nbsp; | &nbsp;
+  {% endif %}
+  {% if nextPage %}
+    <a class="nextPage" href="?pagina={{nextPage}}">siguiente &#187;</a>
+  {% endif %}
+</div>
 {% endblock %}
