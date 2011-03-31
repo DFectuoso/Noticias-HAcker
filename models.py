@@ -77,6 +77,18 @@ class User(db.Model):
   def remove_from_memcache(self):
     memcache.delete("u_" + str(self.key()))
 
+  def has_notifications(self):
+    count_notificationes = memcache.get("user_notification_" + str(self.key()))
+    if count_notificationes is not None:
+      return count_notificationes > 0 
+    else:
+      count_notificationes = Notification.all().filter("target_user =",self).filter("read =", False).count()
+      memcache.add("user_notification_" + str(self.key()), count_notificationes, 3600)
+      return count_notificationes > 0 
+
+  def remove_notifications_from_memcache(self):
+    memcache.delete("user_notification_" + str(self.key()))
+
 class Post(db.Model):
   title     = db.StringProperty(required=True)
   url       = db.LinkProperty(required=False)
@@ -254,3 +266,18 @@ class Vote(db.Model):
   comment     = db.ReferenceProperty(Comment, collection_name='votes')
   created     = db.DateTimeProperty(auto_now_add=True)
 
+class Notification(db.Model):
+  target_user = db.ReferenceProperty(User, collection_name='notifications')
+  sender_user = db.ReferenceProperty(User, collection_name='send_notifications')
+  post        = db.ReferenceProperty(Post)
+  comment     = db.ReferenceProperty(Comment)
+  created     = db.DateTimeProperty(auto_now_add=True)
+  read        = db.BooleanProperty(default=False)
+
+  @staticmethod
+  def create_notification_for_comment_and_user(comment,target_user):
+    notification = Notification(target_user=target_user,post=comment.post,comment=comment,sender_user=comment.user)
+    notification.put()
+    target_user.remove_notifications_from_memcache()
+    return notification
+ 

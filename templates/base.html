@@ -35,6 +35,11 @@
           </div>
           <div id="user_toolbar">
             {% if user %}
+              {% if user.has_notifications %}
+                <span><a href="/inbox">Inbox :)</a></span>
+              {% else %}
+                <span><a href="/inbox">Inbox :(</a></span>
+              {% endif %}
               <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
               <a href="/logout">Log out</a>
             {% else %}

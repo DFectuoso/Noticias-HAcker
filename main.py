@@ -31,7 +31,7 @@ from gaesessions import get_current_session
 from django.utils import simplejson
 
 from libs import PyRSS2Gen
-from models import User, Post, Comment, Vote 
+from models import User, Post, Comment, Vote, Notification
 
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
@@ -199,6 +199,7 @@ class PostHandler(webapp.RequestHandler):
           comment.put()
           vote = Vote(user=user, comment=comment, target_user=user)
           vote.put()
+          Notification.create_notification_for_comment_and_user(comment,post.user)
           self.redirect('/noticia/' + post_id)
         except db.BadKeyError:
           self.redirect('/')
@@ -272,6 +273,7 @@ class CommentReplyHandler(webapp.RequestHandler):
           comment.post.remove_from_memcache()
           vote = Vote(user=user, comment=comment, target_user=user)
           vote.put()
+          Notification.create_notification_for_comment_and_user(comment,parentComment.user)
           self.redirect('/noticia/' + str(parentComment.post.key()))
         except db.BadKeyError:
           self.redirect('/')
@@ -590,6 +592,37 @@ class RssHandler(webapp.RequestHandler):
     print 'Content-Type: text/xml'
     self.response.out.write(rss.to_xml('utf-8'))
 
+class NotificationsMarkAsReadHandler(webapp.RequestHandler):
+  def get(self,notification_key):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      try:
+        notification = db.get(helper.sanitizeHtml(notification_key))
+        if str(notification.target_user.key()) == str(user.key()):
+          notification.read = True
+          notification.put()
+          user.remove_notifications_from_memcache()
+          self.redirect('/inbox')
+        else:
+          self.redirect('/')
+      except db.BadKeyError:
+        self.redirect('/')
+    else:
+      self.redirect('/')
+
+# Notifications
+class NotificationsInboxHandler(webapp.RequestHandler):
+  def get(self):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+      notifications = Notification.all().filter("target_user =",user).filter("read =",False).fetch(100)
+      prefetch.prefetch_refprops(notifications,Notification.post,Notification.comment,Notification.sender_user)
+      self.response.out.write(template.render('templates/notifications.html', locals()))
+    else:
+      self.redirect('/login')
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
@@ -609,6 +642,8 @@ def main():
       ('/editar-noticia/(.+)', EditPostHandler),
       ('/responder/(.+)', CommentReplyHandler),
       ('/editar-comentario/(.+)', EditCommentHandler),
+      ('/inbox', NotificationsInboxHandler),
+      ('/inbox/marcar-como-leido/(.+)', NotificationsMarkAsReadHandler),
       ('/lideres', LeaderHandler),
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),

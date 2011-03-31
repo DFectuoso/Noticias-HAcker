@@ -223,3 +223,6 @@ input.fielderror, textarea.fielderror {
   .leaderboard .leader-user .karma {
     width: 50px;
     float: left; }
+
+.notifications .notification {
+  margin: 20px 0 15px 20px; }
