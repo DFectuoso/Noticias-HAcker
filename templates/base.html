@@ -36,9 +36,9 @@
           <div id="user_toolbar">
             {% if user %}
               {% if user.has_notifications %}
-                <span><a href="/inbox">Inbox :)</a></span>
+                <a href="/inbox"><img src="/static/images/sobre.png"/></a>
               {% else %}
-                <span><a href="/inbox">Inbox :(</a></span>
+                <a href="/inbox"><img src="/static/images/sobre_gris.png"/><a>
               {% endif %}
               <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
               <a href="/logout">Log out</a>
