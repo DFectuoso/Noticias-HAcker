@@ -20,8 +20,10 @@
       <p class="post-info">{{notification.comment.message}}</p>
       <p class="reply">
         <a href="/responder/{{notification.comment.key}}">Responder</a> 
+        {% if not notification.read %}
         <span> | </span>
         <a href="/inbox/marcar-como-leido/{{notification.key}}" onclick="markAsRead(this,'{{notification.key}}'); return false;">Marcar como leido</a>
+        {% endif %}
       </p>
     </li>
   {% endfor %}
