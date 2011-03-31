@@ -1,20 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="notifications">
-  <h1>Inbox</h1>
-
+<h1>Inbox</h1>
+<ul class="notifications">
   {% for notification in notifications %}
-    <div class="notification">
-      <div>Tema: <a href="{{notification.post.url}}">{{notification.post.title}}</a ></div>
-      <div> enviado por <a href="/perfil/{{notification.sender_user.nickname}}">{{notification.sender_user.nickname}}</a> hace {{notification.created|timesince|hacetiempo}}</div> 
-      <div class="post-info">
-        <div>{{notification.comment.message}}</div>
-      </div>
-      <div class="reply">
-        <a href="/responder/{{notification.comment.key}}">Responder</a> |
+    <li class="notification">
+      <p><a href="/perfil/{{notification.sender_user.nickname}}">{{notification.sender_user.nickname}}</a><span> comentó en el tema <a href="{{notification.post.url}}">{{notification.post.title}}</a > hace </span><span>{{notification.created|timesince|hacetiempo}}</span></p> 
+      <p class="post-info">{{notification.comment.message}}</p>
+      <p class="reply">
+        <a href="/responder/{{notification.comment.key}}">Responder</a> 
+        <span> | </span>
         <a href="/inbox/marcar-como-leido/{{notification.key}}">Marcar como leido</a>
-      </div>
-    </div>
+      </p>
+    </li>
   {% endfor %}
-</div>
+</ul>
 {% endblock %}
