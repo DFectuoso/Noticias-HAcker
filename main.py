@@ -646,10 +646,10 @@ class NotificationsInboxAllHandler(webapp.RequestHandler):
       inboxAll = True
       if realPage > 0:
         prevPage = realPage
-      if (page * perPage) < Notification.all().filter("target_user =",user).filter("read =",True).count():
+      if (page * perPage) < Notification.all().filter("target_user =",user).count():
         nextPage = page + 1
  
-      notifications = Notification.all().filter("target_user =",user).filter("read =",True).order("-created").fetch(perPage,perPage * realPage)
+      notifications = Notification.all().filter("target_user =",user).order("-created").fetch(perPage,perPage * realPage)
       prefetch.prefetch_refprops(notifications,Notification.post,Notification.comment,Notification.sender_user)
       self.response.out.write(template.render('templates/notifications.html', locals()))
     else:
