@@ -165,10 +165,11 @@ a:hover {
   font-weight: bold; }
 
 #footer {
-  height: 50px;
+  font-size: 12px;
   line-height: 17px;
   text-align: center;
-  background-color: #8fb933; }
+  background-color: #8fb933;
+  padding: 5px 0; }
   #footer .disclamer {
     line-height: 15px;
     font-size: 0.8em; }
@@ -234,3 +235,9 @@ input.fielderror, textarea.fielderror {
   margin: 20px 0 15px 20px; }
   .notifications .notification .reply {
     font-size: 0.8em; }
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #8EB932;
+  margin: 7px 0; }
