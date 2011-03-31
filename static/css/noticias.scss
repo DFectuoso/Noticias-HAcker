@@ -58,8 +58,8 @@ a:hover{
     }
   }
 
-  #menu{
-    a{
+  #menu {
+    a {
         font-size:13px;
         text-transform:lowercase;
         line-height:25px;
@@ -239,11 +239,11 @@ a:hover{
 }
 
 #footer{
-  height:50px;
+  font-size:12px;
   line-height:17px;
   text-align:center;
   background-color:$bright-color;
-
+  padding: 5px 0;
   .disclamer{
     line-height:15px;
     font-size:0.8em;
@@ -331,3 +331,10 @@ input.fielderror, textarea.fielderror {
     }
   }
 }
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #8EB932;
+  margin: 7px 0;
+} //hr
