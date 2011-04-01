@@ -9,8 +9,8 @@
 
 
 <div class="notifications-menu">
-  <a href="/inbox" {% if inbox %}class="page"{% endif %}>No leidos</a> |
-  <a href="/inbox/all" {% if inboxAll %}class="page"{% endif %}>Todos</a>
+  <a id="unread" href="/inbox" {% if inbox %}class="page"{% endif %}>No leidos</a> |
+  <a id="all" href="/inbox/all" {% if inboxAll %}class="page"{% endif %}>Todos</a>
 </div>
 
 <ul class="notifications">

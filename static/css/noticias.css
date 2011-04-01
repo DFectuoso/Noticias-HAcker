@@ -229,6 +229,12 @@ input.fielderror, textarea.fielderror {
   padding: 0 0 0 20px; }
   .notifications-menu .page {
     font-weight: bold; }
+  .notifications-menu #all {
+    background: transparent url(/static/images/sobre.png) no-repeat scroll 0 0;
+    padding-left: 20px; }
+  .notifications-menu #unread {
+    background: transparent url(/static/images/sobre_active.png) no-repeat scroll 0 0;
+    padding-left: 20px; }
 
 .notifications .notification {
   list-style: none;
