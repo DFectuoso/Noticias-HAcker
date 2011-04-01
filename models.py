@@ -46,20 +46,11 @@ class User(db.Model):
   @staticmethod
   def slow_hash(password, iterations=1000):
     h = hashlib.sha1()
-    h.update(User.in_ascii(password))
+    h.update(unicode(password).encode("utf-8"))
     h.update(keys.salt_key)
     for x in range(iterations):
       h.update(h.digest())
     return h.hexdigest()
-
-  @staticmethod
-  def in_ascii( password ):
-    try:
-      password.decode('ascii')
-    except UnicodeEncodeError:
-       return repr(password)
-    else:
-       return password
 
   def average_karma(self):
     delta = (datetime.now() - self.created)
