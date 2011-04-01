@@ -30,6 +30,7 @@ bitly_apikey = ''
 
 base_url = '' # Esto es para que solo funcione en el dominio adecuado y no en el sitio de pruebas
 
+base_url_custom_url = '' # Esto es si tienes un dominio diferente a appspot
 
 CSS
 ---
