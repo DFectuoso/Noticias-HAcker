@@ -17,7 +17,7 @@
   {% for notification in notifications %}
     <li class="notification">
       <p><a href="/perfil/{{notification.sender_user.nickname}}">{{notification.sender_user.nickname}}</a><span> comentó en el tema <a href="{{notification.post.url}}">{{notification.post.title}}</a > hace </span><span>{{notification.created|timesince|hacetiempo}}</span></p> 
-      <div class="post-info">{{notification.comment.message}}</div>
+      <div class="post-info">{{notification.comment.message|urlize|linebreaks}}</div>
       <p class="reply">
         <a href="/responder/{{notification.comment.key}}">Responder</a> 
         {% if not notification.read %}
