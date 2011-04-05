@@ -2,7 +2,7 @@
 <html>
   <head>
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
-    <title>Noticias Hacker{% if display_post_title %} | {{post.title}}{% endif %}</title>
+    <title>{% if display_post_title %}{{post.title}} || {% endif %}Noticias Hacker</title>
     <link rel="stylesheet" href="/static/css/noticias.css" type="text/css"/>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
