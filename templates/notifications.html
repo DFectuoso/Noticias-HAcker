@@ -24,6 +24,8 @@
           <span> | </span>
           <a href="/inbox/marcar-como-leido/{{notification.key}}" onclick="markAsRead(this,'{{notification.key}}'); return false;">Marcar como leído</a>
         {% endif %}
+          <span> | </span>
+          <a href="{{notification.post.url}}#comment-{{notification.comment.key}}">Ver conversación</a>		
       </p>
     </li>
   {% endfor %}
