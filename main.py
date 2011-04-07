@@ -655,6 +655,54 @@ class NotificationsInboxAllHandler(webapp.RequestHandler):
     else:
       self.redirect('/login')
 
+class APIGitHubHandler(webapp.RequestHandler):
+  def get(self):
+    json = memcache.get("api_github")
+    if json is None:
+      users = User.all().filter("github !=", "").fetch(1000)
+      github_user_string = [u.github for u in users]
+      json = simplejson.dumps({'github_users':github_user_string})
+      memcache.add("api_github",json,3600)
+
+    if(self.request.get('callback')):
+      self.response.headers['Content-Type'] = "application/javascript"
+      self.response.out.write(self.request.get('callback')+'(' + json + ')')
+    else:
+      self.response.headers['Content-Type'] = "application/json"
+      self.response.out.write(json)
+
+class APITwitterHandler(webapp.RequestHandler):
+  def get(self):
+    json = memcache.get("api_twitter")
+    if json is None:
+      users = User.all().filter("twitter !=", "").fetch(1000)
+      twitter_user_string = [u.twitter for u in users]
+      json = simplejson.dumps({'twitter_users':twitter_user_string})
+      memcache.add("api_twitter",json,3600)
+
+    if(self.request.get('callback')):
+      self.response.headers['Content-Type'] = "application/javascript"
+      self.response.out.write(self.request.get('callback')+'(' + json + ')')
+    else:
+      self.response.headers['Content-Type'] = "application/json"
+      self.response.out.write(json)
+
+class APIHackerNewsHandler(webapp.RequestHandler):
+  def get(self):
+    json = memcache.get("api_hackernews")
+    if json is None:
+      users = User.all().filter("hnuser !=", "").fetch(1000)
+      hackernews_user_string = [u.hnuser for u in users]
+      json = simplejson.dumps({'hackernews_users':hackernews_user_string})
+      memcache.add("api_hackernews",json,3600)
+
+    if(self.request.get('callback')):
+      self.response.headers['Content-Type'] = "application/javascript"
+      self.response.out.write(self.request.get('callback')+'(' + json + ')')
+    else:
+      self.response.headers['Content-Type'] = "application/json"
+      self.response.out.write(json)
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
@@ -682,6 +730,9 @@ def main():
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
       ('/rss', RssHandler),
+      ('/api/usuarios/github', APIGitHubHandler),
+      ('/api/usuarios/twitter', APITwitterHandler),
+      ('/api/usuarios/hackernews', APIHackerNewsHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 
