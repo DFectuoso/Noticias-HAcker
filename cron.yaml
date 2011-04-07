@@ -4,7 +4,7 @@ cron:
   schedule: every 5 minutes
 - description: Send a twitter message with new top 20 post 
   url: /tasks/send_top_to_twitter
-  schedule: every 5 minutes
+  schedule: every 7 minutes
 - description: daily session cleanup
   url: /tasks/cleanup_sessions
   schedule: every 24 hours
