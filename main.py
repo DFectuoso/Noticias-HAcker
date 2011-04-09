@@ -660,7 +660,7 @@ class APIGitHubHandler(webapp.RequestHandler):
     json = memcache.get("api_github")
     if json is None:
       users = User.all().filter("github !=", "").fetch(1000)
-      github_user_string = [u.github for u in users]
+      github_user_string = [{u.nickname:u.github} for u in users]
       json = simplejson.dumps({'github_users':github_user_string})
       memcache.add("api_github",json,3600)
 
@@ -676,7 +676,7 @@ class APITwitterHandler(webapp.RequestHandler):
     json = memcache.get("api_twitter")
     if json is None:
       users = User.all().filter("twitter !=", "").fetch(1000)
-      twitter_user_string = [u.twitter for u in users]
+      twitter_user_string = [{u.nickname:u.twitter} for u in users]
       json = simplejson.dumps({'twitter_users':twitter_user_string})
       memcache.add("api_twitter",json,3600)
 
@@ -692,7 +692,7 @@ class APIHackerNewsHandler(webapp.RequestHandler):
     json = memcache.get("api_hackernews")
     if json is None:
       users = User.all().filter("hnuser !=", "").fetch(1000)
-      hackernews_user_string = [u.hnuser for u in users]
+      hackernews_user_string = [{u.nickname:u.hnuser} for u in users]
       json = simplejson.dumps({'hackernews_users':hackernews_user_string})
       memcache.add("api_hackernews",json,3600)
 
