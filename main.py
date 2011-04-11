@@ -106,6 +106,7 @@ class RegisterHandler(webapp.RequestHandler):
 # User Handlers
 class ProfileHandler(webapp.RequestHandler):
   def get(self,nickname):
+    nickname = helper.parse_post_id(nickname)
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
@@ -117,7 +118,15 @@ class ProfileHandler(webapp.RequestHandler):
       #TODO fix this horrible way of testing for the user
       if session.has_key('user') and user.key() == profiledUser.key():
         my_profile = True
-      self.response.out.write(template.render('templates/profile.html', locals()))
+      if helper.is_json(self.request.url):
+        if(self.request.get('callback')):
+          self.response.headers['Content-Type'] = "application/javascript"
+          self.response.out.write(self.request.get('callback')+'('+simplejson.dumps({'nickname':profiledUser.nickname, 'karma':profiledUser.karma,'twitter':profiledUser.twitter,'github':profiledUser.github,'hn':profiledUser.hnuser})+')')
+        else:
+          self.response.headers['Content-Type'] = "application/javascript"
+          self.response.out.write(simplejson.dumps({'nickname':profiledUser.nickname,'twitter':profiledUser.twitter, 'karma':profiledUser.karma, 'github':profiledUser.github,'hn':profiledUser.hnuser}))
+      else:
+        self.response.out.write(template.render('templates/profile.html', locals()))
     else:
       self.redirect('/')
 
