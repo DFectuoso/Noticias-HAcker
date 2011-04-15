@@ -16,7 +16,7 @@
       </fieldset>
     </form>
   {% else %}
-    Necesitas <a href="/login">Login o registro</a> para agregar comentario.<hr/>
+    <a href="/login">Registrate</a> para responder a este mensaje, toma 10 segundos<hr/>
   {% endif %}
   {% for comment in comments %}
     {% if not comment.father_ref %}

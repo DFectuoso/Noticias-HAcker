@@ -111,7 +111,7 @@ a:hover {
   .noticia:nth-child(even) {
     background: #ede4db; }
   .noticia a:visited {
-    color: #959595;
+    color: #747474;
     text-decoration: none; }
   .noticia .order-number {
     float: left;
