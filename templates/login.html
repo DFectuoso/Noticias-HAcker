@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Login</h1>
-{% if login_error %}
-  <div class="error">{{login_error}}</div>
-{% endif %}
-<form method="POST" action="/login" class="validable">
-  <fieldset>
-    <label>Username:</label><input name="nickname"  class="requerido" value="{{login_error_nickname}}" />
-    <label>Password:</label><input type="password" name="password"  class="requerido"/>
-    <br/><input type="submit" value="Entrar"/>
-  </fieldset>
-</form>
-
-<hr/>
-<h1>Crear una cuenta nueva</h1>
-{% if register_error %}
-  <div class="error">{{register_error}}</div>
-{% endif %}
-<form method="POST" action="/register" class="validable">
-  <fieldset>
-    <label>Username:</label><input name="nickname"  class="requerido" />
-    <label>Password:</label><input type="password" name="password"  class="requerido" />
-    <br/><input type="submit" value="Crear cuenta"/>
-  </fieldset>
-</form>
+<div id="login-register-boxes">
+  <div id="login-box">
+    <h1>Login</h1>
+    {% if login_error %}
+      <div class="error">{{login_error}}</div>
+    {% endif %}
+    <form method="POST" action="/login" class="validable">
+      <fieldset>
+        <label>Username:</label><input name="nickname"  class="requerido" value="{{login_error_nickname}}" />
+        <label>Password:</label><input type="password" name="password"  class="requerido"/>
+        <br/><input type="submit" value="Entrar"/>
+      </fieldset>
+    </form>
+  </div>
+  <div id="register-box">
+    <h1>Crear una cuenta</h1>
+    {% if register_error %}
+      <div class="error">{{register_error}}</div>
+    {% endif %}
+    <form method="POST" action="/register" class="validable">
+      <fieldset>
+        <label>Username:</label><input name="nickname"  class="requerido" />
+        <label>Password:</label><input type="password" name="password"  class="requerido" />
+        <br/><input type="submit" value="Crear cuenta"/>
+      </fieldset>
+    </form>
+  </div>
+</div>
 {% endblock %}

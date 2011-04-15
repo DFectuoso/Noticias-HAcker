@@ -346,3 +346,18 @@ hr {
   background: #8EB932;
   margin: 7px 0;
 } //hr
+
+#login-register-boxes{
+  height:300px;
+}
+
+#login-box{
+  border-right:1px solid $bright-color;
+}
+
+#login-box, #register-box {
+  float:left;
+  width:49%;
+  text-align:center;
+  margin-top:50px;
+}

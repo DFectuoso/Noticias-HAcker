@@ -247,3 +247,15 @@ hr {
   height: 1px;
   background: #8EB932;
   margin: 7px 0; }
+
+#login-register-boxes {
+  height: 300px; }
+
+#login-box {
+  border-right: 1px solid #8fb933; }
+
+#login-box, #register-box {
+  float: left;
+  width: 49%;
+  text-align: center;
+  margin-top: 50px; }
