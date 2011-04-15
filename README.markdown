@@ -45,12 +45,8 @@ Aun asi, seria bueno idea seguir optimizandolo para que funciona tan rapido como
 
 Las cosas que tenemos que trabajar en los proximos dias y semanas son:
 
-* Mensajes de error al registrarse
-* Mensajes de error al entregar nuevas noticias
 * Agregar una manera de recuperar el password(despues de poner tu correo en el perfil)
-* Agregar la posibilidad de que los usuarios editen sus propios post
-* Agregar una manera de moderar/editar/borrar mensajes y comentarios
+* Agregar una manera de borrar mensajes y comentarios
 * Agregar un api publico 
 * Seguir mejorando el estilo
-* Agregar que cada nota nueva se publique en algune cuenta de twitter
 
