@@ -259,3 +259,10 @@ hr {
   width: 49%;
   text-align: center;
   margin-top: 50px; }
+
+#top-alert {
+  padding: 2px 0;
+  width: 100%;
+  max-height: 26px;
+  background: #ff4e27;
+  text-align: center; }

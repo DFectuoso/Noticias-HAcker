@@ -19,6 +19,9 @@
     </script>
   </head>
   <body>
+    {% if not user %}
+      <div id="top-alert"><a href="/login">Registrate y se parte de esta increible comunidad, toma 10 segundos!</a></div>
+    {% endif %}
     <div id="wrapper">
       <div id="header">
           <div id="logo">
