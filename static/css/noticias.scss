@@ -44,9 +44,6 @@ a:hover{
   position:relative;
 
   #logo{
-    font-weight: bold;
-    font-size:1.3em;
-
     span.logotype{
       display:inline-block;
       margin:1px;
@@ -68,9 +65,14 @@ a:hover{
 
     #main_nav{
         position:absolute;
-        left:170px;
+        left:30px;
         top:0;
         height:25px;
+        span.sitename{
+          padding-right:5px;
+          text-transform:none;
+          font-weight:bold;
+        }
     }
     #user_toolbar{
         position:absolute;
@@ -369,4 +371,7 @@ hr {
   max-height:26px;
   background: $alert-color;
   text-align:center;
+  a{
+    text-decoration:underline;
+  }
 }

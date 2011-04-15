@@ -28,27 +28,28 @@ a:hover {
   height: 25px;
   line-height: 25px;
   position: relative; }
-  #header #logo {
-    font-weight: bold;
-    font-size: 1.3em; }
-    #header #logo span.logotype {
-      display: inline-block;
-      margin: 1px;
-      line-height: 21px;
-      height: 19px;
-      width: 21px;
-      color: #fff;
-      text-align: center;
-      padding-right: 4px; }
+  #header #logo span.logotype {
+    display: inline-block;
+    margin: 1px;
+    line-height: 21px;
+    height: 19px;
+    width: 21px;
+    color: #fff;
+    text-align: center;
+    padding-right: 4px; }
   #header #menu a {
     font-size: 13px;
     text-transform: lowercase;
     line-height: 25px; }
   #header #menu #main_nav {
     position: absolute;
-    left: 170px;
+    left: 30px;
     top: 0;
     height: 25px; }
+    #header #menu #main_nav span.sitename {
+      padding-right: 5px;
+      text-transform: none;
+      font-weight: bold; }
   #header #menu #user_toolbar {
     position: absolute;
     right: 0;
@@ -266,3 +267,5 @@ hr {
   max-height: 26px;
   background: #ff4e27;
   text-align: center; }
+  #top-alert a {
+    text-decoration: underline; }

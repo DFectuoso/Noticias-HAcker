@@ -20,17 +20,20 @@
   </head>
   <body>
     {% if not user %}
-      <div id="top-alert"><a href="/login">Registrate y se parte de esta comunidad, toma 10 segundos!</a></div>
+      <div id="top-alert"><a href="/login?utm_source=register">Regístrate</a> y se parte de esta comunidad, toma <a href="/login?utm_source=10segs">10 segundos!</a></div>
     {% endif %}
     <div id="wrapper">
       <div id="header">
           <div id="logo">
-              <a href="/" title="Hacker News">
-                <span class="logotype"><img src="/static/images/logo-23px.png"/></span>Noticias Hacker
+              <a href="/" title="Noticias Hacker">
+                <span class="logotype"><img src="/static/images/logo-23px.png"/></span>
               </a>
           </div>
         <div id="menu">
           <div id="main_nav">
+            <a href="/" title="Noticias Hacker">
+              <span class="sitename">Noticias Hacker</a>
+            </a>
             <a href="/nuevo">nuevo</a>
 	          {% if user %}
 	            | <a href="/conversaciones/{{user.nickname}}">conversaciones</a>
