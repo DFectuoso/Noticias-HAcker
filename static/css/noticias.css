@@ -24,29 +24,29 @@ a:hover {
   text-decoration: underline; }
 
 #header {
-  background-color: #8fb933;
+  background-color: #8ac649;
   height: 25px;
   line-height: 25px;
   position: relative; }
   #header #logo {
-    font-weight: bold; }
+    font-weight: bold;
+    font-size: 1.3em; }
     #header #logo span.logotype {
       display: inline-block;
-      margin: 2px;
-      border: 1px solid #fff;
-      font-size: 13px;
+      margin: 1px;
       line-height: 21px;
       height: 19px;
       width: 21px;
       color: #fff;
-      text-align: center; }
+      text-align: center;
+      padding-right: 4px; }
   #header #menu a {
     font-size: 13px;
     text-transform: lowercase;
     line-height: 25px; }
   #header #menu #main_nav {
     position: absolute;
-    left: 150px;
+    left: 170px;
     top: 0;
     height: 25px; }
   #header #menu #user_toolbar {
@@ -168,7 +168,7 @@ a:hover {
   font-size: 12px;
   line-height: 17px;
   text-align: center;
-  background-color: #8fb933;
+  background-color: #8ac649;
   padding: 5px 0; }
   #footer .disclamer {
     line-height: 15px;
@@ -203,7 +203,7 @@ textarea {
   font-weight: bold; }
 
 .success {
-  color: #8fb933;
+  color: #8ac649;
   font-weight: bold; }
 
 input.fielderror, textarea.fielderror {
@@ -252,7 +252,7 @@ hr {
   height: 300px; }
 
 #login-box {
-  border-right: 1px solid #8fb933; }
+  border-right: 1px solid #8ac649; }
 
 #login-box, #register-box {
   float: left;

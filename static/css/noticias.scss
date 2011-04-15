@@ -1,4 +1,4 @@
-$bright-color: #8FB933;
+$bright-color: #8AC649;
 $alert-color: #FF4E27;
 $light-color: #F2E9E1;
 $dark-grey: #222;
@@ -45,17 +45,17 @@ a:hover{
 
   #logo{
     font-weight: bold;
+    font-size:1.3em;
 
     span.logotype{
       display:inline-block;
-      margin:2px;
-      border:1px solid #fff;
-      font-size:13px;
+      margin:1px;
       line-height:21px;
       height:19px;
       width:21px;
       color:#fff;
       text-align:center;
+      padding-right:4px;
     }
   }
 
@@ -68,7 +68,7 @@ a:hover{
 
     #main_nav{
         position:absolute;
-        left:150px;
+        left:170px;
         top:0;
         height:25px;
     }

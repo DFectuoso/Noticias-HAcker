@@ -26,7 +26,7 @@
       <div id="header">
           <div id="logo">
               <a href="/" title="Hacker News">
-                <span class="logotype">N</span> Noticias Hacker
+                <span class="logotype"><img src="/static/images/logo-23px.png"/></span>Noticias Hacker
               </a>
           </div>
         <div id="menu">
@@ -35,7 +35,7 @@
 	          {% if user %}
 	            | <a href="/conversaciones/{{user.nickname}}">conversaciones</a>
 	          {% endif %}
-            | <a href="/agregar">Agregar un link/mensaje</a>
+            | <a href="/agregar">Agregar contenido</a>
           </div>
           <div id="user_toolbar">
             {% if user %}
@@ -47,7 +47,7 @@
               <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
               <a href="/logout">Log out</a>
             {% else %}
-              <a href="/login">Login o registro</a>
+              <a href="/login">Login</a> | <a href="/login">Registro</a>
             {% endif %}
           </div>
         </div>
