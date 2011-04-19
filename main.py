@@ -20,7 +20,9 @@ import hashlib
 import keys
 import prefetch
 import helper
+import random
 
+from google.appengine.api import mail
 from google.appengine.api import memcache
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
@@ -31,7 +33,7 @@ from gaesessions import get_current_session
 from django.utils import simplejson
 
 from libs import PyRSS2Gen
-from models import User, Post, Comment, Vote, Notification
+from models import User, Post, Comment, Vote, Notification, Ticket
 
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
@@ -97,12 +99,70 @@ class RegisterHandler(webapp.RequestHandler):
         session['user'] = user
         self.redirect('/')
       else:
-        session['register_error'] = "Ya existe alguien con ese nombre de usuario " + nickname
+        session['register_error'] = "Ya existe alguien con ese nombre de usuario <strong>" + nickname + "</strong>"
         self.redirect('/login')
     else:
       session['register_error'] = "Porfavor escribe un username y un password"
       self.redirect('/login')
 
+
+class NewPasswordHandler(webapp.RequestHandler):
+  def get(self):
+    session = get_current_session()
+    if session.has_key('forgotten_password_error'):
+      forgotten_password_error = session.pop('forgotten_password_error')
+    if session.has_key('forgotten_password_ok'):
+      forgotten_password_ok = session.pop('forgotten_password_ok')
+    
+    if session.has_key('user'):
+      user = session['user']
+      self.redirect('/logout')
+    else:
+      self.response.out.write(template.render('templates/forgotten-password.html', locals()))
+
+  def post(self):
+    session = get_current_session()
+    email = helper.sanitizeHtml(self.request.get('email'))
+    if len(email) > 1:      
+      users = User.all().filter("email =", email).fetch(1)
+      if len(users) == 1:
+        if session.is_active():
+          session.terminate()
+        user = users[0]
+        Ticket.deactivate_others(user)
+        ticket = Ticket(user=user,code=Ticket.create_code(user.password + user.nickname + str(random.random())))
+        ticket.put()
+        code = ticket.code
+        host = self.request.url.replace(self.request.path,'',1)
+       
+        mail.send_mail(sender="NoticiasHacker <nobody@noticiashacker.com>",
+          to= user.nickname + " <"+user.email+">",
+          subject="Codigo para restablecer contraseña",
+          html=template.render('templates/mail/forgotten-password-email.html', locals()),
+          body=template.render('templates/mail/forgotten-password-email-plain.html', locals()))
+      
+        #aqui el codigo del mail =) 
+        #self.response.out.write(template.render('templates/mail/forgotten-password-email.html', locals()))
+        session['forgotten_password_ok'] = "Se ha enviado un correo electrónico a tu bandeja de entrada con las instrucciones"
+      else:
+        session['forgotten_password_error'] = "El correo electronico <strong>"+ email +"</strong> no existe en nuestra base de datos"
+    else:
+      session['forgotten_password_error'] = "Debes especificar tu correo electrónico"
+     
+    self.redirect('/fuuu')
+
+class RecoveryHandler(webapp.RequestHandler):
+  def get(self,code):
+    code = helper.parse_post_id(code)
+    
+    ticket = Ticket.all().filter('code = ',code).filter('is_active=',True).fetch(1)
+    if len(ticket) == 1:
+      ticket = ticket[0]
+      code = ticket.code
+      self.response.out.write(template.render('templates/new-password.html', locals()))
+    else:
+      self.redirect('/')
+  
 # User Handlers
 class ProfileHandler(webapp.RequestHandler):
   def get(self,nickname):
@@ -738,6 +798,8 @@ def main():
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
+      ('/fuuu', NewPasswordHandler),
+      ('/recovery', RecoveryHandler),
       ('/rss', RssHandler),
       ('/api/usuarios/github', APIGitHubHandler),
       ('/api/usuarios/twitter', APITwitterHandler),
