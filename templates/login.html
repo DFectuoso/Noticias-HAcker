@@ -4,6 +4,9 @@
 {% if login_error %}
   <div class="error">{{login_error}}</div>
 {% endif %}
+{% if success %}
+  <div class="success">{{success}}</div>
+{% endif %}
 <form method="POST" action="/login" class="validable">
   <fieldset>
     <label>Username:</label><input name="nickname"  class="requerido" value="{{login_error_nickname}}" />

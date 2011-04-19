@@ -298,8 +298,7 @@ class Ticket(db.Model):
   
   @staticmethod
   def deactivate_others(user):
-    tickets = Ticket.all()
-    print (tickets)
+    tickets = Ticket.all().filter('user = ', user.key()).filter('is_active',True)
     for ticket in tickets:
       ticket.is_active = False
       ticket.put()

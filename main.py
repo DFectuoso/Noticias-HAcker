@@ -56,6 +56,9 @@ class LoginHandler(webapp.RequestHandler):
       login_error = session.pop('login_error')
     if session.has_key('login_error_nickname'):
       login_error_nickname = session.pop('login_error_nickname')
+    if session.has_key('sucess'):
+      success = session.pop('success') # creo que hace falta una forma de homologar los mensajes de error/success para que no tenga que estar en todos los templates
+                                       # y tampoco se tenga que poner un IF por cada tipo de mensaje
 
     if session.has_key('user'):
       user = session['user']
@@ -153,16 +156,40 @@ class NewPasswordHandler(webapp.RequestHandler):
 
 class RecoveryHandler(webapp.RequestHandler):
   def get(self,code):
+    session = get_current_session()
     code = helper.parse_post_id(code)
+    if session.has_key('error'):
+      error = session['error']
     
-    ticket = Ticket.all().filter('code = ',code).filter('is_active=',True).fetch(1)
+    ticket = Ticket.all().filter('code',code).filter('is_active',True).fetch(1)
     if len(ticket) == 1:
       ticket = ticket[0]
-      code = ticket.code
       self.response.out.write(template.render('templates/new-password.html', locals()))
     else:
       self.redirect('/')
-  
+
+  def post(self,code):
+    session = get_current_session()
+    code = helper.parse_post_id(helper.sanitizeHtml(self.request.get('code')))
+    password = helper.sanitizeHtml(self.request.get('password'))
+    password_confirm = helper.sanitizeHtml(self.request.get('password_confirm'))
+    if password != password_confirm :
+      session['error'] = "Ocurrió un error al confirmar el password"
+      self.redirect('/recovery/'+code)
+    ticket = Ticket.all().filter('code',code).filter('is_active',True).fetch(1)
+    if len(ticket) == 1:
+      ticket = ticket[0]
+      user = ticket.user
+      user.password = User.slow_hash(password)
+      user.put()
+      ticket.is_active = False
+      ticket.put()
+      session['success'] = "Se ha cambiado el password correctamente, ya puedes iniciar sesión con tus nuevas credenciales"
+      self.redirect('/login')
+    else:
+      self.redirect('/')
+
+
 # User Handlers
 class ProfileHandler(webapp.RequestHandler):
   def get(self,nickname):
@@ -799,7 +826,7 @@ def main():
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
       ('/fuuu', NewPasswordHandler),
-      ('/recovery', RecoveryHandler),
+      ('/recovery/(.+)?', RecoveryHandler),
       ('/rss', RssHandler),
       ('/api/usuarios/github', APIGitHubHandler),
       ('/api/usuarios/twitter', APITwitterHandler),
