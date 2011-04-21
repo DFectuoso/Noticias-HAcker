@@ -276,6 +276,8 @@ class Notification(db.Model):
 
   @staticmethod
   def create_notification_for_comment_and_user(comment,target_user):
+    if comment.user.key() == target_user.key():
+      return
     notification = Notification(target_user=target_user,post=comment.post,comment=comment,sender_user=comment.user)
     notification.put()
     target_user.remove_notifications_from_memcache()

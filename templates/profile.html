@@ -12,6 +12,9 @@
         <div class="success">El perfil ha sido guardado en la base de datos</div>
       {% endif %}
       <fieldset>
+        <label for="email">Email(no se despliega en ningun lado, solo se usa por si pierdes tu password):</label>
+        <input type="text" name="email" id="email" size="30" class="email" value="{% if profiledUser.email %}{{profiledUser.email}}{% endif %}" />
+        <br />
         <label for="hnuser">Usuario HN(case sensitive):</label>
         <input type="text" name="hnuser" id ="hnuser" value="{{profiledUser.hnuser}}" />
         <br />
@@ -24,10 +27,7 @@
         <label for="twitter">Twitter:</label>
         <input type="text" name="twitter" id="twitter" value="{{profiledUser.twitter}}" />
         <br />
-        <label for="email">Email:</label>
-        <input type="text" name="email" id="email" size="30" class="email" value="{% if profiledUser.email %}{{profiledUser.email}}{% endif %}" />
-        <br />
-        <label for="url">Url:</label>
+       <label for="url">Url:</label>
         <input type="text" name="url" id="url" size="30" class="url" value="{% if profiledUser.url %}{{profiledUser.url}}{% endif %}" />
         <br />
         <label for="about">Bio:</label>
