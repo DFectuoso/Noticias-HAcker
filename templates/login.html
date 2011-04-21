@@ -6,6 +6,9 @@
     {% if login_error %}
       <div class="error">{{login_error}}</div>
     {% endif %}
+    {% if success %}
+      <div class="success">{{success}}</div>
+    {% endif %}
     <form method="POST" action="/login" class="validable">
       <fieldset>
         <label>Username:</label><input name="nickname"  class="requerido" value="{{login_error_nickname}}" />
@@ -13,6 +16,7 @@
         <br/><input type="submit" value="Entrar"/>
       </fieldset>
     </form>
+    <a href="/olvide-el-password">Olvidé mi password</a>
   </div>
   <div id="register-box">
     <h1>Crear una cuenta</h1>

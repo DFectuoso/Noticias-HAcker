@@ -20,7 +20,9 @@ import hashlib
 import keys
 import prefetch
 import helper
+import random
 
+from google.appengine.api import mail
 from google.appengine.api import memcache
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
@@ -31,7 +33,7 @@ from gaesessions import get_current_session
 from django.utils import simplejson
 
 from libs import PyRSS2Gen
-from models import User, Post, Comment, Vote, Notification
+from models import User, Post, Comment, Vote, Notification, Ticket
 
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
@@ -54,6 +56,9 @@ class LoginHandler(webapp.RequestHandler):
       login_error = session.pop('login_error')
     if session.has_key('login_error_nickname'):
       login_error_nickname = session.pop('login_error_nickname')
+    if session.has_key('sucess'):
+      success = session.pop('success') # creo que hace falta una forma de homologar los mensajes de error/success para que no tenga que estar en todos los templates
+                                       # y tampoco se tenga que poner un IF por cada tipo de mensaje
 
     if session.has_key('user'):
       user = session['user']
@@ -97,11 +102,90 @@ class RegisterHandler(webapp.RequestHandler):
         session['user'] = user
         self.redirect('/')
       else:
-        session['register_error'] = "Ya existe alguien con ese nombre de usuario " + nickname
+        session['register_error'] = "Ya existe alguien con ese nombre de usuario <strong>" + nickname + "</strong>"
         self.redirect('/login')
     else:
       session['register_error'] = "Porfavor escribe un username y un password"
       self.redirect('/login')
+
+
+class NewPasswordHandler(webapp.RequestHandler):
+  def get(self):
+    session = get_current_session()
+    if session.has_key('forgotten_password_error'):
+      forgotten_password_error = session.pop('forgotten_password_error')
+    if session.has_key('forgotten_password_ok'):
+      forgotten_password_ok = session.pop('forgotten_password_ok')
+    
+    if session.has_key('user'):
+      user = session['user']
+      self.redirect('/logout')
+    else:
+      self.response.out.write(template.render('templates/forgotten-password.html', locals()))
+
+  def post(self):
+    session = get_current_session()
+    email = helper.sanitizeHtml(self.request.get('email'))
+    if len(email) > 1:      
+      users = User.all().filter("email =", email).fetch(1)
+      if len(users) == 1:
+        if session.is_active():
+          session.terminate()
+        user = users[0]
+        Ticket.deactivate_others(user)
+        ticket = Ticket(user=user,code=Ticket.create_code(user.password + user.nickname + str(random.random())))
+        ticket.put()
+        code = ticket.code
+        host = self.request.url.replace(self.request.path,'',1)
+       
+        mail.send_mail(sender="NoticiasHacker <nobody@noticiashacker.com>",
+          to=user.nickname + "<"+user.email+">",
+          subject="Codigo para restablecer contraseña",
+          html=template.render('templates/mail/forgotten-password-email.html', locals()),
+          body=template.render('templates/mail/forgotten-password-email-plain.html', locals()))
+      
+        session['forgotten_password_ok'] = "Se ha enviado un correo electrónico a tu bandeja de entrada con las instrucciones"
+      else:
+        session['forgotten_password_error'] = "El correo electronico <strong>"+ email +"</strong> no existe en nuestra base de datos"
+    else:
+      session['forgotten_password_error'] = "Debes especificar tu correo electrónico"
+     
+    self.redirect('/olvide-el-password')
+
+class RecoveryHandler(webapp.RequestHandler):
+  def get(self,code):
+    session = get_current_session()
+    code = helper.parse_post_id(code)
+    if session.has_key('error'):
+      error = session['error']
+    
+    ticket = Ticket.all().filter('code',code).filter('is_active',True).fetch(1)
+    if len(ticket) == 1:
+      ticket = ticket[0]
+      self.response.out.write(template.render('templates/new-password.html', locals()))
+    else:
+      self.redirect('/')
+
+  def post(self,code):
+    session = get_current_session()
+    code = helper.parse_post_id(helper.sanitizeHtml(self.request.get('code')))
+    password = helper.sanitizeHtml(self.request.get('password'))
+    password_confirm = helper.sanitizeHtml(self.request.get('password_confirm'))
+    if password != password_confirm :
+      session['error'] = "Ocurrió un error al confirmar el password"
+      self.redirect('/recovery/'+code)
+    ticket = Ticket.all().filter('code',code).filter('is_active',True).fetch(1)
+    if len(ticket) == 1:
+      ticket = ticket[0]
+      user = ticket.user
+      user.password = User.slow_hash(password)
+      user.put()
+      ticket.is_active = False
+      ticket.put()
+      session['success'] = "Se ha cambiado el password correctamente, ya puedes iniciar sesión con tus nuevas credenciales"
+      self.redirect('/login')
+    else:
+      self.redirect('/')
 
 # User Handlers
 class ProfileHandler(webapp.RequestHandler):
@@ -738,6 +822,8 @@ def main():
       ('/login', LoginHandler),
       ('/logout', LogoutHandler),
       ('/register', RegisterHandler),
+      ('/olvide-el-password', NewPasswordHandler),
+      ('/recovery/(.+)?', RecoveryHandler),
       ('/rss', RssHandler),
       ('/api/usuarios/github', APIGitHubHandler),
       ('/api/usuarios/twitter', APITwitterHandler),

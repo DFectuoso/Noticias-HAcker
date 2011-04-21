@@ -280,4 +280,27 @@ class Notification(db.Model):
     notification.put()
     target_user.remove_notifications_from_memcache()
     return notification
- 
+
+class Ticket(db.Model):
+  user        = db.ReferenceProperty(User, collection_name='tickets')
+  is_active   = db.BooleanProperty(default=True)
+  code        = db.StringProperty(required=True)
+  created     = db.DateTimeProperty(auto_now_add=True)
+  
+  @staticmethod
+  def create_code(seed, iterations=1000):
+    h = hashlib.sha1()
+    h.update(unicode(seed).encode("utf-8"))
+    h.update(keys.salt_key)
+    for x in range(iterations):
+      h.update(h.digest())
+    return h.hexdigest()
+  
+  @staticmethod
+  def deactivate_others(user):
+    tickets = Ticket.all().filter('user = ', user.key()).filter('is_active',True)
+    for ticket in tickets:
+      ticket.is_active = False
+      ticket.put()
+      
+  
