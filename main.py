@@ -138,7 +138,7 @@ class NewPasswordHandler(webapp.RequestHandler):
         code = ticket.code
         host = self.request.url.replace(self.request.path,'',1)
        
-        mail.send_mail(sender="NoticiasHacker <nobody@noticiashacker.com>",
+        mail.send_mail(sender="NoticiasHacker <dfectuoso@noticiashacker.com>",
           to=user.nickname + "<"+user.email+">",
           subject="Codigo para restablecer contraseña",
           html=template.render('templates/mail/forgotten-password-email.html', locals()),
