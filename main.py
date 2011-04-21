@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
 #Copyright (c) 2011 - Santiago Zavala
 #Permission is hereby granted, free of charge, to any person obtaining a copy
 #of this software and associated documentation files (the "Software"), to deal
@@ -140,7 +142,7 @@ class NewPasswordHandler(webapp.RequestHandler):
        
         mail.send_mail(sender="NoticiasHacker <dfectuoso@noticiashacker.com>",
           to=user.nickname + "<"+user.email+">",
-          subject="Codigo para restablecer contraseña",
+          subject="Liga para restablecer password",
           html=template.render('templates/mail/forgotten-password-email.html', locals()),
           body=template.render('templates/mail/forgotten-password-email-plain.html', locals()))
       
@@ -174,6 +176,7 @@ class RecoveryHandler(webapp.RequestHandler):
     if password != password_confirm :
       session['error'] = "Ocurrió un error al confirmar el password"
       self.redirect('/recovery/'+code)
+      return
     ticket = Ticket.all().filter('code',code).filter('is_active',True).fetch(1)
     if len(ticket) == 1:
       ticket = ticket[0]
