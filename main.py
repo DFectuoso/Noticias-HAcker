@@ -235,10 +235,11 @@ class ProfileHandler(webapp.RequestHandler):
         user.github = github
         user.hnuser = hnuser
         user.twitter = twitter
-        try:
-          user.email = email
-        except db.BadValueError:
-          pass
+        if len(User.all().filter("email",email).fetch(1)) == 0:
+          try:
+            user.email = email
+          except db.BadValueError:
+            pass
         try:
           user.url = url
         except db.BadValueError:
