@@ -16,9 +16,12 @@
 #THE SOFTWARE.
 
 import prefetch
+import htmlentitydefs, re
+import random
 from urlparse import urlparse
 from models import User, Post, Comment, Vote 
 from django.utils.html import escape
+
 
 def sanitizeHtml(value):
   return escape(value)
@@ -90,3 +93,18 @@ def order_comment_list_in_memory(comments):
 def base_url(self):
   uri = urlparse(self.request.url)
   return uri.scheme +'://'+ uri.netloc
+
+def sluglify(text, separator = "-"):
+  ret = ""
+  for c in text.lower():
+    try:
+      ret += htmlentitydefs.codepoint2name[ord(c)]
+    except:
+      ret += c
+ 
+  ret = re.sub("([a-zA-Z])(uml|acute|grave|circ|tilde|cedil)", r"\1", ret)
+  ret = re.sub("\W", " ", ret)
+  ret = re.sub(" +", separator, ret)
+  ret += str( random.randrange(1, 999) )
+ 
+  return ret.strip()
