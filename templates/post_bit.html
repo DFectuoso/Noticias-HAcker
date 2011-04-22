@@ -19,11 +19,11 @@
       {{post.prefetched_sum_votes}} puntos, entregado por <a href="/perfil/{{post.user.nickname}}">{{post.user.nickname}}</a> hace {{post.created|timesince|hacetiempo}}
       {% if post.edited %}*{% endif %}
       | 
-      	{% if not post.niceurl  %}
-	      	<a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
-	{% else %}
-		<a href="/noticia/{{post.niceurl}}">{{post.cached_comment_count}} comentarios</a>	
-	{% endif %}
+      {% if not post.nice_url  %}
+        <a href="/noticia/{{post.key}}">{{post.cached_comment_count}} comentarios</a>
+      {% else %}
+        <a href="/noticia/{{post.nice_url}}">{{post.cached_comment_count}} comentarios</a>	
+      {% endif %}
       {% if post.can_edit %}| <a href="/editar-noticia/{{post.key}}">editar</a> {% endif %}
     </div>
   </div>

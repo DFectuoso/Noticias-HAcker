@@ -27,7 +27,6 @@ from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
 
-
 # Models
 class User(db.Model):
   lowercase_nickname  = db.StringProperty(required=True)
@@ -93,14 +92,13 @@ class User(db.Model):
 class Post(db.Model):
   title     = db.StringProperty(required=True)
   url       = db.LinkProperty(required=False)
-  niceurl   = db.StringProperty(required=False)
+  nice_url  = db.StringProperty(required=False)
   message   = db.TextProperty()
   user      = db.ReferenceProperty(User, collection_name='posts')
   created   = db.DateTimeProperty(auto_now_add=True)
   karma     = db.FloatProperty()
   edited    = db.BooleanProperty(default=False)
   twittered = db.BooleanProperty(default=False)
-
 
   def to_json(self):
     return {

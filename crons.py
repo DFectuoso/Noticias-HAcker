@@ -52,6 +52,9 @@ def sendMessageToTwitter(self, post):
   auth.set_access_token(keys.access_token, keys.access_token_secret)
   twitterapi = tweepy.API(auth)
   url =  keys.base_url_custom_url + "/noticia/" + str(post.key())
+  if post.nice_url:
+    url =  keys.base_url_custom_url + "/noticia/" + str(post.nice_url)
+
   shortUrl = bitlyApi.shorten(url)
   title = post.title[:115]
   message = title + "... " + shortUrl
