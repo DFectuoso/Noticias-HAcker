@@ -37,6 +37,7 @@ from django.utils import simplejson
 from libs import PyRSS2Gen
 from models import User, Post, Comment, Vote, Notification, Ticket
 
+
 #register the desdetiempo filter to print time since in spanish
 template.register_template_library('CustomFilters')
 
@@ -262,8 +263,12 @@ class PostHandler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
+    
     try:
-      post = db.get(helper.parse_post_id(post_id))
+      post = Post.all().filter('niceurl =', helper.parse_post_id( post_id ) ).get()
+      if  post  == None:
+	      post = db.get( helper.parse_post_id( post_id ) ) 
+
       comments = Comment.all().filter("post =", post.key()).order("-karma").fetch(1000)
       comments = helper.order_comment_list_in_memory(comments)
       prefetch.prefetch_comment_list(comments)
@@ -435,7 +440,8 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     url = self.request.get('url')
     title = helper.sanitizeHtml(self.request.get('title'))
     message = helper.sanitizeHtml(self.request.get('message'))
-
+    niceurl = helper.sluglify( title )
+    
     if session.has_key('user'):
       if len(title) > 0:
         user = session['user']
@@ -446,12 +452,12 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
           url_exists = q > 0
           try:
             if not url_exists:
-              post = Post(url=url,title=title,message=message, user=user)
-              post.put()
+	      post = Post(url=url,title=title,message=message, user=user, niceurl=niceurl)
+	      post.put()
               vote = Vote(user=user, post=post, target_user=post.user)
               vote.put()
               Post.remove_cached_count_from_memcache()
-              self.redirect('/noticia/' + str(post.key()));
+              self.redirect('/noticia/' + str(post.niceurl));
             else:
               session['post_error'] = "Este link ha sido entregado en los ultimo 7 dias"
               self.redirect('/agregar')
@@ -459,14 +465,14 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
             session['post_error'] = "El formato del link no es valido"
             self.redirect('/agregar')
         else:
-          post = Post(title=title,message=message, user=user)
+	  post = Post(title=title,message=message, user=user, niceurl=niceurl)
           post.put()
-          post.url = helper.base_url(self) + "/noticia/" + str(post.key())
+          post.url = helper.base_url(self) + "/noticia/" + post.niceurl
           post.put()
           Post.remove_cached_count_from_memcache()
           vote = Vote(user=user, post=post, target_user=post.user)
           vote.put()
-          self.redirect('/noticia/' + str(post.key()));
+          self.redirect('/noticia/' + post.niceurl);
       else:
         session['post_error'] = "Necesitas agregar un titulo"
         self.redirect('/agregar')
