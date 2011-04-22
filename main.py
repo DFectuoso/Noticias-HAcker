@@ -295,7 +295,10 @@ class PostHandler(webapp.RequestHandler):
       user = session['user']
       if len(message) > 0:
         try:
-          post = db.get(post_id)
+          post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
+          if post  == None: #If for some reason the post doesn't have a nice url, we try the id. This is also the case of all old stories
+            post = db.get( helper.parse_post_id( post_id ) ) 
+
           post.remove_from_memcache()
           comment = Comment(message=message,user=user,post=post)
           comment.put()
