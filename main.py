@@ -440,10 +440,10 @@ class SubmitNewStoryHandler(webapp.RequestHandler):
     url = self.request.get('url')
     title = helper.sanitizeHtml(self.request.get('title'))
     message = helper.sanitizeHtml(self.request.get('message'))
-    nice_url = helper.sluglify( title )
+    nice_url = helper.sluglify(title)
     
     if session.has_key('user'):
-      if len(title) > 0:
+      if len(nice_url) > 0:
         user = session['user']
         if len(message) == 0: #is it a post or a message?
           #Check that we don't have the same URL within the last 'check_days'
