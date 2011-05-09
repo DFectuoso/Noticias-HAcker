@@ -54,9 +54,9 @@ class Handler(webapp.RequestHandler):
         rss_poster = post.message
       rss_poster += ' por <a href="'+helper.base_url(self)+'/perfil/'+post.user.nickname+'">'+post.user.nickname+'</a>'
 
-      link = helper.base_url(self)+'/noticia/' + str(post.key()),
+      link = helper.base_url(self)+'/noticia/' + str(post.key())
       if post.nice_url:
-        link = helper.base_url(self)+'/noticia/' + str(post.nice_url),
+        link = helper.base_url(self)+'/noticia/' + str(post.nice_url)
 
       items.append(PyRSS2Gen.RSSItem(
           title = post.title,
