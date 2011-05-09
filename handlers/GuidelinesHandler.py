@@ -43,6 +43,10 @@ template.register_template_library('CustomFilters')
 
 class Handler(webapp.RequestHandler):
   def get(self):
+    session = get_current_session()
+    if session.has_key('user'):
+      user = session['user']
+ 
     self.response.out.write(template.render('templates/guidelines.html', locals()))
 
 
