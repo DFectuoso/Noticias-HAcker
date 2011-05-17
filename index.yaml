@@ -45,12 +45,6 @@ indexes:
   - name: karma
     direction: desc
 
-- kind: Comment
-  properties:
-  - name: user
-  - name: created
-    direction: desc
-
 - kind: Vote
   properties:
   - name: target_user
