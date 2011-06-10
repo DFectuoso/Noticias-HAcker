@@ -16,6 +16,8 @@
 #THE SOFTWARE.
 
 import prefetch
+import keys
+import indextank
 from urlparse import urlparse
 from models import User, Post, Comment, Vote 
 from django.utils.html import escape
@@ -94,3 +96,13 @@ def base_url(self):
 
 def sluglify(text):
   return slugify(text)
+
+def indextank_document(base_url, post):
+  api = indextank.client.ApiClient(keys.indextank_private_key)
+  index = api.get_index(keys.indextank_name_key)
+  nhurl = base_url+ "/noticia/" + str(post.nice_url)
+  try:
+    index.add_document(nhurl, {'text': post.title + ' ' + (post.message or post.url) + ' ' + post.user.nickname,
+	'user':post.user.nickname, 'title':post.title, 'message':post.message, 'url': post.url, 'nhurl': nhurl})
+  except indextank.client.HttpException:
+      pass

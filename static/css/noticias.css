@@ -64,6 +64,10 @@ a:hover {
   background-color: #f2e9e1;
   color: #777777; }
 
+#content-2 {
+  background-color: #f2e9e1;
+  color: #777777; }
+
 .comment .comment-post {
   padding: 0 0 0 11px; }
 .comment .votes {
@@ -269,3 +273,7 @@ hr {
   text-align: center; }
   #top-alert a {
     text-decoration: underline; }
+
+#indextanksearch {
+  padding: 0 0 0 0px;
+  display: inline; }

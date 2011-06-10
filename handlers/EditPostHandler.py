@@ -23,6 +23,7 @@ import keys
 import prefetch
 import helper
 import random
+import indextank
 
 from google.appengine.api import mail
 from google.appengine.api import memcache
@@ -73,7 +74,11 @@ class Handler(webapp.RequestHandler):
             post.message = message
           post.edited = True
           post.put()
-          self.redirect('/noticia/' + str(post.key()))
+	  
+	  #index with indextank
+	  helper.indextank_document(helper.base_url(self), post)
+
+	  self.redirect('/noticia/' + str(post.key()))
         else:
           self.redirect('/')
       except db.BadKeyError:

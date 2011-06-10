@@ -82,5 +82,7 @@ def main():
   ], debug=True)
   util.run_wsgi_app(application)
 
+webapp.template.register_template_library('indextank.indextag')
+
 if __name__ == '__main__':
   main()

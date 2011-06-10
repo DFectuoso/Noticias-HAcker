@@ -7,6 +7,17 @@
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="/static/javascript/NH.js"></script>
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.ize.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.autocomplete.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.ajaxsearch.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.instantsearch.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.statsrenderer.js"></script>
+        <script type="text/javascript" src="https://github.com/flaptor/indextank-jquery/raw/master/jquery.indextank.renderer.js"></script>
+	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/south-street/jquery-ui.css" media="all" />
+
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-2138729-21']);
@@ -17,6 +28,91 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
+
+
+    <script>
+        $(document).ready(function(){
+                var postFormat = function(item) {
+
+                    var upvote_arrow = $("<a/>").addClass("post-upvote").attr("href", "/upvote/" + item.docid)
+                                            .append( $("<img/>").attr("src", "/static/images/grayarrow.gif"))
+                                            .click( function(e) {
+                                                upvote(this, "'" + item.docid + "'");
+                                                
+                                                // better than 'return false'
+                                                e.preventDefault();
+					    });
+                    var n = $("<div/>").addClass("noticia")
+                                .append( $("<div/>").addClass("post-votes")
+                                            .append( upvote_arrow )
+                                        )
+                                .append( $("<div/>").addClass("post-title")
+                                            .append( $("<a/>").attr("href", item.url).html(item.snippet_title || item.title) )
+                                        )
+                                .append( $("<div/>").addClass("post-info")
+                                            .append( $("<span/>").text("entregado por "))
+                                            .append( $("<a/>").attr("href", '/perfil/' + item.user).text(item.user))
+					    .append( $("<span/>").text(" | "))
+					    .append( $("<a/>").attr("href", item.nhurl).text("comentarios"))
+					);
+
+
+                    return n;
+                
+
+
+		};
+	var statsFormat = function (data) {
+
+		var paging = $("<div id='pages'></div>")
+		    .append( data.start > 0 ? 
+			$('<a class="prevPage" href="#">« anterior</a>')
+			.click(function(e) {
+			    $('#query').trigger("Indextank.AjaxSearch.runQuery", 
+				[' ' + data.query, 
+				    data.start - data.rsLength <= 0 ? 0 : data.start - data.rsLength, 
+				    data.rsLength]);
+			    }) 
+			: '' )
+		    .append( data.start > 0 && (data.start + data.rsLength < data.matches) ? ' &nbsp; | &nbsp; ' : '' )
+		    .append( data.start + data.rsLength < data.matches ? 
+			$('<a class="nextPage" href="#">siguiente »</a>')
+			.click(function(e) {
+			    $('#query').trigger("Indextank.AjaxSearch.runQuery", 
+				[' ' + data.query, data.start + data.rsLength, data.rsLength]);
+			    }) 
+			: '' );
+		var stats = $("<div></div>")
+		    .append($("<div></div>"))
+		    .append( $("<strong></strong>").text(data.matches) )
+		    .append( $("<span></span>").text(" " + (data.matches == 1 ? "resultado":"resultados" )+ " para ") )
+		    .append( $("<strong></strong>").text(data.query) )
+		    .append( $("<span></span>").text(" en ") )
+		    .append( $("<strong></strong>").text(data.search_time) )
+		    .append( $("<span></span>").text(" segundos.") );
+		var logo = $("<a/>")
+			.attr("href", "http://indextank.com/powerdby")
+			.attr("name", "Powered-by Indextank")
+			.attr("rel", "friend")
+		.append($("<img>")
+			.attr("src", "http://indextank.com/_static/images/poweredby/it-powered-by-small.png")
+			.attr("alt", "IndexTank: hosted search you control"))
+			.attr("float", "center");
+
+		    
+		    return paging.append( stats.append(logo) );
+		};
+		
+		$("#indextanksearch").indextank_Ize("{% indexkey %}", "{% indexname %}");
+                var renderer = $("#content").indextank_Renderer({format: postFormat});
+		var stats_renderer = $("#content-2").indextank_StatsRenderer({format: statsFormat});
+		$("#query").indextank_Autocomplete()
+		    .indextank_AjaxSearch({fields:'title,user,url,nhurl,timestamp', start:0, rsLength:20,
+			listeners: renderer.add(stats_renderer)})
+		    .indextank_InstantSearch();
+        });
+    </script>
+
   </head>
   <body>
     {% if not user %}
@@ -32,13 +128,14 @@
         <div id="menu">
           <div id="main_nav">
             <a href="/" title="Noticias Hacker">
-              <span class="sitename">Noticias Hacker</a>
+		<span class="sitename"> Noticias Hacker</a>
             </a>
             <a href="/nuevo">nuevo</a>
 	          {% if user %}
 	            | <a href="/conversaciones/{{user.nickname}}">conversaciones</a>
 	          {% endif %}
             | <a href="/agregar">Agregar contenido</a>
+	    | <form id="indextanksearch" action="/buscar"><input id="query" type="text" name="q"><input type="submit" value="buscar"/></form>
           </div>
           <div id="user_toolbar">
             {% if user %}
@@ -48,7 +145,7 @@
                 <a href="/inbox"><img src="/static/images/sobre.png"/><a>
               {% endif %}
               <a href="/perfil/{{user.nickname}}">{{user.nickname}}</a><span class="karma">({{user.sum_votes}})</span> |
-              <a href="/logout">Log out</a>
+	      <a href="/logout">Log out</a>
             {% else %}
               <a href="/login">Login</a> | <a href="/login">Registro</a>
             {% endif %}
@@ -58,6 +155,7 @@
       <div id="content">
         {% block content %}{% endblock %}
       </div>
+      <div id="content-2"></div>
       <div id="footer">
         <p>
           <a href="/rss">RSS</a> |

@@ -79,7 +79,11 @@ class Handler(webapp.RequestHandler):
                 post.put()
                 vote = Vote(user=user, post=post, target_user=post.user)
                 vote.put()
-                Post.remove_cached_count_from_memcache()
+		Post.remove_cached_count_from_memcache()
+		
+		#index with indextank
+		helper.indextank_document( helper.base_url(self), post)
+                
                 self.redirect('/noticia/' + str(post.nice_url));
               else:
                 session['post_error'] = "Este titulo ha sido usado en una noticia anterior"
@@ -101,7 +105,11 @@ class Handler(webapp.RequestHandler):
             Post.remove_cached_count_from_memcache()
             vote = Vote(user=user, post=post, target_user=post.user)
             vote.put()
-            self.redirect('/noticia/' + post.nice_url);
+
+	    #index with indextank
+	    helper.indextank_document( helper.base_url(self), post)
+            
+	    self.redirect('/noticia/' + post.nice_url);
           else:
             session['post_error'] = "Este titulo ha sido usado en una noticia anterior"
             self.redirect('/agregar')
