@@ -68,6 +68,10 @@ a:hover {
   background-color: #f2e9e1;
   color: #777777; }
 
+#indextanksearch {
+  padding: 0 0 0 0px;
+  display: inline; }
+
 .comment .comment-post {
   padding: 0 0 0 11px; }
 .comment .votes {
@@ -110,6 +114,9 @@ a:hover {
     width: 100%;
     max-width: 800px;
     height: 100px; }
+
+.busqueda {
+  margin-left: 51px; }
 
 .noticia {
   border-bottom: 1px solid #ede1d6; }
@@ -273,7 +280,3 @@ hr {
   text-align: center; }
   #top-alert a {
     text-decoration: underline; }
-
-#indextanksearch {
-  padding: 0 0 0 0px;
-  display: inline; }

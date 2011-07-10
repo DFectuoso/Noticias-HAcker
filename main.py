@@ -47,6 +47,9 @@ from handlers import ( MainHandler, ThreadsHandler, GuidelinesHandler, FAQHandle
                        APITwitterHandler, APIHackerNewsHandler )
 
 
+import os
+DEV = os.environ['SERVER_SOFTWARE'].startswith('Development')
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
@@ -79,7 +82,7 @@ def main():
       ('/api/usuarios/github', APIGitHubHandler.Handler),
       ('/api/usuarios/twitter', APITwitterHandler.Handler),
       ('/api/usuarios/hackernews', APIHackerNewsHandler.Handler),
-  ], debug=True)
+  ], debug=DEV)
   util.run_wsgi_app(application)
 
 webapp.template.register_template_library('indextank.indextag')

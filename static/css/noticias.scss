@@ -93,6 +93,15 @@ a:hover{
   background-color:$light-color;
   color: $soft-grey;
 }
+#content-2{
+  background-color:$light-color;
+  color: $soft-grey;
+}
+
+#indextanksearch {
+  padding: 0 0 0 0px;
+  display: inline; 
+}
 
 .comment{
   .comment-post{
@@ -154,6 +163,10 @@ a:hover{
     max-width:800px;
     height:100px;
   }
+}
+
+.busqueda{
+  margin-left: 51px;
 }
 
 .noticia{

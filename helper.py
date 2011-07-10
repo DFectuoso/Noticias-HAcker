@@ -99,7 +99,11 @@ def sluglify(text):
 
 def indextank_document(base_url, post):
   api = indextank.client.ApiClient(keys.indextank_private_key)
+
   index = api.get_index(keys.indextank_name_key)
+  if base_url  == keys.base_url or base_url == keys.base_url_custom_url:
+    index = api.get_index(keys.indextank_name_key_prod)
+
   nhurl = base_url+ "/noticia/" + str(post.nice_url)
   try:
     index.add_document(nhurl, {'text': post.title + ' ' + (post.message or post.url) + ' ' + post.user.nickname,
