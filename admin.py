@@ -24,7 +24,7 @@ import sys
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import memcache
+from google.appengine.api import memcache, taskqueue
 from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
@@ -38,17 +38,26 @@ sys.path.insert(0, 'libs/tweepy.zip')
 import tweepy
 import helper
 
+
 class ReIndexTankHandler(webapp.RequestHandler):
   def get(self):
     posts = Post.all().fetch(10000)
+    base_url = helper.base_url(self) 
     for post in posts:
-      helper.indextank_document("http://www.noticiashacker.com/", post) 
+      taskqueue.add(url='/admin/re-index-tank-task', params={'post_key': str(post.key()), 'base_url': base_url})
     self.response.out.write("ok")
+
+class ReIndexTankTaskHandler(webapp.RequestHandler):
+  def post(self):
+    post = db.get(self.request.get('post_key'))
+    base_url = self.request.get('base_url')
+    helper.indextank_document(base_url, post) 
 
 # App stuff
 def main():
   application = webapp.WSGIApplication([
       ('/admin/re-index-tank', ReIndexTankHandler),
+      ('/admin/re-index-tank-task', ReIndexTankTaskHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 
