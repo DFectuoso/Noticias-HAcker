@@ -158,11 +158,20 @@ a:hover {
     min-width: 36px;
     float: left; }
 
-.submit .textfields {
-  width: 80%; }
-.submit textarea {
-  width: 80%;
-  height: 125px; }
+.submit {
+  color: #111111;
+  padding: 15px; }
+  .submit hr {
+    margin-bottom: 2em; }
+  .submit .textfields {
+    width: 80%; }
+  .submit input {
+    padding: 0.5em;
+    margin-bottom: 1em; }
+  .submit textarea {
+    padding: 0.5em;
+    width: 80%;
+    height: 125px; }
 
 .profile {
   color: #111111;
@@ -221,8 +230,9 @@ label {
 fieldset {
   border: 0px; }
 
-textarea {
-  font: 100%/120% Verdana, Arial, Helvetica, sans-serif; }
+input, textarea {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1em; }
 
 .error {
   color: #ff0a47;
@@ -278,7 +288,7 @@ hr {
   margin: 7px 0; }
 
 #login-register-boxes {
-  height: 300px;
+  overflow: hidden;
   color: #111111;
   margin: 2em 0; }
   #login-register-boxes input {
@@ -296,12 +306,12 @@ hr {
   margin-top: 50px; }
 
 #top-alert {
-  padding: 2px 0;
-  width: 100%;
-  max-height: 26px;
+  padding: 0.5em 0;
   background: #ff4e27;
-  text-align: center; }
+  text-align: center;
+  color: #f2e9e1; }
   #top-alert a {
+    color: white;
     text-decoration: underline; }
 
 #password_recovery, #new_password {

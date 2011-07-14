@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="submit">
-  <h1>Agregar un link</h1>
+  <h1>Agregar un vínculo</h1>
   {% if post_error %}
     <div class="error">{{post_error}}</div>
   {% endif %}
   <form method="POST" class="validable">
     <fieldset>
-      <label>Titulo</label><input class="textfields requerido" name="title" value="{{ get_title }}"/>
-      <label>Url</label><input class="textfields requerido url" name="url" value="{{ get_url }}"/><br/>
+      <label>Título</label><input class="textfields requerido" name="title" value="{{ get_title }}"/>
+      <label>URL</label><input class="textfields requerido url" name="url" value="{{ get_url }}"/><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
   </form>
@@ -18,7 +18,7 @@
   <h1>Agregar un mensaje</h1>
   <form method="POST" class="validable">
     <fieldset>
-      <label>Titulo</label><input class="textfields requerido" name="title"/>
+      <label>Título</label><input class="textfields requerido" name="title"/>
       <label>Mensaje</label><textarea name="message" class="requerido"></textarea><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
