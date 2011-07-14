@@ -1,9 +1,9 @@
 $bright-color: #8AC649;
 $alert-color: #FF4E27;
 $light-color: #F2E9E1;
-$dark-grey: #222;
-$soft-grey: #777777;
-$soft-white: #EEEEEE;
+$dark-grey: #111;
+$soft-grey: #666;
+$soft-white: white;
 $soft-red: #FFB5C7;
 $dark-red: #FF0A47;
 
@@ -26,7 +26,7 @@ img{
 
 #wrapper{
   width:80%;
-  margin: 10px auto;
+  margin: 30px auto;
 }
 
 a{
@@ -42,17 +42,15 @@ a:hover{
   height: 25px;
   line-height:25px;
   position:relative;
+  margin-bottom:5px;
+  padding: 0.3em;
 
   #logo{
     span.logotype{
-      display:inline-block;
-      margin:1px;
-      line-height:21px;
-      height:19px;
-      width:21px;
-      color:#fff;
-      text-align:center;
-      padding-right:4px;
+      display:blog;
+      width:23px;
+      height:23px;
+      float:left;
     }
   }
 
@@ -64,10 +62,8 @@ a:hover{
     }
 
     #main_nav{
-        position:absolute;
-        left:30px;
-        top:0;
-        height:25px;
+        float:left;
+        margin-left:24px;
         span.sitename{
           padding-right:5px;
           text-transform:none;
@@ -75,9 +71,7 @@ a:hover{
         }
     }
     #user_toolbar{
-        position:absolute;
-        right:0;
-        top:0;
+        float:right;
         padding:0 10px;
 
         .karma{
@@ -90,11 +84,9 @@ a:hover{
 }
 
 #content{
-  background-color:$light-color;
   color: $soft-grey;
 }
 #content-2{
-  background-color:$light-color;
   color: $soft-grey;
 }
 
@@ -170,10 +162,12 @@ a:hover{
 }
 
 .noticia{
-  border-bottom:1px solid darken($light-color,3%);
+  border-bottom:1px solid #F2F2F2;
+  padding: 0.2em 0 0.5em;
+  margin: 1px 0 0;
 
   &:nth-child(even){
-    background:darken(desaturate($light-color,6%),2%);
+    background:#F5F5F5;
   };
 
   a:visited{
@@ -183,21 +177,19 @@ a:hover{
 
   .order-number{
     float:left;
-    font-size:13px;
     width:20px;
-    padding:0 5px;
-    line-height:28px;
     text-align:right;
-    font-weight:bold;
+    font-weight:normal;
+    font-size:0.75em;
+    padding-top:5px;
   }
 
   a.post-upvote{
     display:block;
     float:left;
-    height:16px;
-    padding-top:7px;
-    text-align:center;
-    width:21px;
+    padding-top:4px;
+    padding-left:8px;
+    width:20px;
   }
 
   .voted{
@@ -207,10 +199,12 @@ a:hover{
   }
 
   .post-title{
-    line-height:28px;
+    line-height:2em;
+    font-size:1.1em;
 
     .post-netloc{
       font-size:0.7em;
+      font-family: Consolas,Courier,monospace;
     }
   }
 
@@ -218,6 +212,9 @@ a:hover{
     font-size:11px;
     line-height:13px;
     margin-left:51px;
+    a {
+      color: $bright-color;
+    }
   }
 
   .post-votes{
