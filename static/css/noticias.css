@@ -123,9 +123,6 @@ a:hover {
   margin: 1px 0 0; }
   .noticia:nth-child(even) {
     background: #F5F5F5; }
-  .noticia a:visited {
-    color: #636363;
-    text-decoration: none; }
   .noticia .order-number {
     float: left;
     width: 20px;
@@ -145,12 +142,13 @@ a:hover {
     .noticia .voted img {
       display: none; }
   .noticia .post-title {
-    line-height: 2em;
+    line-height: 1.8em;
     font-size: 1.1em; }
     .noticia .post-title a {
       color: #111111; }
       .noticia .post-title a:visited {
-        color: #b3b3b3; }
+        color: #b3b3b3;
+        text-decoration: none; }
     .noticia .post-title .post-netloc {
       font-size: 0.7em;
       font-family: Consolas,Courier,monospace; }

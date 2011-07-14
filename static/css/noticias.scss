@@ -179,11 +179,6 @@ a:hover{
     background:#F5F5F5;
   };
 
-  a:visited{
-    color:lighten($dark-grey,32%);
-    text-decoration:none;
-  }
-
   .order-number{
     float:left;
     width:20px;
@@ -208,13 +203,14 @@ a:hover{
   }
 
   .post-title{
-    line-height:2em;
+    line-height:1.8em;
     font-size:1.1em;
     a{
       color:$dark-grey;
 
       &:visited{
        color:lighten($soft-grey, 30%);
+        text-decoration:none;
       }
     }
     .post-netloc{
