@@ -6,13 +6,10 @@
 {% else %}
   <h1>Todas las notificaciones</h1>
 {% endif %}
-
-
 <div class="notifications-menu">
   <a id="unread" href="/inbox" {% if inbox %}class="page"{% endif %}>No leidos</a> |
   <a id="all" href="/inbox/all" {% if inboxAll %}class="page"{% endif %}>Todos</a>
 </div>
-
 <ul class="notifications">
   {% for notification in notifications %}
     <li class="notification">

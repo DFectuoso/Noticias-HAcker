@@ -30,7 +30,7 @@ img{
 }
 
 a{
-  color:$dark-grey;
+  color: $bright-color;
   text-decoration:none;
 }
 a:hover{
@@ -56,6 +56,7 @@ a:hover{
 
   #menu {
     a {
+        color: $dark-grey;
         font-size:13px;
         text-transform:lowercase;
         line-height:25px;
@@ -151,9 +152,11 @@ a:hover{
     clear:both;
   }
   textarea{
+    font-family: Helvetica, Arial, sans-serif;
     width:100%;
     max-width:800px;
     height:100px;
+    padding: 1em;
   }
 }
 
@@ -201,7 +204,9 @@ a:hover{
   .post-title{
     line-height:2em;
     font-size:1.1em;
-
+    a{
+      color:$dark-grey;
+    }
     .post-netloc{
       font-size:0.7em;
       font-family: Consolas,Courier,monospace;
@@ -235,12 +240,24 @@ a:hover{
 }
 
 .profile{
+  color: $dark-grey;
   padding: 15px;
+  h1{
+    padding: 0;
+    margin-bottom: 1em;
+  }
   form{
-    padding: 10px;
+    padding: 0;
+    label{
+      margin-top: 1em;
+    }
     textarea{
-      width:100%;
+      width:50%;
       height:120px;
+      padding: 0.5em;
+    }
+    input{
+      padding: 0.5em;
     }
   }
 }
@@ -261,10 +278,15 @@ a:hover{
     line-height:15px;
     font-size:0.8em;
   }
+  a{
+    color:$dark-grey;
+  }
 }
 
 #guidelines{
   padding: 0 20px;
+  color:$dark-grey;
+  margin: 2em 0;
   h3 {
     padding: 5px 0px;
     font-size:1.2em;
@@ -274,7 +296,8 @@ a:hover{
   }
 }
 h1{
-  padding:20px;
+  padding:0;
+  margin-bottom: 1em
 }
 form{
   padding:10px 20px 20px 20px;
@@ -307,7 +330,9 @@ input.fielderror, textarea.fielderror {
 }
 
 .leaderboard{
-  padding: 25px 50px;
+  padding: 0 20px;
+  color:$dark-grey;
+  margin: 2em 0;
   .leader-user{
     .position{
       width:50px;
@@ -362,6 +387,13 @@ hr {
 
 #login-register-boxes{
   height:300px;
+  color:$dark-grey;
+  margin: 2em 0;
+  input{
+    padding: 0.5em;
+    margin-bottom: 1em;
+    width: 12em;
+  }
 }
 
 #login-box{
@@ -384,4 +416,10 @@ hr {
   a{
     text-decoration:underline;
   }
+}
+
+#password_recovery, #new_password{
+  color:$dark-grey;
+  margin: 2em 0;
+  padding: 0 20px;
 }

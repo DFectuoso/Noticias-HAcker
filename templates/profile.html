@@ -2,11 +2,10 @@
 {% block content %}
 <div class="profile">
   <h1>{{profiledUser.nickname}}</h1>
-  <div>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</div>
-  <div>Karma: {{profiledUser.sum_votes}}</div>
-  <div>Karma promedio: {{profiledUser.average_karma}}</div>
+  <p>Se registro hace {{profiledUser.created|timesince|hacetiempo}}</p>
+  <p><strong>Karma:</strong> {{profiledUser.sum_votes}}</p>
+  <p><strong>Karma promedio:</strong> {{profiledUser.average_karma}}</p>
   {% if my_profile %}
-    <br />
     <form method="POST" class="validable profile">
       {% if profile_saved %}
         <div class="success">El perfil ha sido guardado en la base de datos</div>

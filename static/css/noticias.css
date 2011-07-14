@@ -17,7 +17,7 @@ img {
   margin: 30px auto; }
 
 a {
-  color: #111111;
+  color: #8ac649;
   text-decoration: none; }
 
 a:hover {
@@ -36,6 +36,7 @@ a:hover {
     height: 23px;
     float: left; }
   #header #menu a {
+    color: #111111;
     font-size: 13px;
     text-transform: lowercase;
     line-height: 25px; }
@@ -103,9 +104,11 @@ a:hover {
   #post form {
     clear: both; }
   #post textarea {
+    font-family: Helvetica, Arial, sans-serif;
     width: 100%;
     max-width: 800px;
-    height: 100px; }
+    height: 100px;
+    padding: 1em; }
 
 .busqueda {
   margin-left: 51px; }
@@ -140,6 +143,8 @@ a:hover {
   .noticia .post-title {
     line-height: 2em;
     font-size: 1.1em; }
+    .noticia .post-title a {
+      color: #111111; }
     .noticia .post-title .post-netloc {
       font-size: 0.7em;
       font-family: Consolas,Courier,monospace; }
@@ -160,12 +165,21 @@ a:hover {
   height: 125px; }
 
 .profile {
+  color: #111111;
   padding: 15px; }
+  .profile h1 {
+    padding: 0;
+    margin-bottom: 1em; }
   .profile form {
-    padding: 10px; }
+    padding: 0; }
+    .profile form label {
+      margin-top: 1em; }
     .profile form textarea {
-      width: 100%;
-      height: 120px; }
+      width: 50%;
+      height: 120px;
+      padding: 0.5em; }
+    .profile form input {
+      padding: 0.5em; }
 
 #pages {
   padding: 10px 51px;
@@ -181,9 +195,13 @@ a:hover {
   #footer .disclamer {
     line-height: 15px;
     font-size: 0.8em; }
+  #footer a {
+    color: #111111; }
 
 #guidelines {
-  padding: 0 20px; }
+  padding: 0 20px;
+  color: #111111;
+  margin: 2em 0; }
   #guidelines h3 {
     padding: 5px 0px;
     font-size: 1.2em; }
@@ -191,7 +209,8 @@ a:hover {
     padding: 10px 0px; }
 
 h1 {
-  padding: 20px; }
+  padding: 0;
+  margin-bottom: 1em; }
 
 form {
   padding: 10px 20px 20px 20px; }
@@ -219,7 +238,9 @@ input.fielderror, textarea.fielderror {
   border: 1px solid #ff0a47; }
 
 .leaderboard {
-  padding: 25px 50px; }
+  padding: 0 20px;
+  color: #111111;
+  margin: 2em 0; }
   .leaderboard .leader-user .position {
     width: 50px;
     float: left; }
@@ -257,7 +278,13 @@ hr {
   margin: 7px 0; }
 
 #login-register-boxes {
-  height: 300px; }
+  height: 300px;
+  color: #111111;
+  margin: 2em 0; }
+  #login-register-boxes input {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    width: 12em; }
 
 #login-box {
   border-right: 1px solid #8ac649; }
@@ -276,3 +303,8 @@ hr {
   text-align: center; }
   #top-alert a {
     text-decoration: underline; }
+
+#password_recovery, #new_password {
+  color: #111111;
+  margin: 2em 0;
+  padding: 0 20px; }
