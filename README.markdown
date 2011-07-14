@@ -32,6 +32,13 @@ base_url = '' # Esto es para que solo funcione en el dominio adecuado y no en el
 
 base_url_custom_url = '' # Esto es si tienes un dominio diferente a appspot
 
+#index_tank
+indextank_public_key = ''
+indextank_private_key = ''
+indextank_name_key = ''
+indextank_name_key_prod = ''
+
+
 CSS
 ---
 
