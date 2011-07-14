@@ -230,10 +230,20 @@ a:hover{
 }
 
 .submit{
+  color: $dark-grey;
+  padding: 15px;
+  hr{
+    margin-bottom: 2em;
+  }
   .textfields{
     width:80%;
   }
+  input{
+    padding: 0.5em;
+    margin-bottom:1em;
+  }
   textarea{
+    padding: 0.5em;
     width:80%;
     height:125px;
   }
@@ -309,8 +319,9 @@ fieldset{
   border:0px;
 }
 
-textarea {
-  font: 100%/120% Verdana, Arial, Helvetica, sans-serif;
+input, textarea {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1em;
 }
 
 .error{
@@ -386,7 +397,7 @@ hr {
 } //hr
 
 #login-register-boxes{
-  height:300px;
+  overflow:hidden;
   color:$dark-grey;
   margin: 2em 0;
   input{
@@ -408,12 +419,12 @@ hr {
 }
 
 #top-alert{
-  padding: 2px 0;
-  width:100%;
-  max-height:26px;
+  padding: 0.5em 0;
   background: $alert-color;
   text-align:center;
+  color: $light-color;
   a{
+    color: white;
     text-decoration:underline;
   }
 }
