@@ -98,6 +98,8 @@ def sluglify(text):
   return slugify(text)
 
 def indextank_document(base_url, post):
+  if not keys.indextank_private_key:
+    return
   api = indextank.client.ApiClient(keys.indextank_private_key)
 
   index = api.get_index(keys.indextank_name_key)
