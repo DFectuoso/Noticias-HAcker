@@ -1,8 +1,9 @@
-$bright-color: #8FB933;
+$bright-color: #8AC649;
+$alert-color: #FF4E27;
 $light-color: #F2E9E1;
-$dark-grey: #222;
-$soft-grey: #777777;
-$soft-white: #EEEEEE;
+$dark-grey: #111;
+$soft-grey: #666;
+$soft-white: white;
 $soft-red: #FFB5C7;
 $dark-red: #FF0A47;
 
@@ -25,7 +26,7 @@ img{
 
 #wrapper{
   width:80%;
-  margin: 10px auto;
+  margin: 30px auto;
 }
 
 a{
@@ -41,40 +42,36 @@ a:hover{
   height: 25px;
   line-height:25px;
   position:relative;
+  margin-bottom:5px;
+  padding: 0.3em;
 
   #logo{
-    font-weight: bold;
-
     span.logotype{
-      display:inline-block;
-      margin:2px;
-      border:1px solid #fff;
-      font-size:13px;
-      line-height:21px;
-      height:19px;
-      width:21px;
-      color:#fff;
-      text-align:center;
+      display:blog;
+      width:23px;
+      height:23px;
+      float:left;
     }
   }
 
-  #menu{
-    a{
+  #menu {
+    a {
         font-size:13px;
         text-transform:lowercase;
         line-height:25px;
     }
 
     #main_nav{
-        position:absolute;
-        left:150px;
-        top:0;
-        height:25px;
+        float:left;
+        margin-left:24px;
+        span.sitename{
+          padding-right:5px;
+          text-transform:none;
+          font-weight:bold;
+        }
     }
     #user_toolbar{
-        position:absolute;
-        right:0;
-        top:0;
+        float:right;
         padding:0 10px;
 
         .karma{
@@ -87,8 +84,15 @@ a:hover{
 }
 
 #content{
-  background-color:$light-color;
   color: $soft-grey;
+}
+#content-2{
+  color: $soft-grey;
+}
+
+#indextanksearch {
+  padding: 0 0 0 0px;
+  display: inline; 
 }
 
 .comment{
@@ -153,35 +157,39 @@ a:hover{
   }
 }
 
+.busqueda{
+  margin-left: 51px;
+}
+
 .noticia{
-  border-bottom:1px solid darken($light-color,3%);
+  border-bottom:1px solid #F2F2F2;
+  padding: 0.2em 0 0.5em;
+  margin: 1px 0 0;
 
   &:nth-child(even){
-    background:darken(desaturate($light-color,6%),2%);
+    background:#F5F5F5;
   };
 
   a:visited{
-    color:lighten($dark-grey,45%);
+    color:lighten($dark-grey,32%);
     text-decoration:none;
   }
 
   .order-number{
     float:left;
-    font-size:13px;
     width:20px;
-    padding:0 5px;
-    line-height:28px;
     text-align:right;
-    font-weight:bold;
+    font-weight:normal;
+    font-size:0.75em;
+    padding-top:5px;
   }
 
   a.post-upvote{
     display:block;
     float:left;
-    height:16px;
-    padding-top:7px;
-    text-align:center;
-    width:21px;
+    padding-top:4px;
+    padding-left:8px;
+    width:20px;
   }
 
   .voted{
@@ -191,10 +199,12 @@ a:hover{
   }
 
   .post-title{
-    line-height:28px;
+    line-height:2em;
+    font-size:1.1em;
 
     .post-netloc{
       font-size:0.7em;
+      font-family: Consolas,Courier,monospace;
     }
   }
 
@@ -202,6 +212,9 @@ a:hover{
     font-size:11px;
     line-height:13px;
     margin-left:51px;
+    a {
+      color: $bright-color;
+    }
   }
 
   .post-votes{
@@ -239,11 +252,11 @@ a:hover{
 }
 
 #footer{
-  height:50px;
+  font-size:12px;
   line-height:17px;
   text-align:center;
   background-color:$bright-color;
-
+  padding: 5px 0;
   .disclamer{
     line-height:15px;
     font-size:0.8em;
@@ -337,5 +350,38 @@ input.fielderror, textarea.fielderror {
     .reply{
       font-size: 0.8em;
     }
+  }
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #8EB932;
+  margin: 7px 0;
+} //hr
+
+#login-register-boxes{
+  height:300px;
+}
+
+#login-box{
+  border-right:1px solid $bright-color;
+}
+
+#login-box, #register-box {
+  float:left;
+  width:49%;
+  text-align:center;
+  margin-top:50px;
+}
+
+#top-alert{
+  padding: 2px 0;
+  width:100%;
+  max-height:26px;
+  background: $alert-color;
+  text-align:center;
+  a{
+    text-decoration:underline;
   }
 }

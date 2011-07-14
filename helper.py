@@ -16,9 +16,12 @@
 #THE SOFTWARE.
 
 import prefetch
+import keys
+import indextank
 from urlparse import urlparse
 from models import User, Post, Comment, Vote 
 from django.utils.html import escape
+from django.template.defaultfilters import slugify
 
 def sanitizeHtml(value):
   return escape(value)
@@ -90,3 +93,20 @@ def order_comment_list_in_memory(comments):
 def base_url(self):
   uri = urlparse(self.request.url)
   return uri.scheme +'://'+ uri.netloc
+
+def sluglify(text):
+  return slugify(text)
+
+def indextank_document(base_url, post):
+  api = indextank.client.ApiClient(keys.indextank_private_key)
+
+  index = api.get_index(keys.indextank_name_key)
+  if base_url  == keys.base_url or base_url == keys.base_url_custom_url:
+    index = api.get_index(keys.indextank_name_key_prod)
+
+  nhurl = base_url+ "/noticia/" + str(post.nice_url)
+  try:
+    index.add_document(nhurl, {'text': post.title + ' ' + (post.message or post.url) + ' ' + post.user.nickname,
+	'user':post.user.nickname, 'title':post.title, 'message':post.message, 'url': post.url, 'nhurl': nhurl})
+  except indextank.client.HttpException:
+      pass
