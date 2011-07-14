@@ -101,6 +101,10 @@ a:hover {
   #post .message {
     padding: 5px 20px 20px 20px;
     color: #111111; }
+  #post .noticia {
+    padding: 1em 0; }
+    #post .noticia .post-info {
+      margin-left: 35px; }
   #post form {
     clear: both; }
   #post textarea {
@@ -145,6 +149,8 @@ a:hover {
     font-size: 1.1em; }
     .noticia .post-title a {
       color: #111111; }
+      .noticia .post-title a:visited {
+        color: #b3b3b3; }
     .noticia .post-title .post-netloc {
       font-size: 0.7em;
       font-family: Consolas,Courier,monospace; }
