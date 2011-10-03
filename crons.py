@@ -87,10 +87,10 @@ class SessionsHandler(webapp.RequestHandler):
 class SendToKillmetricsHandler(webapp.RequestHandler):
   def get(self):
     killmetrics_key = ''
-    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and helper.base_url(self) == keys.base_url:
-      killmetrics_key = keys.killmetrics_prod
     if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_dev') and helper.base_url(self) != keys.base_url:
       killmetrics_key = keys.killmetrics_dev
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and (helper.base_url(self) == keys.base_url or helper.base_url(self) == keys.base_url_custom_url):
+      killmetrics_key = keys.killmetrics_prod
 
     if killmetrics_key == '':
       return
