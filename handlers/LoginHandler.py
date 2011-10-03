@@ -69,9 +69,13 @@ class Handler(webapp.RequestHandler):
 
     user = User.all().filter('lowercase_nickname =',nickname.lower()).filter('password =',password).fetch(1)
     if len(user) == 1:
+      
+      helper.killmetrics("Login",nickname, "do", session, "")
+      random_id = helper.get_session_id(session)
       if session.is_active():
         session.terminate()
       session.regenerate_id()
+      session['random_id'] = random_id
       session['user'] = user[0]
       self.redirect('/')
     else:

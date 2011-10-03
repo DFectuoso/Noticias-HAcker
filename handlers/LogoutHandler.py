@@ -45,8 +45,11 @@ template.register_template_library('CustomFilters')
 class Handler(webapp.RequestHandler):
   def get(self):
     session = get_current_session()
+    helper.killmetrics("Logout","", "do", session, "")
+    random_id = helper.get_session_id(session) 
     if session.is_active():
       session.terminate()
     session.regenerate_id()
+    session["random_id"] = random_id
     self.redirect('/')
 

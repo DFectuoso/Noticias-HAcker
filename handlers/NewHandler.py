@@ -53,6 +53,7 @@ class Handler(webapp.RequestHandler):
       nextPage = page + 1
 
     session = get_current_session()
+    helper.killmetrics("Pageview","New", "view", session, "")
     if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)

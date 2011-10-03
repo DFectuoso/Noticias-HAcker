@@ -24,6 +24,7 @@ from urlparse import urlparse
 from models import User, Post, Comment, Vote 
 from django.utils.html import escape
 from django.template.defaultfilters import slugify
+from google.appengine.api import taskqueue
 
 def sanitizeHtml(value):
   return escape(value)
@@ -123,3 +124,9 @@ def get_session_id(session):
     str = ''.join(random.sample(char_set,20))
     session['random_id'] = str
     return str
+
+def killmetrics(category,subcategory,verb,session,user):
+  sessionUID = get_session_id(session)
+  
+  taskqueue.add(url='/tasks/send_to_killmetrics', params={'category':category,'subcategory':subcategory,'verb':verb,'userUID': user, 'sessionUID':sessionUID})
+

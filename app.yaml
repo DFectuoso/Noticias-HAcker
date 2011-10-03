@@ -19,6 +19,9 @@ handlers:
 - url: /tasks/send_top_to_twitter
   script: crons.py
   login: admin
+- url: /tasks/send_to_killmetrics
+  script: crons.py
+  login: admin
 - url: /tasks/update_top_karma
   script: crons.py
   login: admin

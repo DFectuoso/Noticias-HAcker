@@ -20,11 +20,13 @@ import hashlib
 import cgi
 import keys
 import sys
+import urllib
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
+from google.appengine.api import urlfetch
 from gaesessions import get_current_session
 from urlparse import urlparse
 from datetime import datetime
@@ -82,12 +84,38 @@ class SessionsHandler(webapp.RequestHandler):
       pass
     self.response.out.write("ok")
 
+class SendToKillmetricsHandler(webapp.RequestHandler):
+  def get(self):
+    killmetrics_key = ''
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and helper.base_url(self) == keys.base_url:
+      killmetrics_key = keys.killmetrics_prod
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_dev') and helper.base_url(self) != keys.base_url:
+      killmetrics_key = keys.killmetrics_dev
+
+    if killmetrics_key == '':
+      return
+
+    killmetrics_base_url = "http://alertify.appspot.com/"
+
+    userUID     = urllib.quote(self.request.get("userUID"))
+    sessionUID  = urllib.quote(self.request.get("sessionUID"))
+    category    = urllib.quote(self.request.get("category"))
+    subcategory = urllib.quote(self.request.get("subcategory"))
+    verb        = urllib.quote(self.request.get("verb"))
+
+    url = killmetrics_base_url + '/data-point/'+killmetrics_key+'?userUID='+userUID+'&sessionUID='+sessionUID+'&category='+category+'&subcategory='+subcategory+'&verb='+verb
+    result = urlfetch.fetch(url)
+
+  def post(self):
+    self.get() 
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
       ('/tasks/update_top_karma', TopHandler),
       ('/tasks/send_top_to_twitter', TwitterHandler),
       ('/tasks/cleanup_sessions', SessionsHandler),
+      ('/tasks/send_to_killmetrics', SendToKillmetricsHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 

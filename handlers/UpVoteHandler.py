@@ -55,6 +55,7 @@ class Handler(webapp.RequestHandler):
           vote.put()
           post.remove_from_memcache()
           post.user.remove_from_memcache()
+          helper.killmetrics("Vote","News", "do", session, "")
           self.response.out.write('Ok')
         else:
           self.response.out.write('No')

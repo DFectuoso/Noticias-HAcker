@@ -48,6 +48,8 @@ class Handler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     
+    helper.killmetrics("Pageview","Post", "view", session, "")
+
     try:
       post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
       if  post  == None: #If for some reason the post doesn't have a nice url, we try the id. This is also the case of all old stories
@@ -86,6 +88,7 @@ class Handler(webapp.RequestHandler):
           post.remove_from_memcache()
           comment = Comment(message=message,user=user,post=post)
           comment.put()
+          helper.killmetrics("Comment","Root", "posted", session, "")
           vote = Vote(user=user, comment=comment, target_user=user)
           vote.put()
           Notification.create_notification_for_comment_and_user(comment,post.user)
