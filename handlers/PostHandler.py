@@ -48,7 +48,6 @@ class Handler(webapp.RequestHandler):
     if session.has_key('user'):
       user = session['user']
     
-    helper.killmetrics("Pageview","Post", "view", session, "")
 
     try:
       post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
@@ -69,6 +68,7 @@ class Handler(webapp.RequestHandler):
           self.response.headers['Content-Type'] = "application/json"
           self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
       else:
+        helper.killmetrics("Pageview","Post", "view", session, "")
         self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
       self.redirect('/')

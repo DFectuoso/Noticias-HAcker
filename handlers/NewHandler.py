@@ -53,7 +53,6 @@ class Handler(webapp.RequestHandler):
       nextPage = page + 1
 
     session = get_current_session()
-    helper.killmetrics("Pageview","New", "view", session, "")
     if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)
@@ -71,5 +70,6 @@ class Handler(webapp.RequestHandler):
         self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
+      helper.killmetrics("Pageview","New", "view", session, "")
       self.response.out.write(template.render('templates/main.html', locals()))
 
