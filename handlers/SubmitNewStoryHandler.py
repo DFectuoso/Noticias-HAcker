@@ -44,7 +44,7 @@ template.register_template_library('CustomFilters')
 class Handler(webapp.RequestHandler):
   def get(self):
     session = get_current_session()
-    helper.killmetrics("Pageview","Agregar", "view", session, "")
+    helper.killmetrics("Pageview","Agregar", "view", session, "",self)
     if session.has_key('post_error'):
       post_error = session.pop('post_error')
 
@@ -78,7 +78,7 @@ class Handler(webapp.RequestHandler):
               if not nice_url_exist:
                 post = Post(url=url,title=title,message=message, user=user, nice_url=nice_url)
                 post.put()
-                helper.killmetrics("Submit","Link", "do", session, "")
+                helper.killmetrics("Submit","Link", "do", session, "",self)
                 vote = Vote(user=user, post=post, target_user=post.user)
                 vote.put()
                 Post.remove_cached_count_from_memcache()
@@ -102,7 +102,7 @@ class Handler(webapp.RequestHandler):
           if not nice_url_exist:
             post = Post(title=title,message=message, user=user, nice_url=nice_url)
             post.put()
-            helper.killmetrics("Submit","Post", "do", session, "")
+            helper.killmetrics("Submit","Post", "do", session, "",self)
             post.url = helper.base_url(self) + "/noticia/" + post.nice_url
             post.put()
             Post.remove_cached_count_from_memcache()

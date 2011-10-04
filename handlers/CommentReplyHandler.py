@@ -63,7 +63,7 @@ class Handler(webapp.RequestHandler):
           parentComment = db.get(comment_id)
           comment = Comment(message=message,user=user,post=parentComment.post, father=parentComment)
           comment.put()
-          helper.killmetrics("Comment","Child", "posted", session, "")
+          helper.killmetrics("Comment","Child", "posted", session, "",self)
           comment.post.remove_from_memcache()
           vote = Vote(user=user, comment=comment, target_user=user)
           vote.put()

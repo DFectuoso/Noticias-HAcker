@@ -102,8 +102,9 @@ class SendToKillmetricsHandler(webapp.RequestHandler):
     category    = urllib.quote(self.request.get("category"))
     subcategory = urllib.quote(self.request.get("subcategory"))
     verb        = urllib.quote(self.request.get("verb"))
+    user_agent  = urllib.quote(self.request.get("user-agent"))
 
-    url = killmetrics_base_url + '/data-point/'+killmetrics_key+'?userUID='+userUID+'&sessionUID='+sessionUID+'&category='+category+'&subcategory='+subcategory+'&verb='+verb
+    url = killmetrics_base_url + '/data-point/'+killmetrics_key+'?userUID='+userUID+'&sessionUID='+sessionUID+'&category='+category+'&subcategory='+subcategory+'&verb='+verb+'&user_agent='+user_agent
     result = urlfetch.fetch(url)
 
   def post(self):

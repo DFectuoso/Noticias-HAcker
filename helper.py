@@ -125,8 +125,9 @@ def get_session_id(session):
     session['random_id'] = str
     return str
 
-def killmetrics(category,subcategory,verb,session,user):
+def killmetrics(category,subcategory,verb,session,user,r):
+  user_agent = str(r.request.headers['User-Agent'])
   sessionUID = get_session_id(session)
   
-  taskqueue.add(url='/tasks/send_to_killmetrics', params={'category':category,'subcategory':subcategory,'verb':verb,'userUID': user, 'sessionUID':sessionUID})
+  taskqueue.add(url='/tasks/send_to_killmetrics', params={'category':category,'subcategory':subcategory,'verb':verb,'userUID': user, 'sessionUID':sessionUID,'user-agent':user_agent})
 

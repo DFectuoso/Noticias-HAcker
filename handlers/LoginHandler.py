@@ -70,7 +70,7 @@ class Handler(webapp.RequestHandler):
     user = User.all().filter('lowercase_nickname =',nickname.lower()).filter('password =',password).fetch(1)
     if len(user) == 1:
       
-      helper.killmetrics("Login",nickname, "do", session, "")
+      helper.killmetrics("Login",nickname, "do", session, "",self)
       random_id = helper.get_session_id(session)
       if session.is_active():
         session.terminate()

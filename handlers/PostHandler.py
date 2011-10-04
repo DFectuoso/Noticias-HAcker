@@ -68,7 +68,7 @@ class Handler(webapp.RequestHandler):
           self.response.headers['Content-Type'] = "application/json"
           self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
       else:
-        helper.killmetrics("Pageview","Post", "view", session, "")
+        helper.killmetrics("Pageview","Post", "view", session, "",self)
         self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
       self.redirect('/')
@@ -88,7 +88,7 @@ class Handler(webapp.RequestHandler):
           post.remove_from_memcache()
           comment = Comment(message=message,user=user,post=post)
           comment.put()
-          helper.killmetrics("Comment","Root", "posted", session, "")
+          helper.killmetrics("Comment","Root", "posted", session, "",self)
           vote = Vote(user=user, comment=comment, target_user=user)
           vote.put()
           Notification.create_notification_for_comment_and_user(comment,post.user)

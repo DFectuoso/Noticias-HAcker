@@ -53,7 +53,7 @@ class Handler(webapp.RequestHandler):
       if len(already) == 0:
         user = User(nickname=nickname, lowercase_nickname=nickname.lower(),password=password, about="")
         user.put()
-        helper.killmetrics("Register",nickname, "do", session, "")
+        helper.killmetrics("Register",nickname, "do", session, "",self)
         random_id = helper.get_session_id(session) 
         if session.is_active():
           session.terminate()

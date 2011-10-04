@@ -73,7 +73,7 @@ class Handler(webapp.RequestHandler):
         self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
-      helper.killmetrics("Pageview","Top page", "view", session, "")
+      helper.killmetrics("Pageview","Top page", "view", session, "",self)
       self.response.out.write(template.render('templates/main.html', locals()))
 
 

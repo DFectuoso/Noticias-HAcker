@@ -51,7 +51,7 @@ class Handler(webapp.RequestHandler):
         if not comment.already_voted():
           vote = Vote(user=user, comment=comment, target_user=comment.user)
           vote.put()
-          helper.killmetrics("Vote","Comment", "do", session, "")
+          helper.killmetrics("Vote","Comment", "do", session, "",self)
           comment.remove_from_memcache()
           comment.user.remove_from_memcache()
           self.response.out.write('Ok')
