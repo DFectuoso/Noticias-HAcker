@@ -15,6 +15,8 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 
+import random
+import string
 import prefetch
 import keys
 import indextank
@@ -112,3 +114,12 @@ def indextank_document(base_url, post):
 	'user':post.user.nickname, 'title':post.title, 'message':post.message, 'url': post.url, 'nhurl': nhurl})
   except indextank.client.HttpException:
       pass
+
+def get_session_id(session):
+  if session.has_key('random_id'):
+    return session['random_id']
+  else:
+    char_set = string.ascii_uppercase + string.digits
+    str = ''.join(random.sample(char_set,20))
+    session['random_id'] = str
+    return str

@@ -54,6 +54,7 @@ class Handler(webapp.RequestHandler):
       nextPage = page + 1
 
     session = get_current_session()
+
     if session.has_key('user'):
       user = session['user']
     posts = Post.all().order('-karma').fetch(perPage, realPage * perPage)
