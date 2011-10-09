@@ -47,7 +47,16 @@ class Handler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
-    
+    #### Killmetrics test
+    killmetrics_session_id = helper.get_session_id(session)
+    killmetrics_key = ''
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_dev') and helper.base_url(self) != keys.base_url:
+      killmetrics_key = keys.killmetrics_dev
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and (helper.base_url(self) == keys.base_url or helper.base_url(self) == keys.base_url_custom_url):
+      killmetrics_key = keys.killmetrics_prod
+    #### Killmetrics test
+
+   
 
     try:
       post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
@@ -68,7 +77,6 @@ class Handler(webapp.RequestHandler):
           self.response.headers['Content-Type'] = "application/json"
           self.response.out.write(simplejson.dumps({'post':post.to_json(),'comments':comments_json}))
       else:
-        helper.killmetrics("Pageview","Post", "view", session, "",self)
         self.response.out.write(template.render('templates/post.html', locals()))
     except db.BadKeyError:
       self.redirect('/')

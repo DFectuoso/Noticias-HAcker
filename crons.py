@@ -95,7 +95,7 @@ class SendToKillmetricsHandler(webapp.RequestHandler):
     if killmetrics_key == '':
       return
 
-    killmetrics_base_url = "http://alertify.appspot.com/"
+    killmetrics_base_url = "http://www.killmetrics.com/"
 
     userUID     = urllib.quote(self.request.get("userUID"))
     sessionUID  = urllib.quote(self.request.get("sessionUID"))

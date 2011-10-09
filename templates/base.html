@@ -174,5 +174,13 @@ var _sf_async_config={uid:634,domain:"noticiashacker.com"};
 })();
 
 </script>
+{% if killmetrics_session_id and killmetrics_key %}
+  <script> 
+    function killMetrics(k,u){var oImg=document.createElement("img"); oImg.setAttribute('src', "http://www.killmetrics.com/data-point/"+k+"?sessionUID="+u+"&category=Pageview&subcategory="+location.pathname+"&verb=view&user_agent="+encodeURIComponent(navigator.userAgent));}
+    killMetrics("{{killmetrics_key}}","{{killmetrics_session_id}}");
+  </script>
+{% endif %}
+
+
   </body>
 </html>

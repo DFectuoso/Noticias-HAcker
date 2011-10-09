@@ -55,6 +55,16 @@ class Handler(webapp.RequestHandler):
     session = get_current_session()
     if session.has_key('user'):
       user = session['user']
+    #### Killmetrics test
+    killmetrics_session_id = helper.get_session_id(session)
+    killmetrics_key = ''
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_dev') and helper.base_url(self) != keys.base_url:
+      killmetrics_key = keys.killmetrics_dev
+    if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and (helper.base_url(self) == keys.base_url or helper.base_url(self) == keys.base_url_custom_url):
+      killmetrics_key = keys.killmetrics_prod
+    #### Killmetrics test
+
+
     posts = Post.all().order('-created').fetch(perPage,perPage * realPage)
     prefetch.prefetch_posts_list(posts)
     i = perPage * realPage + 1
@@ -70,6 +80,5 @@ class Handler(webapp.RequestHandler):
         self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(simplejson.dumps({'posts':posts_json}))
     else:
-      helper.killmetrics("Pageview","New", "view", session, "",self)
       self.response.out.write(template.render('templates/main.html', locals()))
 

@@ -44,12 +44,22 @@ template.register_template_library('CustomFilters')
 class Handler(webapp.RequestHandler):
   def get(self):
     session = get_current_session()
-    helper.killmetrics("Pageview","Agregar", "view", session, "",self)
     if session.has_key('post_error'):
       post_error = session.pop('post_error')
 
     if session.has_key('user'):
       user = session['user']
+      #### Killmetrics test
+      killmetrics_session_id = helper.get_session_id(session)
+      killmetrics_key = ''
+      if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_dev') and helper.base_url(self) != keys.base_url:
+        killmetrics_key = keys.killmetrics_dev
+      if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and (helper.base_url(self) == keys.base_url or helper.base_url(self) == keys.base_url_custom_url):
+        killmetrics_key = keys.killmetrics_prod
+      #### Killmetrics test
+
+
+
       get_url = helper.sanitizeHtml(self.request.get('url_bookmarklet'))
       get_title = helper.sanitizeHtml(self.request.get('title_bookmarklet'))
       self.response.out.write(template.render('templates/submit.html', locals()))
