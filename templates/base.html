@@ -19,14 +19,25 @@
 	  <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/south-street/jquery-ui.css" media="all" />
 
     <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-2138729-21']);
-      _gaq.push(['_trackPageview']);
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+      window._gaq = [['_setAccount','UA-2138729-21'],['_trackPageview'],['_trackPageLoadTime']];
+      (function(d, t) {
+        var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      }(document, 'script'));
+
+      $(function() {
+        $('.post-title a').click(function(e) {
+          e.preventDefault();
+          href = $(this).attr('href');
+          window._gaq.push(['_trackEvent', 'Outbound Click', 'click', href]);
+          setTimeout(function() {
+            document.location = href;
+          },100);
+        });
+      });
+
     </script>
 
     <script>
@@ -91,7 +102,8 @@
 		    .indextank_AjaxSearch({fields:'title,user,url,nhurl,timestamp', start:0, rsLength:20,
 			    listeners: renderer.add(stats_renderer)})
 		    .indextank_InstantSearch();
-      });
+      
+    });
     </script>
 
   </head>
@@ -172,7 +184,6 @@ var _sf_async_config={uid:634,domain:"noticiashacker.com"};
   window.onload = (typeof window.onload != 'function') ?
      loadChartbeat : function() { oldonload(); loadChartbeat(); };
 })();
-
 </script>
 {% if killmetrics_session_id and killmetrics_key %}
   <script> 
