@@ -29,12 +29,8 @@
 
       $(function() {
         $('.post-title a').click(function(e) {
-          e.preventDefault();
           href = $(this).attr('href');
           window._gaq.push(['_trackEvent', 'Outbound Click', 'click', href]);
-          setTimeout(function() {
-            document.location = href;
-          },100);
         });
       });
 
