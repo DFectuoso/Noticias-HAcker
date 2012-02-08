@@ -14,6 +14,8 @@ cookie_key = 'UNASTRINGALEATORIAMUYLARGAUNASTRINGALEATORIAMUYLARGAUNASTRINGALEAT
 
 salt_key = 'UNASTRINGALEATORIAMUYLARGA'
 
+comment_key = 'UNASTRINGNOTANLARGAPEROSIALEATORIA'
+
 Si quisieras usar el bot de twitter tambien necesitarias agregar las siguientes llaves de la misma manera:
 
 consumer_key = ""
