@@ -8,6 +8,7 @@
   <form method="POST" class="validable">
     <fieldset>
       <label>Título</label><input class="textfields requerido" name="title" value="{{ get_title }}"/>
+      <input type="hidden" name="comment_key" value="">
       <label>URL</label><input class="textfields requerido url" name="url" value="{{ get_url }}"/><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
@@ -18,10 +19,27 @@
   <h1>Agregar un mensaje</h1>
   <form method="POST" class="validable">
     <fieldset>
+      <input type="hidden" name="comment_key" value="">
       <label>Título</label><input class="textfields requerido" name="title"/>
       <label>Mensaje</label><textarea name="message" class="requerido"></textarea><br/>
       <input type="submit" value="Agregar"/>
     </fieldset>
   </form>
 </div>
+
+<script type="text/javascript">
+;(function($){
+  $('input[name=title]').keypress(function(){
+    var $hidden = $(this).siblings('input[name=comment_key]');
+
+    if ($hidden.val() === '') {
+      setTimeout(function() {
+        console.log("Lol k thanks")
+        $hidden.val('{{comment_key}}');
+      }, 1);
+    }
+  });
+}(jQuery));
+</script>
+
 {% endblock %}

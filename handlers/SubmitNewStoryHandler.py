@@ -48,6 +48,8 @@ class Handler(webapp.RequestHandler):
       post_error = session.pop('post_error')
 
     if session.has_key('user'):
+      if hasattr(keys, 'comment_key'):
+        comment_key = keys.comment_key
       user = session['user']
       #### Killmetrics test
       killmetrics_session_id = helper.get_session_id(session)
@@ -72,8 +74,9 @@ class Handler(webapp.RequestHandler):
     title = helper.sanitizeHtml(self.request.get('title'))
     message = helper.sanitizeHtml(self.request.get('message'))
     nice_url = helper.sluglify(title)
-    
-    if session.has_key('user'):
+    key = self.request.get('comment_key')
+ 
+    if session.has_key('user') and key == keys.comment_key:
       if len(nice_url) > 0:
         user = session['user']
         if len(message) == 0: #is it a post or a message?
