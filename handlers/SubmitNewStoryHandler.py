@@ -131,6 +131,3 @@ class Handler(webapp.RequestHandler):
         self.redirect('/agregar')
     else:
       self.redirect('/login')
-
-
-
