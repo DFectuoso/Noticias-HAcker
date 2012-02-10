@@ -55,8 +55,8 @@ class Handler(webapp.RequestHandler):
     if hasattr(keys,'base_url') and hasattr(keys,'killmetrics_prod') and (helper.base_url(self) == keys.base_url or helper.base_url(self) == keys.base_url_custom_url):
       killmetrics_key = keys.killmetrics_prod
     #### Killmetrics test
-
-   
+    if hasattr(keys, 'comment_key'):
+      comment_key = keys.comment_key
 
     try:
       post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
@@ -87,7 +87,8 @@ class Handler(webapp.RequestHandler):
     if session.has_key('user'):
       message = helper.sanitizeHtml(self.request.get('message'))
       user = session['user']
-      if len(message) > 0:
+      key = self.request.get('comment_key')
+      if len(message) > 0 and key == keys.comment_key:
         try:
           post = Post.all().filter('nice_url =', helper.parse_post_id( post_id ) ).get()
           if post  == None: #If for some reason the post doesn't have a nice url, we try the id. This is also the case of all old stories

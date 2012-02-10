@@ -44,6 +44,8 @@ template.register_template_library('CustomFilters')
 class Handler(webapp.RequestHandler):
   def get(self,comment_id):
     session = get_current_session()
+    if hasattr(keys, 'comment_key'):
+      comment_key = keys.comment_key
     if session.has_key('user'):
       user = session['user']
     try:
@@ -58,7 +60,8 @@ class Handler(webapp.RequestHandler):
     if session.has_key('user'):
       message = helper.sanitizeHtml(self.request.get('message'))
       user = session['user']
-      if len(message) > 0:
+      key = self.request.get('comment_key')
+      if len(message) > 0 and key == keys.comment_key:
         try:
           parentComment = db.get(comment_id)
           comment = Comment(message=message,user=user,post=parentComment.post, father=parentComment)

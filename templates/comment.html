@@ -21,9 +21,23 @@
   <form method="POST" class="validable">
     <fieldset>
       <textarea name="message" class="requerido"></textarea>
+      <input type="hidden" name="comment_key" value="">
       <br/><input type="Submit" value="Responder"/>
     </fieldset>
   </form>
 </div>
+<script type="text/javascript">
+;(function($){
+  $('textarea[name=message]').keypress(function(){
+    var $hidden = $(this).siblings('input[name=comment_key]');
+
+    if ($hidden.val() === '') {
+      setTimeout(function() {
+        $hidden.val('{{comment_key}}');
+      }, 5000);
+    }
+  });
+}(jQuery));
+</script>
 
 {% endblock %}
