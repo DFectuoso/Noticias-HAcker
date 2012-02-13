@@ -63,4 +63,3 @@ class Handler(webapp.RequestHandler):
     else:
       self.redirect('/login')
 
-

@@ -21,6 +21,7 @@ import cgi
 import keys
 import sys
 
+from google.appengine.ext.db import ReferencePropertyResolveError
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util, template
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -30,7 +31,7 @@ from urlparse import urlparse
 from datetime import datetime
 from gaesessions import delete_expired_sessions
 
-from models import User, Post, Comment, Vote
+from models import User, Post, Comment, Vote, Notification 
 from random import choice
 
 from libs import bitly
@@ -53,11 +54,28 @@ class ReIndexTankTaskHandler(webapp.RequestHandler):
     base_url = self.request.get('base_url')
     helper.indextank_document(base_url, post) 
 
+class DeleteNotificationsOfDeletedHandler(webapp.RequestHandler):
+  def get(self):
+    notifications = Notification.all().fetch(2000)
+    for notification in notifications:
+      taskqueue.add(url='/admin/delete-notification-of-deleted-comments', params={'notification_key': str(notification.key())})
+
+  def post(self):
+    notification = db.get(self.request.get("notification_key"))
+    try:
+      post = notification.post
+      comment = notification.comment
+    except ReferencePropertyResolveError:
+      logging.info("WE HAVE A NOTIFICATION That failed")
+      notification.target_user.remove_notifications_from_memcache()
+      notification.delete()
+
 # App stuff
 def main():
   application = webapp.WSGIApplication([
       ('/admin/re-index-tank', ReIndexTankHandler),
       ('/admin/re-index-tank-task', ReIndexTankTaskHandler),
+      ('/admin/delete-notification-of-deleted-comments', DeleteNotificationsOfDeletedHandler),
   ], debug=True)
   util.run_wsgi_app(application)
 
